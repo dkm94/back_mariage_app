@@ -5,6 +5,7 @@ bcrypt = require('bcrypt'),
 jwt = require('jsonwebtoken'),
 jwt_secret = process.env.JWT_SECRET_KEY,
 cors = require('cors'),
+bearerToken = require('express-bearer-token'),
 app = express(),
 port = process.env.PORT || 3000;
 require('dotenv').config();
@@ -14,6 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(cors());
+app.use(bearerToken());
 
 // BDD connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/mariage', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
@@ -30,68 +32,22 @@ let Menu = require('./models/menu');
 let Cake = require('./models/gateau');
 let Comment = require('./models/comment');
 
-// Déclarations des routes
+// test
 
 app.route('/').get(function(req, res) {
     res.send('hello world');
 });
 
-// connection / register 
+// Appel des controllers
 
-app.route('/register').post(function(req, res) {
+AuthController = require('./controllers/auth');
 
-    let user = new User({
-        name: req.body.name,
-        mail: req.body.mail,
-        password: req.body.password,
-        role: req.body.role
-    });
 
-    user.save(function(err, data) {
-        if(err)
-            res.send(err)
-        else
-            res.send(data)
-    });
+// Appel des routes 
 
-});
+app.route('/auth/register').post(AuthController.register);
+app.route('/auth/login').post(AuthController.login);
 
-// app.route('/login').post(function(req, res) {
-
-//     User.findOne({ 
-//         mail: req.body.mail
-//     },function(err, data){
-//         if(err)
-//             res.send('user not found')
-//         else
-//             res.send(data)
-//     });
-
-// });
-
-app.route('/login').post(function(req, res) {
-
-    User.findOne({ 
-        mail: req.body.mail
-    },function(err, user){
-        if(err)
-            res.status(400).json({auth: false, message: err});
-        else if (!user)
-            res.status(401).json({auth: false, message: "User not found. Please check email/password."});
-        else {
-            bcrypt.compare(req.body.password, user.password, function(err, result) {
-                if (result)
-                {
-                    var token = jwt.sign({ id: user._id, role: user.role }, jwt_secret);
-                    res.status(200).json({auth: true, token: token});
-                }
-                else
-                    res.status(201).json({auth: false, message: "Please check email/password."});
-            })
-        }
-    });
-
-});
 
 // CRUD user
 
