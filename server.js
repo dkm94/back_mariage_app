@@ -45,9 +45,50 @@ AuthController = require('./controllers/auth');
 
 // Appel des routes 
 
+// register / login
 app.route('/auth/register').post(AuthController.register);
 app.route('/auth/login').post(AuthController.login);
 
+
+// admin
+app.route('/admin/addGroup').post();
+app.route('/admin/groups').get();
+app.route('/admin/group/:id').get();
+app.route('/admin/updateGroup').put();
+app.route('/admin/deleteGroup').delete();
+
+app.route('/admin/addGuest').post();
+app.route('/admin/invites').get();
+app.route('/admin/invite/:id').get();
+
+app.route('/admin/addTable').post();
+app.route('/admin/tables').get();
+app.route('/admin/table/:id').get();
+app.route('/admin/updateTable').put();
+app.route('/admin/deleteTable').delete();
+
+app.route('/admin/addMenu').post();
+app.route('/admin/menus').get();
+app.route('/admin/menu/:id').get();
+app.route('/admin/updateMenu').put();
+app.route('/admin/deleteMenu').delete();
+
+app.route('/admin/addCake').post();
+app.route('/admin/cakes').get();
+app.route('/admin/cake/:id').get();
+app.route('/admin/updateCake').put();
+app.route('/admin/deleteCake').delete();
+
+// groupe
+app.route('/group/addComment').post();
+app.route('/group/invite/:id').get();
+
+// invite
+app.route('/invite/addChoice').post();
+app.route('/invite/choice').get();
+app.route('/invite/updateChoice').put();
+app.route('/invite/deleteChoice').delete();
+app.route('/invite/tables').get();
 
 // CRUD user
 

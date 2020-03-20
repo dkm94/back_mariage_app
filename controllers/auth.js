@@ -12,11 +12,11 @@ exports.register = function(req, res) {
         role: req.body.role
     });
 
-    user.save(function(err, data) {
+    user.save(function(err, user) {
         if(err)
             res.send(err)
         else
-            res.send(data)
+            res.send(user)
     });
 
 }
@@ -34,7 +34,7 @@ exports.login = function(req, res) {
             bcrypt.compare(req.body.password, user.password, function(err, result) {
                 if (result)
                 {
-                    var token = jwt.sign({ id: user._id, role: user.role }, jwt_secret);
+                    var token = jwt.sign({ id: user._id, role: user.role.admin }, jwt_secret);
                     res.status(200).json({auth: true, token: token});
                 }
                 else
