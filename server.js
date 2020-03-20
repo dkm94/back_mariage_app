@@ -81,14 +81,15 @@ app.route('/admin/deleteCake').delete();
 
 // groupe
 app.route('/group/addComment').post();
-app.route('/group/invite/:id').get();
+app.route('/group/invites').get();
 
 // invite
 app.route('/invite/addChoice').post();
 app.route('/invite/choice').get();
 app.route('/invite/updateChoice').put();
 app.route('/invite/deleteChoice').delete();
-app.route('/invite/tables').get();
+
+app.route('/invite/table/:id').get();
 
 // CRUD user
 
