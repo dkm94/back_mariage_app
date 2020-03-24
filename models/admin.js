@@ -3,7 +3,11 @@ const Schema = mongoose.Schema;
 
 let adminSchema = new mongoose.Schema({
 
-    name: {
+    firstPerson: {
+        type: 'string',
+        required: 'A name is required.'
+    },
+    secondPerson: {
         type: 'string',
         required: 'A name is required.'
     },
@@ -16,10 +20,10 @@ let adminSchema = new mongoose.Schema({
         type: 'string',
         required: 'The password is required'
     },
-    mariageID: [{
+    mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'
-    }]
+    }
 
 });
 

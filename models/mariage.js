@@ -26,9 +26,9 @@ let mariageSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Cake'
     }],
-    userID: [{
+    adminID: [{
         type: Schema.Types.ObjectId, 
-        ref: 'User'
+        ref: 'Admin'
     }]
     
 });

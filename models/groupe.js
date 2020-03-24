@@ -24,10 +24,6 @@ let groupSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Comment'
     },
-    guestID: [{
-        type: Schema.Types.ObjectId, 
-        ref: 'User'
-    }],
     mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'

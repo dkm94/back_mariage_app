@@ -41,6 +41,7 @@ app.route('/').get(function(req, res) {
 // Appel des controllers
 
 AuthController = require('./controllers/auth');
+AdminController = require('./controllers/admin');
 
 
 // Appel des routes 
@@ -49,49 +50,49 @@ AuthController = require('./controllers/auth');
 app.route('/auth/register').post(AuthController.register);
 
 // login admin
-app.route('/auth/adminLogin').post(AuthController.login);
+app.route('/auth/adminLogin').post(AuthController.adminLogin);
 
 // login invités
-app.route('/auth/guestLogin').post(AuthController.login);
+app.route('/auth/guestLogin').post(AuthController.guestLogin);
 
 
 // admin
-app.route('/admin/addGroup').post();
-app.route('/admin/groups').get();
-app.route('/admin/group/:id').get();
-app.route('/admin/updateGroup').put();
-app.route('/admin/deleteGroup').delete();
+app.route('/admin/addGroup').post(AdminController.newGroup);
+// app.route('/admin/groups').get(AdminController);
+// app.route('/admin/group/:id').get(AdminController);
+// app.route('/admin/updateGroup').put(AdminController);
+// app.route('/admin/deleteGroup').delete(AdminController);
 
-app.route('/admin/addTable').post();
-app.route('/admin/tables').get();
-app.route('/admin/table/:id').get();
-app.route('/admin/updateTable').put();
-app.route('/admin/deleteTable').delete();
+// app.route('/admin/addTable').post(AdminController);
+// app.route('/admin/tables').get(AdminController);
+// app.route('/admin/table/:id').get(AdminController);
+// app.route('/admin/updateTable').put(AdminController);
+// app.route('/admin/deleteTable').delete(AdminController);
 
-app.route('/admin/addMenu').post();
-app.route('/admin/menus').get();
-app.route('/admin/menu/:id').get();
-app.route('/admin/updateMenu').put();
-app.route('/admin/deleteMenu').delete();
+// app.route('/admin/addMenu').post(AdminController);
+// app.route('/admin/menus').get(AdminController);
+// app.route('/admin/menu/:id').get(AdminController);
+// app.route('/admin/updateMenu').put(AdminController);
+// app.route('/admin/deleteMenu').delete(AdminController);
 
-app.route('/admin/addCake').post();
-app.route('/admin/cakes').get();
-app.route('/admin/cake/:id').get();
-app.route('/admin/updateCake').put();
-app.route('/admin/deleteCake').delete();
+// app.route('/admin/addCake').post(AdminController);
+// app.route('/admin/cakes').get(AdminController);
+// app.route('/admin/cake/:id').get(AdminController);
+// app.route('/admin/updateCake').put(AdminController);
+// app.route('/admin/deleteCake').delete(AdminController);
 
-// groupe
-app.route('/group/addComment').post();
-app.route('/group/invites').get();
+// // groupe
+// app.route('/group/addComment').post();
+// app.route('/group/invites').get();
 
 
-// invite
-app.route('/invite/addChoice').post();
-app.route('/invite/choice').get();
-app.route('/invite/updateChoice').put();
-app.route('/invite/deleteChoice').delete();
+// // invite
+// app.route('/invite/addChoice').post();
+// app.route('/invite/choice').get();
+// app.route('/invite/updateChoice').put();
+// app.route('/invite/deleteChoice').delete();
 
-app.route('/invite/table/:id').get();
+// app.route('/invite/table/:id').get();
 
 // CRUD user
 
@@ -161,33 +162,17 @@ app.route('/deleteUser/:id').delete(function(req, res) {
 
 // CRUD mariage
 
-app.route('/newMariage').post(function(req, res) {
+// app.route('/mariages').get(function(req, res){
 
-    let mariage = new Mariage({
-        name: req.body.name,
-        userID: req.body.id
-    });
+//         Mariage.find(function(err, data){
+//             if (err)
+//                 res.send(err)
+//             else
+//             res.send(data)
+//         });
+// });
 
-    mariage.save(function(err, data) {
-        if(err)
-            res.send(err)
-        else
-            res.send(data)
-    });
-
-});
-
-app.route('/mariages').get(function(req, res){
-
-        Mariage.find(function(err, data){
-            if (err)
-                res.send(err)
-            else
-            res.send(data)
-        });
-});
-
-app.route('/mariages/:id').get(function(req, res){
+app.route('/mariage/:id').get(function(req, res){
 
     Mariage.findOne({
         _id: req.params.id
@@ -211,18 +196,18 @@ app.route('/updateMariage/:id').put(function(req, res){
     );
 });
 
-app.route('/deleteMariage/:id').delete(function(req, res) {
+// app.route('/deleteMariage/:id').delete(function(req, res) {
 
-    Mariage.deleteOne({
-        _id: req.params.id
-    }, function(err, result){
-        if (err)
-            res.send(err)
-        else 
-            res.send(result)
-    });
+//     Mariage.deleteOne({
+//         _id: req.params.id
+//     }, function(err, result){
+//         if (err)
+//             res.send(err)
+//         else 
+//             res.send(result)
+//     });
 
-});
+// });
 
 
 // CRUD list 
