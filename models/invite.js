@@ -3,15 +3,6 @@ const Schema = mongoose.Schema;
 
 let guestSchema = new mongoose.Schema({
 
-    mail: {
-        type: 'string',
-        required: 'Your email is required',
-        unique: true
-    },
-    password: {
-        type: 'string',
-        required: 'The password is required'
-    },
     firstName: {
         type: 'string',
         required: 'Your first name is required.'

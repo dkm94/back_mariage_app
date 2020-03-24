@@ -1,15 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let userSchema = new mongoose.Schema({
+let adminSchema = new mongoose.Schema({
 
     name: {
         type: 'string',
         required: 'A name is required.'
-    },
-    role: {
-        type: 'string',
-        enum: ['admin', 'invité']
     },
     mail: {
         type: 'string',
@@ -27,4 +23,4 @@ let userSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Admin', adminSchema);

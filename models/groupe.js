@@ -7,6 +7,15 @@ let groupSchema = new mongoose.Schema({
         type: 'string',
         required: 'A name is required.'
     },
+    mail: {
+        type: 'string',
+        required: 'Your email is required',
+        unique: true
+    },
+    password: {
+        type: 'string',
+        required: 'The password is required'
+    },
     guestID: [{
         type: Schema.Types.ObjectId, 
         ref: 'Invite'
@@ -15,14 +24,14 @@ let groupSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Comment'
     },
-    userID: [{
+    guestID: [{
         type: Schema.Types.ObjectId, 
         ref: 'User'
     }],
-    mariageID: [{
+    mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'
-    }]
+    }
  
 });
 

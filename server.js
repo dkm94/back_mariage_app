@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/mariage', {useN
 
 //Récupération des modèles
 let Mariage = require('./models/mariage');
-let User = require('./models/user');
+let Admin = require('./models/admin');
 let List = require('./models/list');
 let Group = require('./models/groupe');
 let Guest = require('./models/invite');
@@ -45,9 +45,14 @@ AuthController = require('./controllers/auth');
 
 // Appel des routes 
 
-// register / login
+// register admin
 app.route('/auth/register').post(AuthController.register);
-app.route('/auth/login').post(AuthController.login);
+
+// login admin
+app.route('/auth/adminLogin').post(AuthController.login);
+
+// login invités
+app.route('/auth/guestLogin').post(AuthController.login);
 
 
 // admin
@@ -56,10 +61,6 @@ app.route('/admin/groups').get();
 app.route('/admin/group/:id').get();
 app.route('/admin/updateGroup').put();
 app.route('/admin/deleteGroup').delete();
-
-app.route('/admin/addGuest').post();
-app.route('/admin/invites').get();
-app.route('/admin/invite/:id').get();
 
 app.route('/admin/addTable').post();
 app.route('/admin/tables').get();
@@ -82,6 +83,7 @@ app.route('/admin/deleteCake').delete();
 // groupe
 app.route('/group/addComment').post();
 app.route('/group/invites').get();
+
 
 // invite
 app.route('/invite/addChoice').post();
