@@ -23,7 +23,6 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/mariage', {useN
 //Récupération des modèles
 let Mariage = require('./models/mariage');
 let Admin = require('./models/admin');
-let List = require('./models/list');
 let Group = require('./models/groupe');
 let Guest = require('./models/invite');
 let Choice = require('./models/choix');
@@ -113,17 +112,8 @@ app.route('/admin/addGroup').post(AdminController.newGroup);
 
 // });
 
-app.route('/users').get(function(req, res){
-    
-        User.find(function(err, data){
-            if (err)
-                res.send(err)
-            else
-            res.send(data)
-        });
-});
 
-app.route('/users/:id').get(function(req, res){
+app.route('/admin/:id').get(function(req, res){
     
     User.findOne({
         _id: req.params.id
@@ -135,7 +125,7 @@ app.route('/users/:id').get(function(req, res){
     });
 });
 
-app.route('/updateUser/:id').put(function(req, res){
+app.route('/updateAdmin/:id').put(function(req, res){
     User.updateOne({_id: req.params.id},
     {$set: {mariageID: req.body['mariageID[]'], name: req.body.name}},
     function(err, data){
@@ -147,7 +137,7 @@ app.route('/updateUser/:id').put(function(req, res){
     );
 });
 
-app.route('/deleteUser/:id').delete(function(req, res) {
+app.route('/deleteAdmin/:id').delete(function(req, res) {
 
     User.deleteOne({
         _id: req.params.id
@@ -162,21 +152,11 @@ app.route('/deleteUser/:id').delete(function(req, res) {
 
 // CRUD mariage
 
-// app.route('/mariages').get(function(req, res){
-
-//         Mariage.find(function(err, data){
-//             if (err)
-//                 res.send(err)
-//             else
-//             res.send(data)
-//         });
-// });
-
 app.route('/mariage/:id').get(function(req, res){
 
     Mariage.findOne({
         _id: req.params.id
-    }).populate('listID tableID menuID cakeID', Mariage).exec(function(err, data){
+    }).populate('groupe ID tableID menuID cakeID', Mariage).exec(function(err, data){
         if (err)
             res.send(err)
         else
@@ -208,72 +188,6 @@ app.route('/updateMariage/:id').put(function(req, res){
 //     });
 
 // });
-
-
-// CRUD list 
-
-app.route('/newList').post(function(req, res) {
-
-    let list = new List({
-        name: req.body.name,
-        mariageID: req.body.id
-    });
-
-    list.save(function(err, data) {
-        if(err)
-            res.send(err)
-        else
-            res.send(data)
-    });
-
-});
-
-app.route('/lists').get(function(req, res){
-
-        List.find({
-        }).populate('groupID').exec(function(err, data){
-            if (err)
-                res.send(err)
-            else
-            res.send(data)
-        });
-});
-
-app.route('/list/:id').get(function(req, res){
-
-    List.findOne({
-    }).populate('mariageID').exec(function(err, data){
-        if (err)
-            res.send(err)
-        else
-        res.send(data)
-    });
-});
-
-app.route('/updateList/:id').put(function(req, res){
-    List.updateOne({_id: req.params.id},
-        {$set: {name: req.body.name}},
-    function(err, data){
-        if (err)
-            res.send(err)
-        else
-            res.send(data)
-    }
-    );
-});
-
-app.route('/deleteList/:id').delete(function(req, res) {
-
-    List.deleteOne({
-        _id: req.params.id
-    }, function(err, result){
-        if (err)
-            res.send(err)
-        else 
-            res.send(result)
-    });
-
-});
 
 
 // CRUD groups

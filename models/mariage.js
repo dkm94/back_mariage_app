@@ -10,9 +10,9 @@ let mariageSchema = new mongoose.Schema({
     media: {
         type: 'string'
     },
-    listID: [{
+    groupID: [{
         type: Schema.Types.ObjectId, 
-        ref: 'List'
+        ref: 'Group'
     }],
     tableID: [{
         type: Schema.Types.ObjectId, 
@@ -26,10 +26,10 @@ let mariageSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Cake'
     }],
-    adminID: [{
+    adminID: {
         type: Schema.Types.ObjectId, 
         ref: 'Admin'
-    }]
+    }
     
 });
 
