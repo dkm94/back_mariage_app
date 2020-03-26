@@ -56,7 +56,7 @@ app.route('/auth/guestLogin').post(AuthController.guestLogin);
 
 
 // admin
-app.route('/admin/addGroup').post(AdminController.newGroup);
+// app.route('/admin/addGroup').post(AdminController.newGroup);
 // app.route('/admin/groups').get(AdminController);
 // app.route('/admin/group/:id').get(AdminController);
 // app.route('/admin/updateGroup').put(AdminController);

@@ -1,5 +1,6 @@
 const Admin = require('../models/admin');
 const Mariage = require('../models/mariage');
+const Group = require('../models/groupe');
 bcrypt = require('bcrypt'),
 jwt = require('jsonwebtoken'),
 jwt_secret = process.env.JWT_SECRET_KEY;
@@ -36,38 +37,13 @@ exports.register = function(req, res) {
                             else
                                 res.status(200).json('mariage updated successfully')
                         })
-                }
+                    }
             });
         }
             
 
     });
 }
-
-
-// exports.register = function(req, res) {
-//     let mariage = new Mariage ({
-
-//     })
-//     Mariage.save({name: req.body.name}, function(err, newMariage) {
-//         if(err)
-//             res.status(400).json(err)
-//         else {
-//             let hash = bcrypt.hashSync(req.body.password, 10);
-//             req.body.password = hash;
-        
-//             Admin.save({firstPerson: req.body.firstPerson, secondPerson: req.body.secondPerson, mail: req.body.mail, hash}, function(err, newAdmin){
-//                 if(err)
-//                     res.status(400).json(err)
-//                 else
-//                     res.status(200).json(newAdmin)
-//             });
-//         }
-            
-//     });
-
-
-// }
 
 
 
