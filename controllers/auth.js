@@ -1,30 +1,65 @@
-const Admin = require('../models/admin'),
-Mariage = require('../models/mariage'),
+const Admin = require('../models/admin');
+const Mariage = require('../models/mariage');
 bcrypt = require('bcrypt'),
 jwt = require('jsonwebtoken'),
 jwt_secret = process.env.JWT_SECRET_KEY;
 
 exports.register = function(req, res) {
-
-    Mariage.create(req.body,function(err, newMariage) {
-        if(err)
-            res.status(400).json(err)
+    
+    let mariage = new Mariage ({
+        name: req.body.name
+    });
+    mariage.save(function(err, newMariage) {
+        if (err)
+            res.status(400).json('erreur création nouveau mariage');
         else {
+            // res.status(200).json(newMariage);
             let hash = bcrypt.hashSync(req.body.password, 10);
             req.body.password = hash;
-        
-            Admin.create(function(err, newAdmin){
-                if(err)
-                    res.status(400).json(err)
+            let admin = new Admin ({
+                firstPerson: req.body.firstPerson,
+                secondPerson: req.body.secondPerson,
+                mail: req.body.mail,
+                hash,
+                mariageID: newMariage.id
+            });
+
+            admin.save(function(err, newAdmin){
+                if (err)
+                    res.status(400).json('échec création admin')
                 else
-                    res.status(200).json("newAdmin")
+                    res.status(200).json('compté créé avec succès.')
             });
         }
             
+
     });
-
-
 }
+
+
+// exports.register = function(req, res) {
+//     let mariage = new Mariage ({
+
+//     })
+//     Mariage.save({name: req.body.name}, function(err, newMariage) {
+//         if(err)
+//             res.status(400).json(err)
+//         else {
+//             let hash = bcrypt.hashSync(req.body.password, 10);
+//             req.body.password = hash;
+        
+//             Admin.save({firstPerson: req.body.firstPerson, secondPerson: req.body.secondPerson, mail: req.body.mail, hash}, function(err, newAdmin){
+//                 if(err)
+//                     res.status(400).json(err)
+//                 else
+//                     res.status(200).json(newAdmin)
+//             });
+//         }
+            
+//     });
+
+
+// }
 
 
 
