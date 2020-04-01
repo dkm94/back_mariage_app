@@ -8,7 +8,7 @@ jwt_secret = process.env.JWT_SECRET_KEY;
 exports.register = function(req, res) {
     
     let mariage = new Mariage ({
-        name: req.body.name,
+        title: req.body.title,
     });
     mariage.save(function(err, newMariage) {
         if (err)
@@ -19,7 +19,7 @@ exports.register = function(req, res) {
             let admin = new Admin ({
                 firstPerson: req.body.firstPerson,
                 secondPerson: req.body.secondPerson,
-                mail: req.body.mail,
+                email: req.body.email,
                 password: hash,
                 mariageID: newMariage.id
             });
@@ -82,7 +82,7 @@ exports.guestLogin = function(req, res) {
             bcrypt.compare(req.body.password, group.password, function(err, group) {
                 if (group)
                 {
-                    var token = jwt.sign({ mariageID: mariage._id }, jwt_secret);
+                    var token = jwt.sign({ mariageID: mariage._id }, jwt_secret); // + id groupe 
                     res.status(200).json({auth: true, token: token, message: "You can now access your account."});
                 }
                 else

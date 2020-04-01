@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 let mariageSchema = new mongoose.Schema({
 
-    name: {
+    title: {
         type: 'string',
         required: 'A name is required.'
     },
