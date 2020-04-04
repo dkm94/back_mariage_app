@@ -35,7 +35,7 @@ exports.register = function(req, res) {
                             if (err)
                                 res.status(400).json('err update mariage')
                             else
-                                res.status(200).json('mariage updated successfully')
+                                res.status(200).json(newAdmin)
                         })
                     }
             });
@@ -64,7 +64,7 @@ exports.adminLogin = function(req, res) {
                     res.status(200).json({auth: true, token: token, message: "You can now access your account."});
                 }
                 else
-                    res.status(201).json({auth: false, message: "Access restrcited."});
+                    res.status(400).json({auth: false, message: "Access restrcited."});
             })
         }
     });

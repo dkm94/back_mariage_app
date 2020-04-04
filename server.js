@@ -1,9 +1,6 @@
 const express = require('express'),
 mongoose = require('mongoose'),
 bodyParser = require('body-parser'),
-bcrypt = require('bcrypt'),
-jwt = require('jsonwebtoken'),
-jwt_secret = process.env.JWT_SECRET_KEY,
 cors = require('cors'),
 bearerToken = require('express-bearer-token'),
 app = express(),
@@ -56,25 +53,25 @@ app.route('/auth/guestLogin').post(AuthController.guestLogin);
 
 
 // admin
-// app.route('/admin/addGroup').post(AdminController.newGroup);
+app.route('/admin/newGroup').post(AdminController.newGroup);
 // app.route('/admin/groups').get(AdminController);
 // app.route('/admin/group/:id').get(AdminController);
 // app.route('/admin/updateGroup').put(AdminController);
 // app.route('/admin/deleteGroup').delete(AdminController);
 
-// app.route('/admin/addTable').post(AdminController);
+app.route('/admin/newTable').post(AdminController.newTable);
 // app.route('/admin/tables').get(AdminController);
 // app.route('/admin/table/:id').get(AdminController);
 // app.route('/admin/updateTable').put(AdminController);
 // app.route('/admin/deleteTable').delete(AdminController);
 
-// app.route('/admin/addMenu').post(AdminController);
+app.route('/admin/newMenu').post(AdminController.newMenu);
 // app.route('/admin/menus').get(AdminController);
 // app.route('/admin/menu/:id').get(AdminController);
 // app.route('/admin/updateMenu').put(AdminController);
 // app.route('/admin/deleteMenu').delete(AdminController);
 
-// app.route('/admin/addCake').post(AdminController);
+app.route('/admin/newCake').post(AdminController.newCake);
 // app.route('/admin/cakes').get(AdminController);
 // app.route('/admin/cake/:id').get(AdminController);
 // app.route('/admin/updateCake').put(AdminController);
@@ -93,37 +90,18 @@ app.route('/auth/guestLogin').post(AuthController.guestLogin);
 
 // app.route('/invite/table/:id').get();
 
-// CRUD user
 
-// app.route('/newUser').post(function(req, res) {
-
-//     let user = new User({
-//         name: req.body.name,
-//         mail: req.body.mail,
-//         password: req.body.password
-//     });
-
-//     user.save(function(err, data) {
-//         if(err)
+// app.route('/admin/:id').get(function(req, res){
+    
+//     User.findOne({
+//         _id: req.params.id
+//     }).populate('mariageID').exec(function(err, data){
+//         if (err)
 //             res.send(err)
 //         else
-//             res.send(data)
+//         res.send(data)
 //     });
-
 // });
-
-
-app.route('/admin/:id').get(function(req, res){
-    
-    User.findOne({
-        _id: req.params.id
-    }).populate('mariageID').exec(function(err, data){
-        if (err)
-            res.send(err)
-        else
-        res.send(data)
-    });
-});
 
 app.route('/updateAdmin/:id').put(function(req, res){
     User.updateOne({_id: req.params.id},
@@ -191,22 +169,6 @@ app.route('/updateMariage/:id').put(function(req, res){
 
 
 // CRUD groups
-
-app.route('/newGroup').post(function(req, res) {
-
-    let group = new Group({
-        name: req.body.name,
-        mariageID: req.body['mariageID[]']
-    });
-
-    group.save(function(err, data) {
-        if(err)
-            res.send(err)
-        else
-            res.send(data)
-    });
-
-});
 
 app.route('/groups').get(function(req, res){
 
@@ -311,21 +273,6 @@ app.route('/deleteGuest/:id').delete(function(req, res) {
 
 // CRUD tables
 
-app.route('/newTable').post(function(req, res) {
-
-    let table = new Table({
-        name: req.body.name,
-    });
-
-    table.save(function(err, data) {
-        if(err)
-            res.send(err)
-        else
-            res.send(data)
-    });
-
-});
-
 app.route('/tables').get(function(req, res){
 
     Table.find({
@@ -363,22 +310,6 @@ app.route('/deleteTable/:id').delete(function(req, res) {
 
 
 // CRUD menu
-
-app.route('/newMenu').post(function(req, res) {
-
-    let menu = new Menu({
-        name: req.body.name,
-        description: req.body.description
-    });
-
-    menu.save(function(err, data) {
-        if(err)
-            res.send(err)
-        else
-            res.send(data)
-    });
-
-});
 
 app.route('/menus').get(function(req, res){
 
@@ -418,21 +349,6 @@ app.route('/deleteMenu/:id').delete(function(req, res) {
 
 
 // CRUD cake
-
-app.route('/newCake').post(function(req, res) {
-
-    let cake = new Cake({
-        name: req.body.name,
-    });
-
-    cake.save(function(err, data) {
-        if(err)
-            res.send(err)
-        else
-            res.send(data)
-    });
-
-});
 
 app.route('/cakes').get(function(req, res){
 
