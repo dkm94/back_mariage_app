@@ -54,25 +54,25 @@ app.route('/auth/guestLogin').post(AuthController.guestLogin);
 
 // admin
 app.route('/admin/newGroup').post(AdminController.newGroup);
-// app.route('/admin/groups').get(AdminController);
+app.route('/admin/groups').get(AdminController.groups);
 // app.route('/admin/group/:id').get(AdminController);
-// app.route('/admin/updateGroup').put(AdminController);
+app.route('/admin/updateGroup/:id').put(AdminController.updateGroup);
 // app.route('/admin/deleteGroup').delete(AdminController);
 
 app.route('/admin/newTable').post(AdminController.newTable);
-// app.route('/admin/tables').get(AdminController);
+app.route('/admin/tables').get(AdminController.tables);
 // app.route('/admin/table/:id').get(AdminController);
-// app.route('/admin/updateTable').put(AdminController);
+app.route('/admin/updateTable/:id').put(AdminController.updateTable);
 // app.route('/admin/deleteTable').delete(AdminController);
 
 app.route('/admin/newMenu').post(AdminController.newMenu);
-// app.route('/admin/menus').get(AdminController);
+app.route('/admin/menus').get(AdminController.menus);
 // app.route('/admin/menu/:id').get(AdminController);
 // app.route('/admin/updateMenu').put(AdminController);
 // app.route('/admin/deleteMenu').delete(AdminController);
 
 app.route('/admin/newCake').post(AdminController.newCake);
-// app.route('/admin/cakes').get(AdminController);
+app.route('/admin/cakes').get(AdminController.cakes);
 // app.route('/admin/cake/:id').get(AdminController);
 // app.route('/admin/updateCake').put(AdminController);
 // app.route('/admin/deleteCake').delete(AdminController);
@@ -170,17 +170,6 @@ app.route('/updateMariage/:id').put(function(req, res){
 
 // CRUD groups
 
-app.route('/groups').get(function(req, res){
-
-        Group.find({
-        }).populate('userID').exec(function(err, data){
-            if (err)
-                res.send(err)
-            else
-            res.send(data)
-        });
-});
-
 app.route('/groups/:id').get(function(req, res){
 
     Group.findOne({
@@ -272,17 +261,6 @@ app.route('/deleteGuest/:id').delete(function(req, res) {
 
 
 // CRUD tables
-
-app.route('/tables').get(function(req, res){
-
-    Table.find({
-    }).populate('userID').exec(function(err, data){
-        if (err)
-            res.send(err)
-        else
-        res.send(data)
-    });
-});
 
 app.route('/updateTable/:id').put(function(req, res){
     Table.updateOne({_id: req.params.id},

@@ -8,7 +8,7 @@ const jwt_secret = process.env.JWT_SECRET_KEY,
 jwt = require('jsonwebtoken'),
 generator = require('generate-password');
 
-
+// CRUD table
 exports.newTable = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
@@ -26,7 +26,7 @@ exports.newTable = function (req, res) {
                                 if (err)
                                     res.status(400).json('err update mariage')
                                 else
-                                    res.status(200).json('Table ajoutée avec succès. Mariage updated successfully.')
+                                    res.status(200).json('La table ' + req.body.name + ' a été ajoutée' )
                             })
                     }
                         
@@ -36,6 +36,55 @@ exports.newTable = function (req, res) {
     );
 }
 
+exports.tables = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Table.find({
+                mariageID: decoded.id
+            }, function(err, tables){
+                if (err)
+                    res.send(err)
+                else
+                res.send(tables)
+            });
+            }
+        }
+    );
+}
+
+
+exports.updateTable = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        console.log(err)
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Table.updateOne({_id: req.params.id, mariageID: decoded.id},
+                {$set: {name: req.body.name}},
+                function(err, data){
+                    console.log(err)
+                    if (err)
+                        res.send(err)
+                        else {
+                            Mariage.updateOne({mariageID: decoded.id},
+                                {$set: {tableID: data.id }}, function(err, data){
+                                    if (err)
+                                        res.status(400).json('err update mariage')
+                                    else
+                                        res.status(200).json("La table " + req.body.name + " a été modifiée avec succès.")
+                                })
+                        }
+                }
+            );
+        }
+    }
+);
+}
+
+
+//CRUD group
 exports.newGroup = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
@@ -51,12 +100,12 @@ exports.newGroup = function (req, res) {
                 password: generatedpsw
             });
                 group.save({mariageID: decoded.id}, function(err, newGroup) {
-                    console.log(err);
+                    console.log(newGroup);
                     if (err)
                         res.status(400).json('erreur création groupe');
                     else {
                         Mariage.updateOne({mariageID: decoded.id},
-                            {$set: {groupID: newGroup }}, function(err, data){
+                            {$push: {groupID: newGroup }}, function(err, data){
                                 if (err)
                                     res.status(400).json('err update mariage')
                                 else
@@ -70,6 +119,54 @@ exports.newGroup = function (req, res) {
     );
 }
 
+exports.groups = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Group.find({
+                mariageID: decoded.id
+            }, function(err, groups){
+                if (err)
+                    res.send(err)
+                else
+                res.send(groups)
+            });
+            }
+        }
+    );
+}
+
+exports.updateGroup = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        console.log(err)
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Group.updateOne({_id: req.params.id, mariageID: decoded.id},
+                {$set: {name: req.body.name}},
+                function(err, data){
+                    console.log(err)
+                    if (err)
+                        res.send(err)
+                        else {
+                            Mariage.updateOne({_id: req.params.id, mariageID: decoded.id},
+                                {$set: {groupID: data.id}}, function(err, data){
+                                    console.log(data)
+                                    if (err)
+                                        res.status(400).json('err update mariage')
+                                    else
+                                        res.status(200).json('Le groupe ' + req.body.name + ' a été modifié.')
+                                })
+                        }
+                }
+                );
+            }
+        }
+    );
+}
+
+// CRUD menu
 exports.newMenu = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
@@ -84,11 +181,11 @@ exports.newMenu = function (req, res) {
                         res.status(400).json(('erreur création menu'));
                     else {
                         Mariage.updateOne({mariageID: decoded.id},
-                            {$set: {menuID: newMenu }}, function(err, data){
+                            {$push: {menuID: newMenu }}, function(err, data){
                                 if (err)
                                     res.status(400).json('err update mariage')
                                 else
-                                    res.status(200).json('Menu ajouté avec succès. Mariage updated successfully.')
+                                    res.status(200).json('Le menu ' + req.body.name + ' a été ajouté.' )
                             })
                     }
                         
@@ -98,6 +195,26 @@ exports.newMenu = function (req, res) {
     );
 }
 
+
+exports.menus = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Menu.find({
+                mariageID: decoded.id
+            }, function(err, menus){
+                if (err)
+                    res.send(err)
+                else
+                res.send(menus)
+            });
+            }
+        }
+    );
+}
+
+//CRUD gâteau
 exports.newCake = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
@@ -112,15 +229,33 @@ exports.newCake = function (req, res) {
                         res.status(400).json(('erreur création gâteau'));
                     else {
                         Mariage.updateOne({mariageID: decoded.id},
-                            {$set: {cakeID: newCake }}, function(err, data){
+                            {$push: {cakeID: newCake }}, function(err, data){
                                 if (err)
                                     res.status(400).json('err update mariage')
                                 else
-                                    res.status(200).json('Gâteau ajouté avec succès. Mariage updated successfully.')
+                                    res.status(200).json(newCake.name + " a été ajouté.")
                             })
                     }
                         
                 })
+            }
+        }
+    );
+}
+
+exports.cakes = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Cake.find({
+                mariageID: decoded.id
+            }, function(err, cakes){
+                if (err)
+                    res.send(err)
+                else
+                res.send(cakes)
+            });
             }
         }
     );
