@@ -68,13 +68,13 @@ app.route('/admin/updateTable/:id').put(AdminController.updateTable);
 app.route('/admin/newMenu').post(AdminController.newMenu);
 app.route('/admin/menus').get(AdminController.menus);
 // app.route('/admin/menu/:id').get(AdminController);
-// app.route('/admin/updateMenu').put(AdminController);
+app.route('/admin/updateMenu').put(AdminController.updateMenu);
 // app.route('/admin/deleteMenu').delete(AdminController);
 
 app.route('/admin/newCake').post(AdminController.newCake);
 app.route('/admin/cakes').get(AdminController.cakes);
 // app.route('/admin/cake/:id').get(AdminController);
-// app.route('/admin/updateCake').put(AdminController);
+app.route('/admin/updateCake').put(AdminController.updateCake);
 // app.route('/admin/deleteCake').delete(AdminController);
 
 // // groupe

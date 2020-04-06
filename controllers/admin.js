@@ -69,12 +69,14 @@ exports.updateTable = function (req, res) {
                         res.send(err)
                         else {
                             Mariage.updateOne({mariageID: decoded.id},
-                                {$set: {tableID: data.id }}, function(err, data){
+                                {$set: {tableID: req.params.id}}, function(err, data){
+                                    console.log(data)
                                     if (err)
                                         res.status(400).json('err update mariage')
                                     else
-                                        res.status(200).json("La table " + req.body.name + " a été modifiée avec succès.")
-                                })
+                                        res.status(200).json('La table ' + req.body.name + ' a été modifiée.')
+                                }
+                            )
                         }
                 }
             );
@@ -150,8 +152,8 @@ exports.updateGroup = function (req, res) {
                     if (err)
                         res.send(err)
                         else {
-                            Mariage.updateOne({_id: req.params.id, mariageID: decoded.id},
-                                {$set: {groupID: data.id}}, function(err, data){
+                            Mariage.updateOne({mariageID: decoded.id},
+                                {$set: {groupID: req.params.id}}, function(err, data){
                                     console.log(data)
                                     if (err)
                                         res.status(400).json('err update mariage')
@@ -214,6 +216,35 @@ exports.menus = function (req, res) {
     );
 }
 
+exports.updateMenu = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        console.log(err)
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Group.updateOne({_id: req.params.id, mariageID: decoded.id},
+                {$set: {name: req.body.name}},
+                function(err, data){
+                    console.log(err)
+                    if (err)
+                        res.send(err)
+                        else {
+                            Mariage.updateOne({mariageID: decoded.id},
+                                {$set: {menuID: req.params.id}}, function(err, data){
+                                    console.log(data)
+                                    if (err)
+                                        res.status(400).json('err update mariage')
+                                    else
+                                        res.status(200).json('Le menu ' + req.body.name + ' a été modifié.')
+                                })
+                        }
+                }
+                );
+            }
+        }
+    );
+}
+
 //CRUD gâteau
 exports.newCake = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
@@ -256,6 +287,35 @@ exports.cakes = function (req, res) {
                 else
                 res.send(cakes)
             });
+            }
+        }
+    );
+}
+
+exports.updateCakes = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        console.log(err)
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Group.updateOne({_id: req.params.id, mariageID: decoded.id},
+                {$set: {name: req.body.name}},
+                function(err, data){
+                    console.log(err)
+                    if (err)
+                        res.send(err)
+                        else {
+                            Mariage.updateOne({mariageID: decoded.id},
+                                {$set: {cakeID: req.params.id}}, function(err, data){
+                                    console.log(data)
+                                    if (err)
+                                        res.status(400).json('err update mariage')
+                                    else
+                                        res.status(200).json(req.body.name + ' a été modifié.')
+                                })
+                        }
+                }
+                );
             }
         }
     );
