@@ -38,6 +38,9 @@ app.route('/').get(function(req, res) {
 
 AuthController = require('./controllers/auth');
 AdminController = require('./controllers/admin');
+// GroupController = require('./controllers/group');
+// GuestController = require('./controllers/guest');
+
 
 
 // Appel des routes 
@@ -55,27 +58,33 @@ app.route('/auth/guestLogin').post(AuthController.guestLogin);
 // admin
 app.route('/admin/newGroup').post(AdminController.newGroup);
 app.route('/admin/groups').get(AdminController.groups);
-// app.route('/admin/group/:id').get(AdminController);
+app.route('/admin/group/:id').get(AdminController.groupID);
 app.route('/admin/updateGroup/:id').put(AdminController.updateGroup);
-// app.route('/admin/deleteGroup').delete(AdminController);
+app.route('/admin/deleteGroup/:id').delete(AdminController.deleteGroup);
+
+// app.route('/admin/newGuest').post(AdminController.newGuest);
+// app.route('/admin/guests').get(AdminController.guests);
+// app.route('/admin/guest/:id').get(AdminController.guestID);
+// app.route('/admin/updateGuest/:id').put(AdminController.updateGuest);
+// app.route('/admin/deleteGuest/:id').delete(AdminController.deleteGuest);
 
 app.route('/admin/newTable').post(AdminController.newTable);
 app.route('/admin/tables').get(AdminController.tables);
-// app.route('/admin/table/:id').get(AdminController);
+app.route('/admin/table/:id').get(AdminController.tableID);
 app.route('/admin/updateTable/:id').put(AdminController.updateTable);
-// app.route('/admin/deleteTable').delete(AdminController);
+app.route('/admin/deleteTable/:id').delete(AdminController.deleteTable);
 
 app.route('/admin/newMenu').post(AdminController.newMenu);
 app.route('/admin/menus').get(AdminController.menus);
-// app.route('/admin/menu/:id').get(AdminController);
-app.route('/admin/updateMenu').put(AdminController.updateMenu);
-// app.route('/admin/deleteMenu').delete(AdminController);
+app.route('/admin/menu/:id').get(AdminController.menuID);
+app.route('/admin/updateMenu/:id').put(AdminController.updateMenu);
+app.route('/admin/deleteMenu/:id').delete(AdminController.deleteMenu);
 
 app.route('/admin/newCake').post(AdminController.newCake);
 app.route('/admin/cakes').get(AdminController.cakes);
-// app.route('/admin/cake/:id').get(AdminController);
-app.route('/admin/updateCake').put(AdminController.updateCake);
-// app.route('/admin/deleteCake').delete(AdminController);
+app.route('/admin/cake/:id').get(AdminController.cakeID);
+app.route('/admin/updateCake/:id').put(AdminController.updateCake);
+app.route('/admin/deleteCake/:id').delete(AdminController.deleteCake);
 
 // // groupe
 // app.route('/group/addComment').post();
@@ -170,42 +179,6 @@ app.route('/updateMariage/:id').put(function(req, res){
 
 // CRUD groups
 
-app.route('/groups/:id').get(function(req, res){
-
-    Group.findOne({
-    }).populate('guestID').exec(function(err, data){
-        if (err)
-            res.send(err)
-        else
-        res.send(data)
-    });
-});
-
-app.route('/updateGroup/:id').put(function(req, res){
-    Group.updateOne({_id: req.params.id},
-    {$set: {name: req.body.name}},
-    function(err, data){
-        if (err)
-            res.send(err)
-        else
-            res.send(data)
-    }
-    );
-});
-
-app.route('/deleteGroup/:id').delete(function(req, res) {
-
-    Group.deleteOne({
-        _id: req.params.id
-    }, function(err, result){
-        if (err)
-            res.send(err)
-        else 
-            res.send(result)
-    });
-
-});
-
 // CRUD guests
 
 app.route('/newGuest').post(function(req, res) {
@@ -262,109 +235,9 @@ app.route('/deleteGuest/:id').delete(function(req, res) {
 
 // CRUD tables
 
-app.route('/updateTable/:id').put(function(req, res){
-    Table.updateOne({_id: req.params.id},
-    {$set: {name: req.body.name}},
-    function(err, data){
-        if (err)
-            res.send(err)
-        else
-            res.send(data)
-    });
-});
-
-app.route('/deleteTable/:id').delete(function(req, res) {
-
-    Table.deleteOne({
-        _id: req.params.id
-    }, function(err, result){
-        if (err)
-            res.send(err)
-        else 
-            res.send(result)
-    });
-
-});
-
-
 // CRUD menu
 
-app.route('/menus').get(function(req, res){
-
-    Menu.find(function(err, data){
-        if (err)
-            res.send(err)
-        else
-        res.send(data)
-    });
-});
-
-app.route('/updateMenu/:id').put(function(req, res){
-    Menu.updateOne({_id: req.params.id},
-    {$set: {
-        name: req.body.name,
-        description: req.body.description}},
-    function(err, data){
-        if (err)
-            res.send(err)
-        else
-            res.send(data)
-    });
-});
-
-app.route('/deleteMenu/:id').delete(function(req, res) {
-
-    Menu.deleteOne({
-        _id: req.params.id
-    }, function(err, result){
-        if (err)
-            res.send(err)
-        else 
-            res.send(result)
-    });
-
-});
-
-
 // CRUD cake
-
-app.route('/cakes').get(function(req, res){
-
-    Cake.find(function(err, data){
-        if (err)
-            res.send(err)
-        else
-        res.send(data)
-    });
-});
-
-app.route('/updateCake/:id').put(function(req, res){
-    Cake.updateOne({_id: req.params.id},
-    {$set: {name: req.body.name}},
-    function(err, data){
-        if (err)
-            res.send(err)
-        else
-            res.send(data)
-    });
-});
-
-app.route('/deleteCake/:id').delete(function(req, res) {
-
-    Cake.deleteOne({
-        _id: req.params.id
-    }, function(err, result){
-        if (err)
-            res.send(err)
-        else 
-            res.send(result)
-    });
-
-});
-
-
-
-
 
 //Port 
 

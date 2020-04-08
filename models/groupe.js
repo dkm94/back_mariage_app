@@ -18,7 +18,7 @@ let groupSchema = new mongoose.Schema({
     },
     guestID: [{
         type: Schema.Types.ObjectId, 
-        ref: 'Invite'
+        ref: 'Guest'
     }],
     commentID: {
         type: Schema.Types.ObjectId, 
