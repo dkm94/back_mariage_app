@@ -56,6 +56,14 @@ app.route('/auth/guestLogin').post(AuthController.guestLogin);
 
 
 // admin
+
+app.route('/admin/:id').get(AdminController.adminID);
+app.route('/updateAdmin/:id').put(AdminController.updateAdmin);
+app.route('/deleteAdmin/:id').delete(AdminController.deleteAdmin);
+
+app.route('/admin/mariage/:id').get(AdminController.mariageID);
+app.route('/admin/updateMariage/:id').put(AdminController.updateMariage);
+
 app.route('/admin/newGroup').post(AdminController.newGroup);
 app.route('/admin/groups').get(AdminController.groups);
 app.route('/admin/group/:id').get(AdminController.groupID);
@@ -100,80 +108,18 @@ app.route('/admin/deleteCake/:id').delete(AdminController.deleteCake);
 // app.route('/invite/table/:id').get();
 
 
-// app.route('/admin/:id').get(function(req, res){
-    
-//     User.findOne({
+// CRUD mariage
+
+// app.route('/mariage/:id').get(function(req, res){
+
+//     Mariage.findOne({
 //         _id: req.params.id
-//     }).populate('mariageID').exec(function(err, data){
+//     }).populate('groupe ID tableID menuID cakeID', Mariage).exec(function(err, data){
 //         if (err)
 //             res.send(err)
 //         else
 //         res.send(data)
 //     });
-// });
-
-app.route('/updateAdmin/:id').put(function(req, res){
-    User.updateOne({_id: req.params.id},
-    {$set: {mariageID: req.body['mariageID[]'], name: req.body.name}},
-    function(err, data){
-        if (err)
-            res.send(err)
-        else
-            res.send(data)
-    }
-    );
-});
-
-app.route('/deleteAdmin/:id').delete(function(req, res) {
-
-    User.deleteOne({
-        _id: req.params.id
-    }, function(err, result){
-        if (err)
-            res.send(err)
-        else 
-            res.send(result)
-    });
-
-});
-
-// CRUD mariage
-
-app.route('/mariage/:id').get(function(req, res){
-
-    Mariage.findOne({
-        _id: req.params.id
-    }).populate('groupe ID tableID menuID cakeID', Mariage).exec(function(err, data){
-        if (err)
-            res.send(err)
-        else
-        res.send(data)
-    });
-});
-
-app.route('/updateMariage/:id').put(function(req, res){
-    Mariage.updateOne({_id: req.params.id},
-    {$set: {name: req.body.name, userID: req.body.id}},
-    function(err, data){
-        if (err)
-            res.send(err)
-        else
-            res.send(data)
-    }
-    );
-});
-
-// app.route('/deleteMariage/:id').delete(function(req, res) {
-
-//     Mariage.deleteOne({
-//         _id: req.params.id
-//     }, function(err, result){
-//         if (err)
-//             res.send(err)
-//         else 
-//             res.send(result)
-//     });
-
 // });
 
 

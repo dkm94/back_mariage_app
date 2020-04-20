@@ -14,6 +14,10 @@ let guestSchema = new mongoose.Schema({
     media: {
         type: 'string',
     },
+    groupID: [{
+        type: Schema.Types.ObjectId, 
+        ref: 'Group'
+    }],
     choiceID: [{
         type: Schema.Types.ObjectId, 
         ref: 'Choice'

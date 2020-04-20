@@ -4,9 +4,129 @@ const Mariage = require('../models/mariage');
 const Group = require('../models/groupe');
 const Menu = require('../models/menu');
 const Cake = require('../models/gateau');
+const Guest = require('../models/invite');
 const jwt_secret = process.env.JWT_SECRET_KEY,
 jwt = require('jsonwebtoken'),
 generator = require('generate-password');
+
+//RUD admin
+exports.adminID = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Admin.findOne({
+                id: decoded.id, _id: req.params.id
+            }, function(err, admin){
+                if (err)
+                    res.send(err)
+                else
+                res.send(admin)
+            });
+            }
+        }
+    );
+}
+
+exports.updateAdmin = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        console.log(err)
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Admin.updateOne({_id: req.params.id, id: decoded.id},
+                {$set: {firstPerson: req.body.firstPerson, secondPerson: req.body.secondPerson, password: req.body.password}},
+                function(err, data){
+                    console.log(data)
+                    if (err)
+                        res.status(400).json('err update admin')
+                        else 
+                            res.status(200).json('Modifications effectuées.')
+                        
+                }
+            );
+        }
+    }
+);
+}
+
+exports.deleteAdmin = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Admin.deleteOne({
+                _id: req.params.id, id: decoded.id
+            },  function(err, result){
+                if (err)
+                    res.send('err suppression admin')
+                else {
+                    Mariage.deleteOne({
+                        mariageID: decoded.id
+                    },  function(err, data){
+                            console.log(data)
+                            if (err)
+                                res.status(400).json('err suppression mariage')
+                            else
+                                res.status(200).json('Compte supprimé avec succès.')
+                        }
+                    )
+                }
+                });
+            }
+        }
+    );
+}
+
+//RU mariage 
+exports.mariageID = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Mariage.findOne({
+                mariageID: decoded.id, _id: req.params.id
+            }, function(err, mariage){
+                if (err)
+                    res.send(err)
+                else
+                res.send(mariage)
+            });
+            }
+        }
+    );
+}
+
+exports.updateMariage = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        console.log(err)
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            Mariage.updateOne({_id: req.params.id, mariageID: decoded.id},
+                {$set: {title: req.body.title, media: req.body.media}},
+                function(err, data){
+                    console.log(data)
+                    if (err)
+                        res.send(err)
+                        else {
+                            Admin.updateOne({id: decoded.id},
+                                {$set: {mariageID: req.params.id}}, function(err, data){
+                                    console.log(data)
+                                    if (err)
+                                        res.status(400).json('err update mariage')
+                                    else
+                                        res.status(200).json('Les modifications ont été effectuées.')
+                                }
+                            )
+                        }
+                        
+                }
+            );
+        }
+    }
+);
+}
 
 // CRUD table
 exports.newTable = function (req, res) {
@@ -463,7 +583,7 @@ exports.updateCake = function (req, res) {
                                     if (err)
                                         res.status(400).json('err update mariage')
                                     else
-                                        res.status(200).json('Le dessert' + req.body.name + ' a été modifié.')
+                                        res.status(200).json('Le dessert ' + req.body.name + ' a été modifié.')
                                 })
                         }
                 }
