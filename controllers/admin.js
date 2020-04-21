@@ -263,10 +263,10 @@ exports.newGroup = function (req, res) {
             let group = new Group ({
                 name: req.body.name,
                 mail: req.body.mail,
-                password: generatedpsw
+                password: generatedpsw,
             });
                 group.save({mariageID: decoded.id}, function(err, newGroup) {
-                    console.log(newGroup);
+                    console.log(err)
                     if (err)
                         res.status(400).json('erreur création groupe');
                     else {
@@ -293,10 +293,11 @@ exports.groups = function (req, res) {
             Group.find({
                 mariageID: decoded.id
             }, function(err, groups){
+                // console.log(err)
                 if (err)
-                    res.send(err)
+                    res.status(400).json('err affichage groupes')
                 else
-                res.send(groups)
+                res.status(200).json(groups)
             });
             }
         }
@@ -372,6 +373,49 @@ exports.deleteGroup = function (req, res) {
                 }
                     // res.send('Le groupe '+ req.params.name + ' a été supprimé.')
             });
+            }
+        }
+    );
+}
+
+//CRUD groupe
+exports.newGuest = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action.")
+        else {
+            let guest = new Guest ({
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                media: req.body.media,
+                groupID: req.params.groupID,
+                choiceID: null
+            });
+                guest.save({mariageID: decoded.id}, function(err, newGuest) {
+                    console.log(err)
+                    if (err)
+                        res.status(400).json(err);
+                    else {
+                        Group.updateOne({mariageID: decoded.id},
+                            {$push: {guestID: newGuest }}, function(err, group){
+                                console.log(err)
+                                if (err)
+                                    res.status(400).json('err update mariage')
+                                else {
+                                    Mariage.updateOne({mariageID: decoded.id},
+                                        {$push: {groupID: group }}, function(err, mariage){
+                                            console.log(err)
+                                            if (err)
+                                                res.status(400).json('err update mariage')
+                                            else
+                                                res.status(200).json(newGuest.firstName + '' + newGuest.lastName + ' a été ajouté avec succès à ' + group)
+                                        })
+                                }
+                    
+                            })
+                    }
+                        
+                })
             }
         }
     );

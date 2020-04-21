@@ -70,7 +70,7 @@ app.route('/admin/group/:id').get(AdminController.groupID);
 app.route('/admin/updateGroup/:id').put(AdminController.updateGroup);
 app.route('/admin/deleteGroup/:id').delete(AdminController.deleteGroup);
 
-// app.route('/admin/newGuest').post(AdminController.newGuest);
+app.route('/admin/newGuest').post(AdminController.newGuest);
 // app.route('/admin/guests').get(AdminController.guests);
 // app.route('/admin/guest/:id').get(AdminController.guestID);
 // app.route('/admin/updateGuest/:id').put(AdminController.updateGuest);
@@ -126,21 +126,6 @@ app.route('/admin/deleteCake/:id').delete(AdminController.deleteCake);
 // CRUD groups
 
 // CRUD guests
-
-app.route('/newGuest').post(function(req, res) {
-
-    let group = new Group({
-        name: req.body.name
-    });
-
-    group.save(function(err, data) {
-        if(err)
-            res.send(err)
-        else
-            res.send(data)
-    });
-
-});
 
 app.route('/guests').get(function(req, res){
 
