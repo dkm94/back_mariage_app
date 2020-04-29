@@ -13,10 +13,10 @@ generator = require('generate-password');
 exports.adminID = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - adminID.")
         else {
             Admin.findOne({
-                id: decoded.id, _id: req.params.id
+                _id: decoded.id
             }, function(err, admin){
                 if (err)
                     res.send(err)
@@ -32,9 +32,9 @@ exports.updateAdmin = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         console.log(err)
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - updateAdmin.")
         else {
-            Admin.updateOne({_id: req.params.id, id: decoded.id},
+            Admin.updateOne({_id: decoded.id},
                 {$set: {firstPerson: req.body.firstPerson, secondPerson: req.body.secondPerson, password: req.body.password}},
                 function(err, data){
                     console.log(data)
@@ -53,16 +53,16 @@ exports.updateAdmin = function (req, res) {
 exports.deleteAdmin = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - deleteAdmin.")
         else {
             Admin.deleteOne({
-                _id: req.params.id, id: decoded.id
+                _id: decoded.id
             },  function(err, result){
                 if (err)
                     res.send('err suppression admin')
                 else {
                     Mariage.deleteOne({
-                        mariageID: decoded.id
+                        _id: decoded.maruageID
                     },  function(err, data){
                             console.log(data)
                             if (err)
@@ -82,10 +82,10 @@ exports.deleteAdmin = function (req, res) {
 exports.mariageID = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - mariageID.")
         else {
             Mariage.findOne({
-                mariageID: decoded.id, _id: req.params.id
+                _id: decoded.mariageID
             }, function(err, mariage){
                 if (err)
                     res.send(err)
@@ -101,16 +101,16 @@ exports.updateMariage = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         console.log(err)
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - updateMariage.")
         else {
-            Mariage.updateOne({_id: req.params.id, mariageID: decoded.id},
+            Mariage.updateOne({_id: decoded.mariageID},
                 {$set: {title: req.body.title, media: req.body.media}},
                 function(err, data){
                     console.log(data)
                     if (err)
                         res.send(err)
                         else {
-                            Admin.updateOne({id: decoded.id},
+                            Admin.updateOne({_id: decoded.id},
                                 {$set: {mariageID: req.params.id}}, function(err, data){
                                     console.log(data)
                                     if (err)
@@ -132,17 +132,17 @@ exports.updateMariage = function (req, res) {
 exports.newTable = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - newTable.")
         else {
             let table = new Table ({
                 name: req.body.name,
             });
-                table.save({mariageID: decoded.id}, function(err, newTable) {
+                table.save(function(err, newTable) {
                     if (err)
                         res.status(400).json(err);
                     else {
-                        Mariage.updateOne({mariageID: decoded.id},
-                            {$push: {tableID: newTable }}, function(err, data){
+                        Mariage.updateOne({_id: decoded.mariageID},
+                            {$push: {tableID: newTable._id }}, function(err, data){
                                 if (err)
                                     res.status(400).json('err update mariage')
                                 else
@@ -159,10 +159,10 @@ exports.newTable = function (req, res) {
 exports.tables = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - tables.")
         else {
             Table.find({
-                mariageID: decoded.id
+                mariageID: decoded.mariageID
             }, function(err, tables){
                 if (err)
                     res.send(err)
@@ -177,7 +177,7 @@ exports.tables = function (req, res) {
 exports.tableID = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - tableID.")
         else {
             Table.findOne({
                 mariageID: decoded.id, _id: req.params.id
@@ -196,7 +196,7 @@ exports.updateTable = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         console.log(err)
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - updateTable.")
         else {
             Table.updateOne({_id: req.params.id, mariageID: decoded.id},
                 {$set: {name: req.body.name}},
@@ -225,7 +225,7 @@ exports.updateTable = function (req, res) {
 exports.deleteTable = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - deleteTable.")
         else {
             Table.deleteOne({
                 _id: req.params.id, mariageID: decoded.id
@@ -254,7 +254,7 @@ exports.deleteTable = function (req, res) {
 exports.newGroup = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - newGroup.")
         else {
             let generatedpsw = generator.generate({
                 length: 10,
@@ -264,14 +264,15 @@ exports.newGroup = function (req, res) {
                 name: req.body.name,
                 mail: req.body.mail,
                 password: generatedpsw,
+                mariageID: decoded.mariageID
             });
-                group.save({mariageID: decoded.id}, function(err, newGroup) {
-                    console.log(err)
+                group.save(function(err, newGroup) {
+                    console.log(decoded.mariageID)
                     if (err)
                         res.status(400).json('erreur création groupe');
                     else {
-                        Mariage.updateOne({mariageID: decoded.id},
-                            {$push: {groupID: newGroup }}, function(err, data){
+                        Mariage.updateOne({_id: decoded.mariageID},
+                            {$push: {groupID: newGroup._id }}, function(err, data){
                                 if (err)
                                     res.status(400).json('err update mariage')
                                 else
@@ -285,29 +286,28 @@ exports.newGroup = function (req, res) {
     );
 }
 
-exports.groups = function (req, res) {
+exports.getAllGroups = function (req, res) {
+       
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - getAllgroups.")
         else {
             Group.find({
                 mariageID: decoded.id
             }, function(err, groups){
-                // console.log(err)
                 if (err)
-                    res.status(400).json('err affichage groupes')
+                    res.status(400).json('err affichage groupe')
                 else
-                res.status(200).json(groups)
+                    res.send(groups)
             });
             }
-        }
-    );
-}
+        });
+    }
 
 exports.groupID = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the RIGHTS to do this action - groupID.")
         else {
             Group.findOne({
                 mariageID: decoded.id, _id: req.params.id
@@ -326,7 +326,7 @@ exports.updateGroup = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         console.log(err)
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - updateGroup.")
         else {
             Group.updateOne({_id: req.params.id, mariageID: decoded.id},
                 {$set: {name: req.body.name}},
@@ -354,7 +354,7 @@ exports.updateGroup = function (req, res) {
 exports.deleteGroup = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - deleteGroup.")
         else {
             Group.deleteOne({
                 _id: req.params.id, mariageID: decoded.id
@@ -382,7 +382,7 @@ exports.deleteGroup = function (req, res) {
 exports.newGuest = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - newGuest.")
         else {
             let guest = new Guest ({
                 firstName: req.body.firstName,
@@ -425,7 +425,7 @@ exports.newGuest = function (req, res) {
 exports.newMenu = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - newMenu.")
         else {
             let menu = new Menu ({
                 name: req.body.name,
@@ -454,7 +454,7 @@ exports.newMenu = function (req, res) {
 exports.menus = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - menus.")
         else {
             Menu.find({
                 mariageID: decoded.id
@@ -472,7 +472,7 @@ exports.menus = function (req, res) {
 exports.menuID = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - menuID.")
         else {
             Menu.findOne({
                 mariageID: decoded.id, _id: req.params.id
@@ -491,7 +491,7 @@ exports.updateMenu = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         console.log(err)
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - updateMenu.")
         else {
             Menu.updateOne({_id: req.params.id, mariageID: decoded.id},
                 {$set: {name: req.body.name}},
@@ -519,7 +519,7 @@ exports.updateMenu = function (req, res) {
 exports.deleteMenu = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - deleteMenu.")
         else {
             Menu.deleteOne({
                 _id: req.params.id, mariageID: decoded.id
@@ -547,7 +547,7 @@ exports.deleteMenu = function (req, res) {
 exports.newCake = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - newCake.")
         else {
             let cake = new Cake ({
                 name: req.body.name,
@@ -575,7 +575,7 @@ exports.newCake = function (req, res) {
 exports.cakes = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - cakes.")
         else {
             Cake.find({
                 mariageID: decoded.id
@@ -593,7 +593,7 @@ exports.cakes = function (req, res) {
 exports.cakeID = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - cakeID.")
         else {
             Cake.findOne({
                 mariageID: decoded.id, _id: req.params.id
@@ -612,7 +612,7 @@ exports.updateCake = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         console.log(err)
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - updateCake.")
         else {
             Cake.updateOne({_id: req.params.id, mariageID: decoded.id},
                 {$set: {name: req.body.name}},
@@ -640,7 +640,7 @@ exports.updateCake = function (req, res) {
 exports.deleteCake = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action.")
+            res.status(400).json("You don't have the rights to do this action - deleteCake.")
         else {
             Cake.deleteOne({
                 _id: req.params.id, mariageID: decoded.id

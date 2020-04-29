@@ -11,6 +11,7 @@ exports.register = function(req, res) {
         title: req.body.title,
     });
     mariage.save(function(err, newMariage) {
+        console.log(newMariage)
         if (err)
             res.status(400).json('erreur création nouveau mariage');
         else {
@@ -21,17 +22,17 @@ exports.register = function(req, res) {
                 secondPerson: req.body.secondPerson,
                 email: req.body.email,
                 password: hash,
-                mariageID: newMariage.id
+                mariageID: newMariage._id
             });
 
             admin.save(function(err, newAdmin){
-                console.log(err);
+                console.log(newAdmin);
                 if (err)
                     res.status(400).json('échec création admin')
                 else {
                     // res.status(200).json('compté créé avec succès.')
-                    Mariage.updateOne({_id: mariage.id},
-                        {$set: {adminID: newAdmin }}, function(err, data){
+                    Mariage.updateOne({_id: newMariage._id},
+                        {$set: {adminID: newAdmin._id }}, function(err, data){
                             if (err)
                                 res.status(400).json('err update mariage')
                             else
@@ -52,13 +53,14 @@ exports.register = function(req, res) {
 exports.adminLogin = function(req, res) {
 
     Admin.findOne({ 
-        mail: req.body.mail
+        email: req.body.email
     },function(err, admin){
         if(err)
-            res.status(400).json({auth: false, message: err});
+            res.status(400).json({auth: false, message: "Access denied."});
         else {
-            bcrypt.compare(req.body.password, admin.password, function(err, admin) {
-                if (admin)
+            bcrypt.compare(req.body.password, admin.password, function(err, result) {
+                console.log(admin)
+                if (result)
                 {
                     var token = jwt.sign({ id: admin._id, mariageID: admin.mariageID }, jwt_secret);
                     res.status(200).json({auth: true, token: token, message: "You can now access your account."});

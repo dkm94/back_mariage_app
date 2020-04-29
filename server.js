@@ -57,7 +57,7 @@ app.route('/auth/guestLogin').post(AuthController.guestLogin);
 
 // admin
 
-app.route('/admin/:id').get(AdminController.adminID);
+app.route('/admins/:id').get(AdminController.adminID);
 app.route('/updateAdmin/:id').put(AdminController.updateAdmin);
 app.route('/deleteAdmin/:id').delete(AdminController.deleteAdmin);
 
@@ -65,7 +65,7 @@ app.route('/admin/mariage/:id').get(AdminController.mariageID);
 app.route('/admin/updateMariage/:id').put(AdminController.updateMariage);
 
 app.route('/admin/newGroup').post(AdminController.newGroup);
-app.route('/admin/groups').get(AdminController.groups);
+app.route('/admin/getAllGroups').get(AdminController.getAllGroups);
 app.route('/admin/group/:id').get(AdminController.groupID);
 app.route('/admin/updateGroup/:id').put(AdminController.updateGroup);
 app.route('/admin/deleteGroup/:id').delete(AdminController.deleteGroup);
