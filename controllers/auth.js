@@ -8,7 +8,7 @@ jwt_secret = process.env.JWT_SECRET_KEY;
 exports.register = function(req, res) {
     
     let mariage = new Mariage ({
-        title: req.body.title,
+        title: req.body.title
     });
     mariage.save(function(err, newMariage) {
         console.log(newMariage)
@@ -22,7 +22,8 @@ exports.register = function(req, res) {
                 secondPerson: req.body.secondPerson,
                 email: req.body.email,
                 password: hash,
-                mariageID: newMariage._id
+                mariageID: newMariage._id,
+                media: null
             });
 
             admin.save(function(err, newAdmin){
@@ -37,12 +38,11 @@ exports.register = function(req, res) {
                                 res.status(400).json('err update mariage')
                             else
                                 res.status(200).json(newAdmin)
-                        })
-                    }
+                        }
+                    )
+                }
             });
-        }
-            
-
+        }    
     });
 }
 
@@ -56,17 +56,17 @@ exports.adminLogin = function(req, res) {
         email: req.body.email
     },function(err, admin){
         if(err)
-            res.status(400).json({auth: false, message: "Access denied."});
+            res.status(400).json({auth: false, message: "Echec connexion. Merci de vérifier vos identifiants."});
         else {
             bcrypt.compare(req.body.password, admin.password, function(err, result) {
                 console.log(admin)
                 if (result)
                 {
                     var token = jwt.sign({ id: admin._id, mariageID: admin.mariageID }, jwt_secret);
-                    res.status(200).json({auth: true, token: token, message: "You can now access your account."});
+                    res.status(200).json({auth: true, token: token, message: "Vous pouvez à présent accéder à votre compte."});
                 }
                 else
-                    res.status(400).json({auth: false, message: "Access restrcited."});
+                    res.status(400).json({auth: false, message: "Vous devez avoir un compte administrateur pour accéder à cette ressource."});
             })
         }
     });
@@ -81,14 +81,15 @@ exports.guestLogin = function(req, res) {
         if(err)
             res.status(400).json({auth: false, message: "Please check email/password."});
         else {
-            bcrypt.compare(req.body.password, group.password, function(err, group) {
-                if (group)
+            bcrypt.compare(req.body.password, group.password, function(err, result) {
+                console.log(group)
+                if (result)
                 {
-                    var token = jwt.sign({ mariageID: mariage._id }, jwt_secret); // + id groupe 
+                    var token = jwt.sign({ mariageID: mariage._id, id: group._id, guestID: guest._id }, jwt_secret);
                     res.status(200).json({auth: true, token: token, message: "You can now access your account."});
                 }
                 else
-                    res.status(201).json({auth: false, message: "Access restrcited."});
+                    res.status(400).json({auth: false, message: "Access restrcited."});
             })
         }
     });

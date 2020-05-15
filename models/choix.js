@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 let choiceSchema = new mongoose.Schema({
 
-table: {
+tableID: {
     type: Schema.Types.ObjectId, 
     ref: 'Table'
 },

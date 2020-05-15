@@ -20,6 +20,9 @@ let adminSchema = new mongoose.Schema({
         type: 'string',
         required: 'The password is required'
     },
+    media: {
+        type: 'string'
+    },
     mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'

@@ -10,18 +10,18 @@ jwt = require('jsonwebtoken'),
 generator = require('generate-password');
 
 //RUD admin
-exports.adminID = function (req, res) {
+exports.myAccount = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action - adminID.")
+            res.status(400).json("You don't have the rights to do this action - myAccount.")
         else {
             Admin.findOne({
                 _id: decoded.id
             }, function(err, admin){
                 if (err)
-                    res.send(err)
-                else
-                res.send(admin)
+                    res.status(400).json("admin introuvable")
+                else 
+                    res.status(200).json(admin)
             });
             }
         }
@@ -30,24 +30,30 @@ exports.adminID = function (req, res) {
 
 exports.updateAdmin = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        console.log(err)
         if (err)
-            res.status(400).json("You don't have the rights to do this action - updateAdmin.")
+            res.status(400).json("Vous n'avez pas les droits d'accès à cette ressource.")
         else {
             Admin.updateOne({_id: decoded.id},
-                {$set: {firstPerson: req.body.firstPerson, secondPerson: req.body.secondPerson, password: req.body.password}},
-                function(err, data){
-                    console.log(data)
+                {$set: {firstPerson: req.body.firstPerson, secondPerson: req.body.secondPerson, password: req.body.password, media: req.body.media}},
+                function(err, result){
+                    console.log(result)
                     if (err)
-                        res.status(400).json('err update admin')
-                        else 
-                            res.status(200).json('Modifications effectuées.')
-                        
+                        res.status(400).json("Echec des modifications.")
+                    else {
+                        Mariage.updateOne({
+                            _id: decoded.mariageID
+                        }), function(err, result){
+                            console.log(result)
+                            if (err)
+                                res.status(400).json('err update mariage')
+                            else
+                                res.status(200).json('Modifications effectuées.')
+                        }
+                    }         
                 }
             );
         }
-    }
-);
+    });
 }
 
 exports.deleteAdmin = function (req, res) {
@@ -62,7 +68,7 @@ exports.deleteAdmin = function (req, res) {
                     res.send('err suppression admin')
                 else {
                     Mariage.deleteOne({
-                        _id: decoded.maruageID
+                        _id: decoded.mariageID
                     },  function(err, data){
                             console.log(data)
                             if (err)
@@ -88,9 +94,14 @@ exports.mariageID = function (req, res) {
                 _id: decoded.mariageID
             }, function(err, mariage){
                 if (err)
-                    res.send(err)
+                    res.status(200).json('err affichage mariage')
                 else
                 res.send(mariage)
+            }).populate('groupID').exec(function(err, data){
+                if (err)
+                    res.send(err)
+                else
+                res.send(data)
             });
             }
         }
@@ -156,49 +167,16 @@ exports.newTable = function (req, res) {
     );
 }
 
-exports.tables = function (req, res) {
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        if (err)
-            res.status(400).json("You don't have the rights to do this action - tables.")
-        else {
-            Table.find({
-                mariageID: decoded.mariageID
-            }, function(err, tables){
-                if (err)
-                    res.send(err)
-                else
-                res.send(tables)
-            });
-            }
-        }
-    );
-}
-
-exports.tableID = function (req, res) {
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        if (err)
-            res.status(400).json("You don't have the rights to do this action - tableID.")
-        else {
-            Table.findOne({
-                mariageID: decoded.id, _id: req.params.id
-            }, function(err, table){
-                if (err)
-                    res.send(err)
-                else
-                res.send(table)
-            });
-            }
-        }
-    );
-}
+//CONTINUER MODIFS
 
 exports.updateTable = function (req, res) {
+
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         console.log(err)
         if (err)
             res.status(400).json("You don't have the rights to do this action - updateTable.")
         else {
-            Table.updateOne({_id: req.params.id, mariageID: decoded.id},
+            Table.updateOne({_id: req.params.id},
                 {$set: {name: req.body.name}},
                 function(err, data){
                     console.log(err)
@@ -228,18 +206,19 @@ exports.deleteTable = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - deleteTable.")
         else {
             Table.deleteOne({
-                _id: req.params.id, mariageID: decoded.id
+                _id: req.params.id
             }, function(err, result){
+                console.log(result)
                 if (err)
                     res.send('err suppression table')
                 else {
-                    Mariage.updateOne({mariageID: decoded.id},
-                        {$pull: {tableID: req.params.id}}, function(err, data){
-                            console.log(data)
+                    Mariage.updateOne({ _id: decoded.mariageID},
+                        {$pull: {tableID: req.params.id}}, function(err, result){
+                            console.log(result)
                             if (err)
                                 res.status(400).json('err update mariage')
                             else
-                                res.status(200).json('La table ' + req.params.id + ' a été supprimée.')
+                                res.status(200).json('La table a été supprimée.')
                         }
                     )
                 }
@@ -264,62 +243,29 @@ exports.newGroup = function (req, res) {
                 name: req.body.name,
                 mail: req.body.mail,
                 password: generatedpsw,
+                commentID: null,
                 mariageID: decoded.mariageID
             });
-                group.save(function(err, newGroup) {
-                    console.log(decoded.mariageID)
-                    if (err)
-                        res.status(400).json('erreur création groupe');
-                    else {
-                        Mariage.updateOne({_id: decoded.mariageID},
-                            {$push: {groupID: newGroup._id }}, function(err, data){
-                                if (err)
-                                    res.status(400).json('err update mariage')
-                                else
-                                    res.status(200).json('Le groupe ' + req.body.name + ' a été ajouté.' )
-                            })
-                    }
-                        
-                })
-            }
-        }
-    );
-}
-
-exports.getAllGroups = function (req, res) {
-       
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        if (err)
-            res.status(400).json("You don't have the rights to do this action - getAllgroups.")
-        else {
-            Group.find({
-                mariageID: decoded.id
-            }, function(err, groups){
+            group.save(function(err, newGroup) {
+                console.log(newGroup)
                 if (err)
-                    res.status(400).json('err affichage groupe')
-                else
-                    res.send(groups)
-            });
-            }
-        });
-    }
-
-exports.groupID = function (req, res) {
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        if (err)
-            res.status(400).json("You don't have the RIGHTS to do this action - groupID.")
-        else {
-            Group.findOne({
-                mariageID: decoded.id, _id: req.params.id
-            }, function(err, group){
-                if (err)
-                    res.send(err)
-                else
-                res.send(group)
-            });
-            }
+                    res.status(400).json('erreur création groupe');
+                else {
+                    Mariage.updateOne({_id: decoded.mariageID},
+                        {$push: {groupID: newGroup._id}},
+                        function(err, data){
+                            // console.log(decoded.mariageID)
+                            console.log(data)
+                            if (err)
+                                res.status(400).json('err update mariage')
+                            else
+                                res.status(200).json(newGroup.name + " a été ajouté à la liste de mariage.")
+                        }
+                    )
+                }
+            })
         }
-    );
+    })
 }
 
 exports.updateGroup = function (req, res) {
@@ -328,16 +274,16 @@ exports.updateGroup = function (req, res) {
         if (err)
             res.status(400).json("You don't have the rights to do this action - updateGroup.")
         else {
-            Group.updateOne({_id: req.params.id, mariageID: decoded.id},
-                {$set: {name: req.body.name}},
-                function(err, data){
-                    console.log(err)
+            Group.updateOne({_id: req.params.id},
+                {$set: {name: req.body.name, mail: req.body.mail}},
+                function(err, result){
+                    console.log(result)
                     if (err)
                         res.send(err)
                         else {
-                            Mariage.updateOne({mariageID: decoded.id},
-                                {$set: {groupID: req.params.id}}, function(err, data){
-                                    console.log(data)
+                            Mariage.updateOne({_id: decoded.mariageID},
+                                {$set: {groupID: req.params.id}}, function(err, result){
+                                    console.log(result)
                                     if (err)
                                         res.status(400).json('err update mariage')
                                     else
@@ -356,59 +302,70 @@ exports.deleteGroup = function (req, res) {
         if (err)
             res.status(400).json("You don't have the rights to do this action - deleteGroup.")
         else {
-            Group.deleteOne({
-                _id: req.params.id, mariageID: decoded.id
+            Guest.deleteMany({
+                groupID: req.params.id
             }, function(err, result){
+                console.log(req.params.id)
+                console.log(result)
                 if (err)
-                    res.send('err suppression groupe')
+                    res.status(400).json('err suppression guest')
                 else {
-                    Mariage.updateOne({mariageID: decoded.id},
-                        {$pull: {groupID: req.params.id}}, function(err, data){
-                            console.log(data)
-                            if (err)
-                                res.status(400).json('err update mariage')
-                            else
-                                res.status(200).json('Le groupe ' + req.params.id + ' a été supprimé.')
-                        })
+                    Group.deleteOne({
+                        _id: req.params.id
+                    }, function(err, result){
+                        console.log(result)
+                        if (err)
+                            res.send('err suppression group')
+                        else {
+                            Mariage.updateOne({_id: decoded.mariageID},{$pull: {groupID: req.params.id}},
+                                function(err, result){
+                                    console.log(req.params.id)
+                                    console.log(result)
+                                    if (err)
+                                        res.status(400).json('err update mariage')
+                                    else
+                                        res.status(200).json('Le groupe a été supprimé.' )
+                                })
+                        }
+                    });
                 }
-                    // res.send('Le groupe '+ req.params.name + ' a été supprimé.')
             });
             }
         }
     );
 }
 
-//CRUD groupe
+//CRUD guest
 exports.newGuest = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
             res.status(400).json("You don't have the rights to do this action - newGuest.")
         else {
+            // console.log(decoded.id)
             let guest = new Guest ({
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                media: req.body.media,
-                groupID: req.params.groupID,
+                name: req.body.name,
+                groupID: req.params.id,
+                media: null,
                 choiceID: null
             });
-                guest.save({mariageID: decoded.id}, function(err, newGuest) {
-                    console.log(err)
+                guest.save(function(err, newGuest) {
+                    console.log(newGuest)
                     if (err)
                         res.status(400).json(err);
                     else {
-                        Group.updateOne({mariageID: decoded.id},
-                            {$push: {guestID: newGuest }}, function(err, group){
-                                console.log(err)
+                        Group.updateOne({_id: req.params.id},
+                            {$push: {guestID: newGuest._id }}, function(err, result){
+                                console.log(result)
                                 if (err)
-                                    res.status(400).json('err update mariage')
+                                    res.status(400).json('err update group')
                                 else {
-                                    Mariage.updateOne({mariageID: decoded.id},
-                                        {$push: {groupID: group }}, function(err, mariage){
-                                            console.log(err)
+                                    Mariage.updateOne({_id: decoded.mariageID},
+                                        function(err, result){
+                                            console.log(result)
                                             if (err)
                                                 res.status(400).json('err update mariage')
                                             else
-                                                res.status(200).json(newGuest.firstName + '' + newGuest.lastName + ' a été ajouté avec succès à ' + group)
+                                                res.status(200).json(newGuest.name + ' a été ajouté avec succès.')
                                         })
                                 }
                     
@@ -416,6 +373,76 @@ exports.newGuest = function (req, res) {
                     }
                         
                 })
+            }
+        }
+    );
+}
+
+exports.updateGuest = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action - updateGuest.")
+        else {
+            Guest.updateOne({_id: req.params.id},
+                {$set: {name: req.body.name}},
+                function(err, result){
+                    console.log(result)
+                    if (err)
+                        res.status(400).json("err update guest")
+                    else {
+                        Group.updateOne({_id: req.body.groupID},
+                            function(err, result){
+                                console.log(result)
+                                if (err)
+                                    res.status(400).json('err update group')
+                                else {
+                                    Mariage.updateOne({_id: decoded.mariageID},
+                                        function(err, result){
+                                            console.log(result)
+                                            if (err)
+                                                res.status(400).json('err update mariage')
+                                            else
+                                                res.status(200).json('Modifications enregistrées.' )
+                                        })
+                                }
+                            })
+                    }
+                }
+                );
+            }
+        }
+    );
+}
+
+exports.deleteGuest = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action - deleteGuest.")
+        else {
+            Guest.deleteOne({
+                _id: req.params.id
+            }, function(err, result){
+                console.log(result)
+                if (err)
+                    res.send('err suppression guest')
+                else {
+                    Group.updateOne({_id: guestID.groupID},
+                        {$pull: {guestID: req.params.id}}, function(err, result){
+                            console.log(result)
+                            if (err)
+                                res.status(400).json('err update mariage')
+                            else {
+                                Mariage.updateOne({_id: decoded.mariageID},
+                                    {$set: {groupID: data.id}}, function(err, result){
+                                        if (err)
+                                            res.status(400).json('err update mariage')
+                                        else
+                                            res.status(200).json('Le menu ' + req.body.name + ' a été ajouté.' )
+                                    })
+                            }
+                        })       
+                }
+            });
             }
         }
     );
@@ -431,12 +458,12 @@ exports.newMenu = function (req, res) {
                 name: req.body.name,
                 description: req.body.description
             });
-                menu.save({mariageID: decoded.id}, function(err, newMenu) {
+                menu.save(function(err, newMenu) {
                     if (err)
                         res.status(400).json(('erreur création menu'));
                     else {
-                        Mariage.updateOne({mariageID: decoded.id},
-                            {$push: {menuID: newMenu }}, function(err, data){
+                        Mariage.updateOne({_id: decoded.mariageID},
+                            {$push: {menuID: newMenu.id}}, function(err, data){
                                 if (err)
                                     res.status(400).json('err update mariage')
                                 else
@@ -451,42 +478,6 @@ exports.newMenu = function (req, res) {
 }
 
 
-exports.menus = function (req, res) {
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        if (err)
-            res.status(400).json("You don't have the rights to do this action - menus.")
-        else {
-            Menu.find({
-                mariageID: decoded.id
-            }, function(err, menus){
-                if (err)
-                    res.send(err)
-                else
-                res.send(menus)
-            });
-            }
-        }
-    );
-}
-
-exports.menuID = function (req, res) {
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        if (err)
-            res.status(400).json("You don't have the rights to do this action - menuID.")
-        else {
-            Menu.findOne({
-                mariageID: decoded.id, _id: req.params.id
-            }, function(err, menu){
-                if (err)
-                    res.send(err)
-                else
-                res.send(menu)
-            });
-            }
-        }
-    );
-}
-
 exports.updateMenu = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         console.log(err)
@@ -495,14 +486,14 @@ exports.updateMenu = function (req, res) {
         else {
             Menu.updateOne({_id: req.params.id, mariageID: decoded.id},
                 {$set: {name: req.body.name}},
-                function(err, data){
-                    console.log(err)
+                function(err, result){
+                    console.log(result)
                     if (err)
                         res.send(err)
                         else {
                             Mariage.updateOne({mariageID: decoded.id},
-                                {$set: {menuID: req.params.id}}, function(err, data){
-                                    console.log(data)
+                                {$set: {menuID: req.params.id}}, function(err, result){
+                                    console.log(result)
                                     if (err)
                                         res.status(400).json('err update mariage')
                                     else
@@ -522,18 +513,19 @@ exports.deleteMenu = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - deleteMenu.")
         else {
             Menu.deleteOne({
-                _id: req.params.id, mariageID: decoded.id
+                _id: req.params.id
             }, function(err, result){
+                console.log(result)
                 if (err)
                     res.send('err suppression menu')
                 else {
-                    Mariage.updateOne({mariageID: decoded.id},
-                        {$pull: {menuID: req.params.id}}, function(err, data){
-                            console.log(data)
+                    Mariage.updateOne({_id: decoded.mariageID},
+                        {$pull: {menuID: req.params.id}}, function(err, result){
+                            console.log(result)
                             if (err)
                                 res.status(400).json('err update mariage')
                             else
-                                res.status(200).json('Le menu ' + req.params.id + ' a été supprimé.')
+                                res.status(200).json('Le menu a été supprimé.')
                         }
                     )
                 }
@@ -553,12 +545,13 @@ exports.newCake = function (req, res) {
                 name: req.body.name,
                 description: req.body.description
             });
-                cake.save({mariageID: decoded.id}, function(err, newCake) {
+                cake.save(function(err, newCake) {
                     if (err)
                         res.status(400).json(('erreur création gâteau'));
                     else {
-                        Mariage.updateOne({mariageID: decoded.id},
-                            {$push: {cakeID: newCake }}, function(err, data){
+                        Mariage.updateOne({_id: decoded.mariageID},
+                            {$push: {cakeID: newCake.id}}, function(err, result){
+                                console.log(result)
                                 if (err)
                                     res.status(400).json('err update mariage')
                                 else
@@ -572,58 +565,22 @@ exports.newCake = function (req, res) {
     );
 }
 
-exports.cakes = function (req, res) {
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        if (err)
-            res.status(400).json("You don't have the rights to do this action - cakes.")
-        else {
-            Cake.find({
-                mariageID: decoded.id
-            }, function(err, cakes){
-                if (err)
-                    res.send(err)
-                else
-                res.send(cakes)
-            });
-            }
-        }
-    );
-}
-
-exports.cakeID = function (req, res) {
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        if (err)
-            res.status(400).json("You don't have the rights to do this action - cakeID.")
-        else {
-            Cake.findOne({
-                mariageID: decoded.id, _id: req.params.id
-            }, function(err, cake){
-                if (err)
-                    res.send(err)
-                else
-                res.send(cake)
-            });
-            }
-        }
-    );
-}
-
 exports.updateCake = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         console.log(err)
         if (err)
             res.status(400).json("You don't have the rights to do this action - updateCake.")
         else {
-            Cake.updateOne({_id: req.params.id, mariageID: decoded.id},
-                {$set: {name: req.body.name}},
-                function(err, data){
-                    console.log(err)
+            Cake.updateOne({_id: req.params.id},
+                {$set: {name: req.body.name, description: req.body.description}},
+                function(err, result){
+                    console.log(result)
                     if (err)
                         res.send(err)
                         else {
-                            Mariage.updateOne({mariageID: decoded.id},
-                                {$set: {cakeID: req.params.id}}, function(err, data){
-                                    console.log(data)
+                            Mariage.updateOne({_id: decoded.mariageID},
+                                {$set: {cakeID: req.params.id}}, function(err, result){
+                                    console.log(result)
                                     if (err)
                                         res.status(400).json('err update mariage')
                                     else
@@ -643,18 +600,19 @@ exports.deleteCake = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - deleteCake.")
         else {
             Cake.deleteOne({
-                _id: req.params.id, mariageID: decoded.id
+                _id: req.params.id
             }, function(err, result){
+                console.log(result)
                 if (err)
                     res.send('err suppression gâteau')
                 else {
-                    Mariage.updateOne({mariageID: decoded.id},
-                        {$pull: {cakeID: req.params.id}}, function(err, data){
-                            console.log(data)
+                    Mariage.updateOne({_id: decoded.mariageID},
+                        {$pull: {cakeID: req.params.id}}, function(err, result){
+                            console.log(result)
                             if (err)
                                 res.status(400).json('err update mariage')
                             else
-                                res.status(200).json('Le gâteau ' + req.params.id + ' a été supprimé.')
+                                res.status(200).json('Le gâteau a été supprimé.')
                         }
                     )
                 }

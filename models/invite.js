@@ -3,16 +3,12 @@ const Schema = mongoose.Schema;
 
 let guestSchema = new mongoose.Schema({
 
-    firstName: {
+    name: {
         type: 'string',
         required: 'Your first name is required.'
     },
-    lastName: {
-        type: 'string',
-        required: 'Your last name is required',
-    },
     media: {
-        type: 'string',
+        type: 'string'
     },
     groupID: [{
         type: Schema.Types.ObjectId, 
