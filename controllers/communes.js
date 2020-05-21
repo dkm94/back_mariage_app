@@ -17,16 +17,11 @@ exports.getAllGroups = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - getAllgroups.")
         else {
             Group.find({
-            }, function(err, groups){
+            }).populate('guestID').exec(function(err, groups){
                 if (err)
                     res.status(400).json('err affichage groupes')
                 else
                     res.send(groups)
-            }).populate('guestID').exec(function(err, data){
-                if (err)
-                    res.send(err)
-                else
-                res.send(data)
             });
         }
     });
