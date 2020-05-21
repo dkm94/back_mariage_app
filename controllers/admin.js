@@ -249,7 +249,7 @@ exports.newGroup = function (req, res) {
             group.save(function(err, newGroup) {
                 console.log(newGroup)
                 if (err)
-                    res.status(400).json('erreur création groupe');
+                    res.status(404).json('erreur création groupe');
                 else {
                     Mariage.updateOne({_id: decoded.mariageID},
                         {$push: {groupID: newGroup._id}},
@@ -257,7 +257,7 @@ exports.newGroup = function (req, res) {
                             // console.log(decoded.mariageID)
                             console.log(data)
                             if (err)
-                                res.status(400).json('err update mariage')
+                                res.status(404).json('err update mariage')
                             else
                                 res.status(200).json(newGroup.name + " a été ajouté à la liste de mariage.")
                         }
