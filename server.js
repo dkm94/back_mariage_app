@@ -4,7 +4,7 @@ bodyParser = require('body-parser'),
 cors = require('cors'),
 bearerToken = require('express-bearer-token'),
 app = express(),
-port = process.env.PORT || 3050;
+port = process.env.PORT || 3000;
 require('dotenv').config();
 
 // Parse application data

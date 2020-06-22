@@ -35,7 +35,7 @@ exports.getGroupById = function (req, res) {
         else {
             Group.findOne({
                 _id: req.params.id
-            }, function(err, group){
+            }).populate('guestID').exec(function(err, group){
                 if (err)
                     res.status(400).json('err affichage groupe')
                 else
