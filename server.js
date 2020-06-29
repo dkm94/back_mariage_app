@@ -4,7 +4,7 @@ bodyParser = require('body-parser'),
 cors = require('cors'),
 bearerToken = require('express-bearer-token'),
 app = express(),
-port = process.env.PORT || 3000;
+port = process.env.PORT || 3050;
 require('dotenv').config();
 
 // Parse application data
@@ -80,7 +80,7 @@ app.route('/guest/updateChoice/:id').put(GuestController.updateChoice);
 
 
 // Routes communes
-app.route('/groups').get(JoinController.getAllGroups);
+app.route('/groups/:id').get(JoinController.getAllGroups);
 app.route('/group/:id').get(JoinController.getGroupById);
 
 app.route('/guests').get(JoinController.getAllGuests);

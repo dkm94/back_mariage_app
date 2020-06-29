@@ -10,8 +10,11 @@ let tableSchema = new mongoose.Schema({
     guestID: [{
         type: Schema.Types.ObjectId, 
         ref: 'Guest'
-    }]
-    
+    }],
+    mariageID: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Mariage'
+    }
 });
 
 module.exports = mongoose.model('Table', tableSchema);

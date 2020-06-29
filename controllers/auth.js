@@ -64,6 +64,7 @@ exports.adminLogin = function(req, res) {
                 {
                     var token = jwt.sign({ id: admin._id, mariageID: admin.mariageID }, jwt_secret);
                     res.status(200).json({auth: true, token: token, message: "Vous pouvez à présent accéder à votre compte."});
+                    console.log(token.mariageID)
                 }
                 else
                     res.status(400).json({auth: false, message: "Vous devez avoir un compte administrateur pour accéder à cette ressource."});

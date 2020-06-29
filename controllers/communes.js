@@ -5,7 +5,7 @@ const Group = require('../models/groupe');
 const Menu = require('../models/menu');
 const Cake = require('../models/gateau');
 const Guest = require('../models/invite');
-const jwt_secret = process.env.JWT_SECRET_KEY,
+const jwt_secret = process.env.JWT_SECRET_KEY;
 jwt = require('jsonwebtoken')
 
 
@@ -17,6 +17,7 @@ exports.getAllGroups = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - getAllgroups.")
         else {
             Group.find({
+                mariageID: decoded.mariageID
             }).populate('guestID').exec(function(err, groups){
                 if (err)
                     res.status(400).json('err affichage groupes')
@@ -55,6 +56,7 @@ exports.getAllGuests = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - getAllgroups.")
         else {
             Guest.find({
+                groupID: req.params.id
             }, function(err, guests){
                 console.log(decoded)
                 if (err)
@@ -93,6 +95,7 @@ exports.getAllTables = function (req, res) {
             res.status(400).json("Vous n'avez pas les droits d'accès à cette ressource.")
         else {
             Table.find({
+                mariageID: decoded.mariageID
             }, function(err, tables){
                 if (err)
                     res.status(400).json("Eléments introuvables")
@@ -129,6 +132,7 @@ exports.getAllMenus = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - menus.")
         else {
             Menu.find({
+                mariageID: decoded.mariageID
             }, function(err, menus){
                 if (err)
                     res.send(err)
@@ -166,6 +170,7 @@ exports.getAllCakes = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - cakes.")
         else {
             Cake.find({
+                mariageID: decoded.mariageID
             }, function(err, cakes){
                 if (err)
                     res.send(err)
@@ -203,6 +208,7 @@ exports.getAllComments = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - getAllComments.")
         else {
             Comment.find({
+                mariageID: decoded.mariageID
             }, function(err, comments){
                 console.log(decoded)
                 if (err)
