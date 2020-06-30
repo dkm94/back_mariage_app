@@ -83,19 +83,19 @@ app.route('/guest/updateChoice/:id').put(GuestController.updateChoice);
 app.route('/groups/:id').get(JoinController.getAllGroups);
 app.route('/group/:id').get(JoinController.getGroupById);
 
-app.route('/guests').get(JoinController.getAllGuests);
+app.route('/guests/:id').get(JoinController.getAllGuests);
 app.route('/guest/:id').get(JoinController.getGuestByID);
 
-app.route('/tables').get(JoinController.getAllTables);
+app.route('/tables/:id').get(JoinController.getAllTables);
 app.route('/table/:id').get(JoinController.getTableById);
 
-app.route('/menus').get(JoinController.getAllMenus);
+app.route('/menus/:id').get(JoinController.getAllMenus);
 app.route('/menu/:id').get(JoinController.getMenuById);
 
-app.route('/cakes').get(JoinController.getAllCakes);
+app.route('/cakes/:id').get(JoinController.getAllCakes);
 app.route('/cake/:id').get(JoinController.getCakeById);
 
-app.route('/getAllComments').get(JoinController.getAllComments);
+app.route('/getAllComments/:id').get(JoinController.getAllComments);
 // app.route('/group/getCommentById/:id').get(GroupController.getCommentById);
 
 //Port 

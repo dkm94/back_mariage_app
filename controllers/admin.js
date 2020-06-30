@@ -147,6 +147,7 @@ exports.newTable = function (req, res) {
         else {
             let table = new Table ({
                 name: req.body.name,
+                mariageID: decoded.mariageID
             });
                 table.save(function(err, newTable) {
                     if (err)
@@ -183,7 +184,7 @@ exports.updateTable = function (req, res) {
                     if (err)
                         res.send(err)
                         else {
-                            Mariage.updateOne({mariageID: decoded.id},
+                            Mariage.updateOne({_id: decoded.mariageID},
                                 {$set: {tableID: req.params.id}}, function(err, data){
                                     console.log(data)
                                     if (err)
@@ -390,9 +391,10 @@ exports.updateGuest = function (req, res) {
                     if (err)
                         res.status(400).json("err update guest")
                     else {
-                        Group.updateOne({_id: req.body.groupID},
+                        Group.updateOne({_id: Guest.groupID},
                             function(err, result){
                                 console.log(result)
+                                console.log(Guest.groupID)
                                 if (err)
                                     res.status(400).json('err update group')
                                 else {
@@ -426,14 +428,14 @@ exports.deleteGuest = function (req, res) {
                 if (err)
                     res.send('err suppression guest')
                 else {
-                    Group.updateOne({_id: guestID.groupID},
+                    Group.updateOne({_id: Guest.groupID},
                         {$pull: {guestID: req.params.id}}, function(err, result){
                             console.log(result)
                             if (err)
                                 res.status(400).json('err update mariage')
                             else {
                                 Mariage.updateOne({_id: decoded.mariageID},
-                                    {$set: {groupID: data.id}}, function(err, result){
+                                    function(err, result){
                                         if (err)
                                             res.status(400).json('err update mariage')
                                         else
@@ -456,7 +458,8 @@ exports.newMenu = function (req, res) {
         else {
             let menu = new Menu ({
                 name: req.body.name,
-                description: req.body.description
+                description: req.body.description,
+                mariageID: decoded.mariageID
             });
                 menu.save(function(err, newMenu) {
                     if (err)
@@ -484,14 +487,14 @@ exports.updateMenu = function (req, res) {
         if (err)
             res.status(400).json("You don't have the rights to do this action - updateMenu.")
         else {
-            Menu.updateOne({_id: req.params.id, mariageID: decoded.id},
+            Menu.updateOne({_id: req.params.id},
                 {$set: {name: req.body.name}},
                 function(err, result){
                     console.log(result)
                     if (err)
                         res.send(err)
                         else {
-                            Mariage.updateOne({mariageID: decoded.id},
+                            Mariage.updateOne({_id: decoded.mariageID},
                                 {$set: {menuID: req.params.id}}, function(err, result){
                                     console.log(result)
                                     if (err)
@@ -543,15 +546,16 @@ exports.newCake = function (req, res) {
         else {
             let cake = new Cake ({
                 name: req.body.name,
-                description: req.body.description
+                description: req.body.description,
+                mariageID: decoded.mariageID
             });
                 cake.save(function(err, newCake) {
                     if (err)
                         res.status(400).json(('erreur création gâteau'));
                     else {
                         Mariage.updateOne({_id: decoded.mariageID},
-                            {$push: {cakeID: newCake.id}}, function(err, result){
-                                console.log(result)
+                            {$push: {cakeID: newCake._id}}, function(err, data){
+                                console.log(data)
                                 if (err)
                                     res.status(400).json('err update mariage')
                                 else
@@ -570,26 +574,18 @@ exports.updateCake = function (req, res) {
         console.log(err)
         if (err)
             res.status(400).json("You don't have the rights to do this action - updateCake.")
-        else {
+        else if (decoded.id){
             Cake.updateOne({_id: req.params.id},
                 {$set: {name: req.body.name, description: req.body.description}},
                 function(err, result){
                     console.log(result)
                     if (err)
-                        res.send(err)
-                        else {
-                            Mariage.updateOne({_id: decoded.mariageID},
-                                {$set: {cakeID: req.params.id}}, function(err, result){
-                                    console.log(result)
-                                    if (err)
-                                        res.status(400).json('err update mariage')
-                                    else
-                                        res.status(200).json('Le dessert ' + req.body.name + ' a été modifié.')
-                                })
-                        }
+                        res.status(400).json('Err update gâteau')
+                        else 
+                            res.status(200).json('Le dessert ' + req.body.name + ' a été modifié.')
                 }
-                );
-            }
+            );
+        }
         }
     );
 }
@@ -598,24 +594,15 @@ exports.deleteCake = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
             res.status(400).json("You don't have the rights to do this action - deleteCake.")
-        else {
+        else if (decoded.id){
             Cake.deleteOne({
                 _id: req.params.id
             }, function(err, result){
                 console.log(result)
                 if (err)
                     res.send('err suppression gâteau')
-                else {
-                    Mariage.updateOne({_id: decoded.mariageID},
-                        {$pull: {cakeID: req.params.id}}, function(err, result){
-                            console.log(result)
-                            if (err)
-                                res.status(400).json('err update mariage')
-                            else
-                                res.status(200).json('Le gâteau a été supprimé.')
-                        }
-                    )
-                }
+                else 
+                    res.status(200).json('Le gâteau a été supprimé.')  
             });
             }
         }

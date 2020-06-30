@@ -173,9 +173,9 @@ exports.getAllCakes = function (req, res) {
                 mariageID: decoded.mariageID
             }, function(err, cakes){
                 if (err)
-                    res.send(err)
+                    res.status(400).json('err affichage gâteau')
                 else
-                res.send(cakes)
+                    res.send(cakes)
             });
             }
         }

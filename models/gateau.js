@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-// const Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 let cakeSchema = new mongoose.Schema({
 
@@ -9,6 +9,10 @@ let cakeSchema = new mongoose.Schema({
     },
     description: {
         type: 'string'
+    },
+    mariageID: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Mariage'
     }
     
 });
