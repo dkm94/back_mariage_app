@@ -391,41 +391,47 @@ exports.updateGuest = function (req, res) {
     );
 }
 
-// exports.deleteGuest = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("You don't have the rights to do this action - deleteGuest.")
-//         else {
-//             Guest.deleteOne({
-//                 _id: req.params.id
-//             }, function(err, result){
-//                 console.log(result)
-//                 if (err)
-//                     res.send('err suppression guest')
-//                 else 
-//                     res.status(200).json("L'invité a été supprimé.")
-//             });
-//             }
-//         }
-//     );
-// }
-
-const deleteGuest = 
-    async function (req, res) {
-        try {
-            const decoded = await jwt.verify(req.token, jwt_secret);
+exports.deleteGuest = function (req, res) {
+    jwt.verify(req.token, jwt_secret, function(err, decoded) {
+        if (err)
+            res.status(400).json("You don't have the rights to do this action - deleteGuest.")
+        else {
             const params = req.params.id
-            await Guest.deleteOne({ _id: params });
-            // await Group.updateOne({ _id: req.body.id }, { $pull: { guestID: params }});
-            await Group.updateMany({ }, { $pull: { guestID: params }});
+            Guest.deleteOne({
+                _id: params
+            }, function(err, result){
+                console.log(result)
+                if (err)
+                    res.send('err suppression guest')
+                else 
+                Group.updateMany({ }, { $pull: { guestID: params }},
+                    function(err, result){
+                        if (err)
+                            res.status(404).json('err update group')
+                    });
+            });
+            }
+        }
+    );
+}
+
+// const deleteGuest = 
+//     async function (req, res) {
+//         try {
+//             const decoded = await jwt.verify(req.token, jwt_secret);
+//             const params = req.params.id
+//             await Guest.deleteOne({ _id: params });
+//             // await Group.updateOne({ _id: req.body.id }, { $pull: { guestID: params }});
+//             await Group.updateMany({ }, { $pull: { guestID: params }});
     
-            res.status(200).json('Guest deleted successfully')
-        }
-        catch {
-            res.status(400).json("error here")
-        }
-    }
-    exports.deleteGuest = deleteGuest;
+//             res.status(200).json('Guest deleted successfully')
+//         }
+//         catch {
+//             res.status(400).json("error here")
+//         }
+//     }
+//     exports.deleteGuest = deleteGuest;
+
 // CRUD menu
 exports.newMenu = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
