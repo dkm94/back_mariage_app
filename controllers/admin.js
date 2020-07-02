@@ -276,7 +276,7 @@ exports.updateGroup = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - updateGroup.")
         else {
             Group.updateOne({_id: req.params.id},
-                {$set: {name: req.body.name, mail: req.body.mail}},
+                {$set: {name: req.body.name, mail: req.body.mail, guestID: req.body['guestID[]']}},
                 function(err, result){
                     console.log(result)
                     if (err)
@@ -356,21 +356,13 @@ exports.newGuest = function (req, res) {
                     else {
                         Group.updateOne({_id: req.params.id},
                             {$push: {guestID: newGuest._id }}, function(err, result){
-                                console.log(result)
+                                console.log(err)
                                 if (err)
                                     res.status(400).json('err update group')
-                                else {
-                                    Mariage.updateOne({_id: decoded.mariageID},
-                                        function(err, result){
-                                            console.log(result)
-                                            if (err)
-                                                res.status(400).json('err update mariage')
-                                            else
-                                                res.status(200).json(newGuest.name + ' a été ajouté avec succès.')
-                                        })
-                                }
-                    
-                            })
+                                else
+                                    res.status(200).json(newGuest.name + ' a été ajouté avec succès.')
+                            }
+                        )
                     }
                         
                 })
@@ -390,25 +382,8 @@ exports.updateGuest = function (req, res) {
                     console.log(result)
                     if (err)
                         res.status(400).json("err update guest")
-                    else {
-                        Group.updateOne({_id: Guest.groupID},
-                            function(err, result){
-                                console.log(result)
-                                console.log(Guest.groupID)
-                                if (err)
-                                    res.status(400).json('err update group')
-                                else {
-                                    Mariage.updateOne({_id: decoded.mariageID},
-                                        function(err, result){
-                                            console.log(result)
-                                            if (err)
-                                                res.status(400).json('err update mariage')
-                                            else
-                                                res.status(200).json('Modifications enregistrées.' )
-                                        })
-                                }
-                            })
-                    }
+                    else 
+                        res.send(result)
                 }
                 );
             }
@@ -416,40 +391,41 @@ exports.updateGuest = function (req, res) {
     );
 }
 
-exports.deleteGuest = function (req, res) {
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        if (err)
-            res.status(400).json("You don't have the rights to do this action - deleteGuest.")
-        else {
-            Guest.deleteOne({
-                _id: req.params.id
-            }, function(err, result){
-                console.log(result)
-                if (err)
-                    res.send('err suppression guest')
-                else {
-                    Group.updateOne({_id: Guest.groupID},
-                        {$pull: {guestID: req.params.id}}, function(err, result){
-                            console.log(result)
-                            if (err)
-                                res.status(400).json('err update mariage')
-                            else {
-                                Mariage.updateOne({_id: decoded.mariageID},
-                                    function(err, result){
-                                        if (err)
-                                            res.status(400).json('err update mariage')
-                                        else
-                                            res.status(200).json('Le menu ' + req.body.name + ' a été ajouté.' )
-                                    })
-                            }
-                        })       
-                }
-            });
-            }
-        }
-    );
-}
+// exports.deleteGuest = function (req, res) {
+//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
+//         if (err)
+//             res.status(400).json("You don't have the rights to do this action - deleteGuest.")
+//         else {
+//             Guest.deleteOne({
+//                 _id: req.params.id
+//             }, function(err, result){
+//                 console.log(result)
+//                 if (err)
+//                     res.send('err suppression guest')
+//                 else 
+//                     res.status(200).json("L'invité a été supprimé.")
+//             });
+//             }
+//         }
+//     );
+// }
 
+const deleteGuest = 
+    async function (req, res) {
+        try {
+            const decoded = await jwt.verify(req.token, jwt_secret);
+            const params = req.params.id
+            await Guest.deleteOne({ _id: params });
+            // await Group.updateOne({ _id: req.body.id }, { $pull: { guestID: params }});
+            await Group.updateMany({ }, { $pull: { guestID: params }});
+    
+            res.status(200).json('Guest deleted successfully')
+        }
+        catch {
+            res.status(400).json("error here")
+        }
+    }
+    exports.deleteGuest = deleteGuest;
 // CRUD menu
 exports.newMenu = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {

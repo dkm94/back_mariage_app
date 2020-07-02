@@ -31,7 +31,6 @@ exports.register = function(req, res) {
                 if (err)
                     res.status(400).json('échec création admin')
                 else {
-                    // res.status(200).json('compté créé avec succès.')
                     Mariage.updateOne({_id: newMariage._id},
                         {$set: {adminID: newAdmin._id }}, function(err, data){
                             if (err)
