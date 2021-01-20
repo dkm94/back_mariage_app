@@ -5,7 +5,9 @@ cors = require('cors'),
 bearerToken = require('express-bearer-token'),
 app = express(),
 port = process.env.PORT || 3050;
-require('dotenv').config();
+// require('dotenv').config();
+
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
 // Parse application data
 app.use(bodyParser.json());
