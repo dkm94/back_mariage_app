@@ -7,7 +7,7 @@ app = express(),
 port = process.env.PORT || 3050;
 // require('dotenv').config();
 
-if (process.env.NODE_ENV !== 'production') require('dotenv').config()
+// if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
 // Parse application data
 app.use(bodyParser.json());
