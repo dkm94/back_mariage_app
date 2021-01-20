@@ -3,9 +3,10 @@ mongoose = require('mongoose'),
 bodyParser = require('body-parser'),
 cors = require('cors'),
 bearerToken = require('express-bearer-token'),
-app = express(),
+app = express();
+require('dotenv').config();
 port = process.env.PORT || 3050;
-// require('dotenv').config();
+
 
 // if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
