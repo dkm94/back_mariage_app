@@ -5,11 +5,12 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import bearerToken from 'express-bearer-token';
 
+dotenv.config();
 const app = express();
 const port = process.env.PORT || 3050;
 
 // if (process.env.NODE_ENV !== 'production') require('dotenv').config()
-dotenv.config();
+
 // Parse application data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
