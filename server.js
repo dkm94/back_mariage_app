@@ -2,8 +2,8 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const bearerToken = require('express-bearer-token');
-const app = express()
-port = process.env.PORT || 3050;
+const app = express();
+const PORT = process.env.PORT || 3050;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const db = process.env.MONGODB_URI;
@@ -40,7 +40,8 @@ app.use(function (req, res, next) {
   });
 
 // BDD connection
-mongoose.connect(db || 'mongodb://localhost/mariage', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
+mongoose
+.connect(db || 'mongodb://localhost/mariage', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
 
 // test
 app.route('/').get(function(req, res) {
@@ -125,6 +126,6 @@ app.route('/getAllComments/:id').get(JoinController.getAllComments);
 
 //Port 
 
-app.listen(port, () => {
-    console.log("Server listening on port " + port);
+app.listen(PORT, () => {
+    console.log("Server listening on port " + PORT);
 });
