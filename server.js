@@ -15,7 +15,10 @@ app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.use(cors());
+const corsOptions = {
+    origin: 'https://my-wedding-app.netlify.app'
+  }
+app.use(cors(corsOptions));
 app.use(bearerToken());
 
 // BDD connection
