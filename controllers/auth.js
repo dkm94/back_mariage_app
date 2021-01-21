@@ -1,8 +1,8 @@
-const Admin = require('../models/admin');
-const Mariage = require('../models/mariage');
-const Group = require('../models/groupe');
-bcrypt = require('bcrypt'),
-jwt = require('jsonwebtoken'),
+import Admin from '../models/admin';
+import Mariage from '../models/mariage';
+import Group from '../models/groupe';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 jwt_secret = process.env.JWT_SECRET_KEY;
 
 exports.register = function(req, res) {

@@ -1,8 +1,8 @@
-const Mariage = require('../models/mariage');
-const Group = require('../models/groupe');
-const Guest = require('../models/invite');
-const jwt_secret = process.env.JWT_SECRET_KEY,
-jwt = require('jsonwebtoken')
+import Mariage from '../models/mariage';
+import Group from '../models/groupe';
+import Guest from '../models/invite';
+jwt_secret = process.env.JWT_SECRET_KEY;
+import jwt from 'jsonwebtoken';
 
 
 // READ own page

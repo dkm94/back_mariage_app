@@ -1,12 +1,10 @@
-const Admin = require('../models/admin');
-const Table = require('../models/table');
-const Mariage = require('../models/mariage');
-const Group = require('../models/groupe');
-const Menu = require('../models/menu');
-const Cake = require('../models/gateau');
-const Guest = require('../models/invite');
-const jwt_secret = process.env.JWT_SECRET_KEY;
-jwt = require('jsonwebtoken')
+import Table from '../models/table';
+import Group from '../models/groupe';
+import Menu from '../models/menu';
+import Cake from '../models/gateau';
+import Guest from '../models/invite';
+jwt_secret = process.env.JWT_SECRET_KEY;
+import jwt from 'jsonwebtoken';
 
 
 // Read GROUP

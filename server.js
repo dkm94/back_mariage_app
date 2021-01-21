@@ -1,13 +1,11 @@
-const express = require('express');
-require('dotenv').config();
-port = process.env.PORT || 3050;
-mongoose = require('mongoose'),
-bodyParser = require('body-parser'),
-cors = require('cors'),
-bearerToken = require('express-bearer-token'),
+import './config';
+import express from 'express';
 app = express();
-
-
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import bearerToken from 'express-bearer-token';
+port = process.env.PORT || 3050;
 
 // if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
