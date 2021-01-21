@@ -1,14 +1,15 @@
-import './config';
+import dotenv from 'dotenv';
 import express from 'express';
-app = express();
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import bearerToken from 'express-bearer-token';
-port = process.env.PORT || 3050;
+
+const app = express();
+const port = process.env.PORT || 3050;
 
 // if (process.env.NODE_ENV !== 'production') require('dotenv').config()
-
+dotenv.config();
 // Parse application data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
