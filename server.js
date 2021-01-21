@@ -1,12 +1,11 @@
+const express = require('express');
 require('dotenv').config();
-import express from 'express';
-import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import bearerToken from 'express-bearer-token';
-
-const app = express();
-const port = process.env.PORT || 3050;
+const cors = require('cors');
+const bearerToken = require('express-bearer-token');
+const app = express()
+port = process.env.PORT || 3050;
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 // if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
@@ -15,11 +14,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 const corsOptions = {
-    origin: 'https://my-wedding-app.netlify.app',
-    credentials: true
-  }
+  origin: 'https://my-wedding-app.netlify.app',
+  credentials: true
+}
 app.use(cors(corsOptions));
 
+app.use(bearerToken());
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
     // res.setHeader("Access-Control-Allow-Origin", "*");
@@ -38,7 +38,6 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
   });
-app.use(bearerToken());
 
 // BDD connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/mariage', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
