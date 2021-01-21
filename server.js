@@ -16,7 +16,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 const corsOptions = {
-    origin: 'https://my-wedding-app.netlify.app'
+    origin: 'https://my-wedding-app.netlify.app',
+    credentials: true
   }
 app.use(cors(corsOptions));
 app.use(bearerToken());
