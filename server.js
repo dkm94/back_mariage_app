@@ -1,11 +1,10 @@
-import dotenv from 'dotenv';
+require('dotenv').config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import bearerToken from 'express-bearer-token';
 
-dotenv.config();
 const app = express();
 const port = process.env.PORT || 3050;
 
