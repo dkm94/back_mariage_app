@@ -6,6 +6,7 @@ const app = express()
 port = process.env.PORT || 3050;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const db = process.env.MONGODB_URI;
 
 // if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
@@ -24,7 +25,6 @@ app.use(function (req, res, next) {
     // Website you wish to allow to connect
     // res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Origin", "https://my-wedding-app.netlify.app");
-    // res.setHeader("Access-Control-Allow-Origin", "http://localhost:5000");
   
     // Request methods you wish to allow
     res.setHeader(
@@ -40,7 +40,7 @@ app.use(function (req, res, next) {
   });
 
 // BDD connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/mariage', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
+mongoose.connect(db || 'mongodb://localhost/mariage', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
 
 // test
 app.route('/').get(function(req, res) {
