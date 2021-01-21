@@ -1,5 +1,5 @@
-const jwt_secret = process.env.JWT_SECRET_KEY,
-jwt = require('jsonwebtoken');
+jwt_secret = process.env.JWT_SECRET_KEY;
+import jwt from 'jsonwebtoken';
 
 exports.validateToken = function(token) {
     jwt.verify(token, jwt_secret, function(err, decoded) {
