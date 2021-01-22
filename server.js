@@ -43,9 +43,21 @@ app.use(function (req, res, next) {
 mongoose
 .connect(db || 'mongodb://localhost/mariage', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
 
+const Mariage = require('./models/mariage')
 // test
 app.route('/').get(function(req, res) {
     res.send('hello world');
+});
+
+app.route('/admins').get(function(req, res) {
+  Mariage.find({}, (err, result) => {
+      if (err){
+        res.send(err)
+      } else {
+        res.send(result)
+      }
+      
+    })
 });
 
 // Appel des controllers
