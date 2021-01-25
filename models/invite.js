@@ -10,14 +10,18 @@ let guestSchema = new mongoose.Schema({
     media: {
         type: 'string'
     },
-    groupID: [{
+    groupID: {
         type: Schema.Types.ObjectId, 
         ref: 'Group'
-    }],
-    choiceID: [{
+    },
+    guestMenuID: {
         type: Schema.Types.ObjectId, 
-        ref: 'Choice'
-    }]
+        ref: 'GuestMenu'
+    },
+    tableID: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Table'
+    }
  
 });
 

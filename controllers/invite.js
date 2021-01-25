@@ -11,7 +11,7 @@ exports.updateChoice = function (req, res) {
             res.status(400).json("You don't have the rights to do this action - update choice.")
         else {
             Choice.updateOne({_id: req.params.id},
-                {$set: {tableID: req.body.table, menuID: req.body.menu, cakeID: req.body.cake}},
+                {$set: {tableID: req.body.table, starterID: req.body.menu, dessertID: req.body.cake}},
                 function(err, result){
                     console.log(result)
                     if (err)

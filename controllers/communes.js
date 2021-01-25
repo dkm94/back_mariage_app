@@ -72,7 +72,7 @@ exports.getAllGuests = function (req, res) {
 exports.getGuestByID = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action - menuID.")
+            res.status(400).json("You don't have the rights to do this action - starterID.")
         else {
             Guest.findOne({
                 _id: req.params.id
@@ -147,7 +147,7 @@ exports.getAllMenus = function (req, res) {
 exports.getMenuById = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action - menuID.")
+            res.status(400).json("You don't have the rights to do this action - starterID.")
         else {
             Menu.findOne({
                 _id: req.params.id
@@ -185,7 +185,7 @@ exports.getAllCakes = function (req, res) {
 exports.getCakeById = function (req, res) {
     jwt.verify(req.token, jwt_secret, function(err, decoded) {
         if (err)
-            res.status(400).json("You don't have the rights to do this action - cakeID.")
+            res.status(400).json("You don't have the rights to do this action - dessertID.")
         else {
             Cake.findOne({
                 _id: req.params.id

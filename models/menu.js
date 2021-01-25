@@ -3,13 +3,18 @@ const Schema = mongoose.Schema;
 
 let menuSchema = new mongoose.Schema({
 
-    name: {
-        type: 'string',
-        required: 'A name is required.'
-    },
-    description: {
-        type: 'string'
-    },
+    starterID: [{
+        type: Schema.Types.ObjectId, 
+        ref: 'Starter'
+    }],
+    main_courseID: [{
+        type: Schema.Types.ObjectId, 
+        ref: 'MainCourse'
+    }],
+    dessertID: [{
+        type: Schema.Types.ObjectId, 
+        ref: 'Dessert'
+    }],
     mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'

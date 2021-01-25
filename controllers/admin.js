@@ -271,35 +271,42 @@ exports.newGroup = function (req, res) {
     })
 }
 
-exports.updateGroup = function (req, res) {
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        console.log(err)
-        if (err)
-            res.status(400).json("You don't have the rights to do this action - updateGroup.")
-        else {
-            const params = req.params.id
-            Group.updateOne({_id: params},
-                // {$set: {name: req.body.name, mail: req.body.mail, guestID: req.body['guestID[]']}},
-                {$set: {name: req.body.name, mail: req.body.mail}},
-                function(err, result){
-                    console.log(result)
-                    if (err)
-                        res.send(err)
-                        else {
-                            Mariage.updateOne({_id: decoded.mariageID},
-                                {$set: {groupID: params}}, function(err, result){
-                                    console.log(result)
-                                    if (err)
-                                        res.status(400).json('err update mariage')
-                                    else
-                                        res.status(200).json('Le groupe ' + req.body.name + ' a été modifié.')
-                                })
-                        }
-                }
-                );
-            }
-        }
-    );
+// exports.updateGroup = function (req, res) {
+//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
+//         console.log(err)
+//         if (err)
+//             res.status(400).json("You don't have the rights to do this action - updateGroup.")
+//         else {
+//             const params = req.params.id
+//             Group.updateOne({_id: params},
+//                 // {$set: {name: req.body.name, mail: req.body.mail, guestID: req.body['guestID[]']}},
+//                 {$set: {name: req.body.name, mail: req.body.mail}},
+//                 function(err, result){
+//                     console.log(result)
+//                     if (err)
+//                         res.send(err)
+//                         else {
+//                             Mariage.updateOne({_id: decoded.mariageID},
+//                                 {$set: {groupID: params}}, function(err, result){
+//                                     console.log(result)
+//                                     if (err)
+//                                         res.status(400).json('err update mariage')
+//                                     else
+//                                         res.status(200).json('Le groupe ' + req.body.name + ' a été modifié.')
+//                                 })
+//                         }
+//                 }
+//                 );
+//             }
+//         }
+//     );
+// }
+exports.updateGroup = (req, res, next) => {
+    console.log(req)
+    Group.updateOne({ _id: req.params.id },
+        {$set: {...req.body, _id: req.params.id}})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json({ err}))
 }
 
 exports.deleteGroup = function (req, res) {
@@ -349,7 +356,8 @@ exports.newGuest = function (req, res) {
                 name: req.body.name,
                 groupID: params,
                 media: null,
-                choiceID: null
+                menu: null,
+                tableID: null
             });
                 guest.save(function(err, newGuest) {
                     console.log(newGuest)
@@ -451,7 +459,7 @@ exports.newMenu = function (req, res) {
                         res.status(400).json(('erreur création menu'));
                     else {
                         Mariage.updateOne({_id: decoded.mariageID},
-                            {$push: {menuID: newMenu.id}}, function(err, data){
+                            {$push: {starterID: newMenu.id}}, function(err, data){
                                 if (err)
                                     res.status(400).json('err update mariage')
                                 else
@@ -481,7 +489,7 @@ exports.updateMenu = function (req, res) {
                         res.send(err)
                         else {
                             Mariage.updateOne({_id: decoded.mariageID},
-                                {$set: {menuID: params}}, function(err, result){
+                                {$set: {starterID: params}}, function(err, result){
                                     console.log(result)
                                     if (err)
                                         res.status(400).json('err update mariage')
@@ -510,7 +518,7 @@ exports.deleteMenu = function (req, res) {
                     res.send('err suppression menu')
                 else {
                     Mariage.updateOne({_id: decoded.mariageID},
-                        {$pull: {menuID: params}}, function(err, result){
+                        {$pull: {starterID: params}}, function(err, result){
                             console.log(result)
                             if (err)
                                 res.status(400).json('err update mariage')
@@ -541,7 +549,7 @@ exports.newCake = function (req, res) {
                         res.status(400).json(('erreur création gâteau'));
                     else {
                         Mariage.updateOne({_id: decoded.mariageID},
-                            {$push: {cakeID: newCake._id}}, function(err, data){
+                            {$push: {dessertID: newCake._id}}, function(err, data){
                                 console.log(data)
                                 if (err)
                                     res.status(400).json('err update mariage')
