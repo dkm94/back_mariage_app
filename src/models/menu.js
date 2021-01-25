@@ -7,7 +7,7 @@ let menuSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Starter'
     }],
-    main_courseID: [{
+    maincourseID: [{
         type: Schema.Types.ObjectId, 
         ref: 'MainCourse'
     }],

@@ -2,7 +2,7 @@
   "name": "backend_fil_rouge",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "./src/index.js",
   "dependencies": {
     "@types/body-parser": "^1.19.0",
     "@types/cors": "^2.8.6",
@@ -26,7 +26,7 @@
     "npm": "6.14.7"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon ./src/index.js"
   },
   "author": "",
   "license": "ISC"

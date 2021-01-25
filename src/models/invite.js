@@ -21,6 +21,10 @@ let guestSchema = new mongoose.Schema({
     tableID: {
         type: Schema.Types.ObjectId, 
         ref: 'Table'
+    },
+    mariageID: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Mariage'
     }
  
 });

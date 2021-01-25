@@ -3,13 +3,17 @@ const Schema = mongoose.Schema;
 
 let maincourseSchema = new mongoose.Schema({
 
-    name: [{
+    name: {
         type: 'string'
-    }],
+    },
     menuID: [{
         type: Schema.Types.ObjectId, 
         ref: 'Menu'
-    }]
+    }],
+    mariageID: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Mariage'
+    }
     
 });
 

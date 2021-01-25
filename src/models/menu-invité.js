@@ -19,6 +19,10 @@ guestID: {
     type: Schema.Types.ObjectId, 
     ref: 'Guest'
 },
+mariageID: {
+    type: Schema.Types.ObjectId, 
+    ref: 'Mariage'
+}
     
 });
 

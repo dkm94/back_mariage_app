@@ -1,48 +1,51 @@
 const Admin = require('../models/admin');
 const Mariage = require('../models/mariage');
 const Group = require('../models/groupe');
+const Menu = require('../models/menu');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const jwt_secret = process.env.JWT_SECRET_KEY;
 
 exports.register = function(req, res) {
-    
     let mariage = new Mariage ({
-        title: req.body.title
+        ...req.body
     });
-    mariage.save(function(err, newMariage) {
-        console.log(newMariage)
-        if (err)
-            res.status(400).json('erreur création nouveau mariage');
-        else {
-            // res.status(200).json(newMariage);
-            let hash = bcrypt.hashSync(req.body.password, 10);
-            let admin = new Admin ({
-                firstPerson: req.body.firstPerson,
-                secondPerson: req.body.secondPerson,
-                email: req.body.email,
-                password: hash,
-                mariageID: newMariage._id,
-                media: null
-            });
-
-            admin.save(function(err, newAdmin){
-                console.log(newAdmin);
-                if (err)
-                    res.status(400).json('échec création admin')
-                else {
-                    Mariage.updateOne({_id: newMariage._id},
-                        {$set: {adminID: newAdmin._id }}, function(err, data){
-                            if (err)
-                                res.status(400).json('err update mariage')
-                            else
-                                res.status(200).json(newAdmin)
-                        }
-                    )
-                }
-            });
-        }    
-    });
+    mariage.save()
+        .then(newMariage => {
+            if(!mariage){
+                res.status(400).json(err)
+            } else {
+                let hash = bcrypt.hashSync(req.body.password, 10);
+                let admin = new Admin ({
+                    ...req.body,
+                    password: hash,
+                    mariageID: newMariage._id
+                })
+                admin.save()
+                .then(newAdmin => {
+                    if(!admin){
+                        res.status(400).json(err)
+                    } else {
+                        console.log(newAdmin)
+                        let menu = new Menu ({
+                            ...req.body,
+                            mariageID: newMariage._id
+                        })
+                        menu.save()
+                        .then(newMenu => {
+                            if(!newMenu){
+                                res.status(400).json(err)
+                            } else {
+                                Mariage.updateOne({_id: newMariage._id},
+                                    {$set: {adminID: newAdmin._id, menuID: newMenu._id }})
+                                    .then(newMariage => res.status(200).json({newMariage}))
+                                    .catch(err => res.status(400).json({err}))
+                            }
+                        })
+                    }
+                })   
+            }
+        })    
 }
 
 
