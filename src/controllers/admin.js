@@ -3,6 +3,7 @@ const Table = require('../models/table');
 const Mariage = require('../models/mariage');
 const Group = require('../models/groupe');
 const Guest = require('../models/invite');
+const GuestMenu = require('../models/menu-invité');
 const Menu = require('../models/menu');
 const Starter = require('../models/menu-entrée');
 const Maincourse = require('../models/menu-plat');
@@ -121,6 +122,7 @@ exports.deleteTable = (req, res) => {
 
 // //GROUPES
 exports.newGroup = function (req, res) {
+    const mariageId = res.locals.mariageID;
     let generatedpsw = generator.generate({
         length: 10,
         numbers: true
@@ -128,14 +130,14 @@ exports.newGroup = function (req, res) {
     let group = new Group ({
         ...req.body,
         password: generatedpsw,
-        mariageID: res.locals.mariageID
+        mariageID: mariageId
     });
     group.save()
         .then(newGroup => {
             if(!group){
                 res.status(400).json(err)
             } else {
-                Mariage.updateOne({_id: res.locals.mariageID},
+                Mariage.updateOne({_id: mariageId},
                     {$push: {groupID: newGroup}})
                     .then(data => res.status(200).json(data))
                     .catch(err => res.status(400).json(err))
@@ -144,94 +146,89 @@ exports.newGroup = function (req, res) {
 }
 
 exports.group = (req, res, next) => {
-    Group.findOne({ _id: req.params.id, mariageID: res.locals.mariageID })
+    const mariageId = res.locals.mariageID;
+    Group.findOne({ _id: req.params.id, mariageID: mariageId})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
 
 exports.groups = (req, res, next) => {
-    Group.find({})
+    const mariageId = res.locals.mariageID;
+    Group.find({mariageID: mariageId})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
 
-// exports.updateGroup = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Group.updateOne({ _id: req.params.id },
-//                 {$set: {...req.body, _id: req.params.id}})
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json({ err}))
-//             }
-//         }
-//     );
-// }
+exports.updateGroup = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    Group.updateOne({ _id: req.params.id},
+        {$set: {...req.body, _id: req.params.id, mariageID: mariageId}})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json({ err}))
+}
 
-// exports.deleteGroup = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Group.deleteOne({_id: req.params.id})
-//             .then(() => res.status(200).json({ message: "Le groupe a été supprimé."}))
-//             .catch(err => res.status(400).json ({ err }))
-//             // next();
-//         }
-//     })
-// }
+exports.deleteGroup = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Group.deleteOne({_id: req.params.id, mariageID: mariageId})
+        .then(data => {
+            console.log(data.deletedCount)
+            if(data.deletedCount == 1){
+                Mariage.updateOne({_id: mariageId}, {$pull: {groupID: req.params.id}})
+                    .then(data => res.status(200).json(data))
+                    .catch(err => res.status(400).json(err))
+            } else
+                return res.status(400).json('erreur deleted count')
+        })
+        .catch(err => res.status(400).json(err))
+}
 
 // //CRUD guest
-// exports.newGuest = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             let guest = new Guest ({
-//                 ...req.body,
-//                 groupID: req.params.id,
-//             });
-//                 guest.save()
-//                     .then(newGuest => {
-//                         if(!guest) {
-//                             res.status(400).json(err)
-//                         } else {
-//                             Group.updateOne({_id: req.params.id},
-//                                 {$push: {groupID: newGuest}})
-//                                 .then(data => res.status(200).json({ data}))
-//                                 .catch(err => res.status(400).json({err}))
-//                         }
-//                     })
-//                     .catch(err => res.status(400).json({err}))
-//             }
-//         }
-//     );
-// }
+exports.newGuest = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    let guestmenu = new GuestMenu ({
+        mariageID: mariageId
+    });
+    guestmenu.save()
+        .then(newGuestMenu => {
+            if(!newGuestMenu){
+                res.status(400).json(err)
+            } else {
+                console.log(newGuestMenu)
+                let guest = new Guest ({
+                    ...req.body,
+                    guestMenuID: newGuestMenu._id,
+                    groupID: req.params.id,
+                    mariageID: mariageId
+                });
+                guest.save()
+                    .then(newGuest => {
+                        if(!guest) {
+                            res.status(400).json(err)
+                        } else {
+                            Group.updateOne({_id: req.params.id},
+                                {$push: {guestID: newGuest}})
+                                .then(data => res.status(200).json(data))
+                                .catch(err => res.status(400).json(err))
+                        }
+                    })
+                    .catch(err => res.status(400).json(err))
+            }
+        })
+        .catch(err => res.status(400).json(err))
+}
 
-// exports.guest = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Guest.findOne({ _id: req.params.id })
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json( err ))
-//         }
-//     })
-// }
+exports.guest = (req, res, next) => {
+    Guest.findOne({ _id: req.params.id })
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
+}
 
-// exports.guests = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Guest.find({})
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json( err ))
-//         }
-//     })
-// }
+exports.guests = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Guest.find({mariageID: mariageId})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
+}
 
 // exports.updateGuest = function (req, res) {
 //     jwt.verify(req.token, jwt_secret, function(err, decoded) {

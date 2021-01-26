@@ -9,11 +9,14 @@ const { admin,
     deleteTable,
     deleteGroup,
     newGroup,
+    newGuest,
     newTable,
     table, 
     tables,
     group,
-    groups } = require("../controllers/admin");
+    groups,
+    guest,
+    guests } = require("../controllers/admin");
 const { register, adminLogin } = require("../controllers/auth");
 const { adminAuth } = require("../middlewares");
 
@@ -24,23 +27,26 @@ router.post("/register", register);
 router.post("/adminLogin", adminLogin);
 router.get("/myAccount/:id", adminAuth, admin);
 
+router.post("/addGuest/:id", adminAuth, newGuest);
 router.post("/addGroup", adminAuth, newGroup);
 router.post("/addTable", adminAuth, newTable);
 
 router.get("/wedding/:id", adminAuth, mariage);
 router.get("/table/:id", adminAuth, table);
 router.get("/group/:id", adminAuth, group);
+router.get("/guest/:id", adminAuth, guest);
 
 router.get("/tables", adminAuth, tables);
 router.get("/groups", adminAuth, groups);
+router.get("/guests", adminAuth, guests);
 
 router.put("/editAccount/:id", adminAuth, updateAdmin);
 router.put("/editWedding/:id", adminAuth, updateMariage);
 router.put("/editTable/:id", adminAuth, updateTable);
-// router.put("/editGroup/:id", adminAuth, updateGroup);
+router.put("/editGroup/:id", adminAuth, updateGroup);
 
 router.delete("/deleteTable/:id", adminAuth, deleteTable);
-// router.delete("/deleteGroup/:id", adminAuth, deleteGroup);
+router.delete("/deleteGroup/:id", adminAuth, deleteGroup);
 
 
 
