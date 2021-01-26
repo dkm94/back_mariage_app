@@ -53,7 +53,7 @@ exports.register = function(req, res) {
 // login admin
 
 exports.adminLogin = function(req, res) {
-
+    console.log("login!")
     Admin.findOne({ 
         email: req.body.email
     },function(err, admin){
@@ -78,7 +78,7 @@ exports.adminLogin = function(req, res) {
 exports.guestLogin = function(req, res) {
 
     Group.findOne({ 
-        mail: req.body.mail
+        email: req.body.email
     },function(err, group){
         if(err)
             res.status(400).json({auth: false, message: "Please check email/password."});

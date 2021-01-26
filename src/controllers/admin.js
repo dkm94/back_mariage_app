@@ -1,51 +1,35 @@
 const Admin = require('../models/admin');
-// const Table = require('../models/table');
-// const Mariage = require('../models/mariage');
-// const Group = require('../models/groupe');
-// const Guest = require('../models/invite');
-// const Menu = require('../models/menu');
-// const Starter = require('../models/menu-entrée');
-// const Maincourse = require('../models/menu-plat');
-// const Dessert = require('../models/menu-dessert');
+const Table = require('../models/table');
+const Mariage = require('../models/mariage');
+const Group = require('../models/groupe');
+const Guest = require('../models/invite');
+const Menu = require('../models/menu');
+const Starter = require('../models/menu-entrée');
+const Maincourse = require('../models/menu-plat');
+const Dessert = require('../models/menu-dessert');
 const jwt_secret = process.env.JWT_SECRET_KEY;
 const jwt = require('jsonwebtoken');
-// const generator = require('generate-password');
+const generator = require('generate-password');
 // const deleteUser = require("../middlewares/delete.user.cascade")
 
 //RUD admin
-exports.myAccount = function (req, res) {
-    console.log("MyAccount")
-    jwt.verify(req.token, jwt_secret, function(err, decoded) {
-        if (err)
-            res.status(400).json("Accès restreint.")
-        else {
-            Admin.findOne({
-                _id: decoded.id
-            }, function(err, admin){
-                if (err)
-                    res.status(400).json("admin introuvable")
-                else 
-                    res.status(200).json(admin)
-                }
-            );
-        }
-    });
+exports.admin = (req, res) => {
+    const adminId = res.locals.adminId;
+    Admin.findOne({_id: adminId})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
 }
 
-// exports.updateAdmin = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Admin.updateOne({_id: decoded.id},
-//                 {$set: {...req.body, mariageID: decoded.mariageID}})
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json({ err}))
-//         }
-//     });
-// }
+exports.updateAdmin = (req, res) => {
+    const adminId = res.locals.adminId;
+    const mariageId = res.locals.mariageID;
+    Admin.updateOne({_id: adminId},
+        {$set: {...req.body, mariageID: mariageId}})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json({ err}))
+}
 
-// // exports.deleteAccount =  function (req, res) {
+// // exports.deleteAccount =  function (req, res, next) {
 // //     jwt.verify(req.token, jwt_secret, function(err, decoded) {
 // //         if (err)
 // //             res.status(400).json("Accès restreint.")
@@ -58,176 +42,118 @@ exports.myAccount = function (req, res) {
 // //     );
 // // }
 
-// //
-// exports.mariageID = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Mariage.findOne({
-//                 _id: decoded.mariageID
-//             }, function(err, mariage){
-//                 if (err)
-//                     res.status(200).json('err affichage mariage')
-//                 else
-//                 res.send(mariage)
-//             }).populate('groupID').exec(function(err, data){
-//                 if (err)
-//                     res.status(400).json('err populate groupID')
-//                 else
-//                 res.send(data)
-//             });
-//             }
-//         }
-//     );
-// }
+//
+exports.mariage = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    Mariage.findOne({ _id: mariageId})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json({ err}))
+}
 
-// exports.updateMariage = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         console.log(err)
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Mariage.updateOne({ _id: decoded.mariageID },
-//                 {$set: {...req.body, _id: decoded.mariageID}})
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json({ err}))
-//         }
-//     }
-// );
-// }
+exports.updateMariage = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    Mariage.updateOne({ _id: mariageId },
+        {$set: {...req.body, _id: mariageId}})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json({ err}))
+}
 
-// //TABLE
-// exports.newTable = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             let table = new Table ({
-//                 ...req.body,
-//                 mariageID: decoded.mariageID
-//             });
-//             table.save()
-//             .then(newTable => {
-//                 if(project) {
-//                     Dashboard.updateOne({_id: req.params.id},
-//                         {$push: {myprojectsID: newTable}})
-//                         .then(data => res.status(200).json({ data}))
-//                         .catch(err => res.status(400).json({err}))
-//                 } else
-//                     res.status(400).json(err)
-//             })
-//             .catch(err => res.status(400).json({err}))
-//             }
-//         }
-//     );
-// }
+//TABLE
+exports.newTable = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    let table = new Table ({
+        ...req.body,
+        mariageID: mariageId
+    });
+    table.save()
+        .then(newTable => {
+            if(table) {
+                Mariage.updateOne({_id: mariageId},
+                    {$push: {tableID: newTable}})
+                    .then(newTable => res.status(200).json(newTable))
+                    .catch(err => res.status(400).json(err))
+            } else
+                res.status(400).json(err)
+        })
+        .catch(err => res.status(400).json({err}))
+}
 
-// exports.table = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Table.findOne({ _id: req.params.id })
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json( err ))
-//         }
-//     })
-// }
+exports.table = (req, res, next) => {
+    console.log('tables!')
+    Table.findOne({ _id: req.params.id })
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(400).json( err ))
+}
 
-// exports.tables = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Table.find({})
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json( err ))
-//         }
-//     })
-// }
+exports.tables = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    console.log("tables!")
+    Table.find({mariageID: mariageId})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
+}
 
-// exports.updateTable = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         console.log(err)
-//         if (err)
-//             res.status(400).json("La table a été modifiée.")
-//         else {
-//             Table.updateOne({ _id: req.params.id },
-//                 {$set: {...req.body, _id: req.params.id}})
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json({ err}))
-//         }
-//     });
-// }
+exports.updateTable = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    Table.updateOne({ _id: req.params.id },
+        {$set: {...req.body, _id: req.params.id, mariageID: mariageId}})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json({ err}))
+}
 
-// exports.deleteTable = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Table.deleteOne({_id: req.params.id})
-//             .then(() => res.status(200).json({ message: "La table a été supprimée."}))
-//             .catch(err => res.status(400).json ({ err }))
-//         }
-//     });
-// }
+exports.deleteTable = (req, res) => {
+    console.log("delete table!")
+    const mariageId = res.locals.mariageID;
+    Table.deleteOne({_id: req.params.id, mariageID: mariageId})
+        .then(data => {
+            console.log(data.deletedCount)
+            if(data.deletedCount == 1){
+                Mariage.updateOne({_id: mariageId}, {$pull: {tableID: req.params.id}})
+                    .then(data => res.status(200).json(data))
+                    .catch(err => res.status(400).json(err))
+            } else
+                return res.status(400).json('erreur deleted count')
+        })
+        .catch(err => res.status(400).json(err))
+}
+
 
 
 // //GROUPES
-// exports.newGroup = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             let generatedpsw = generator.generate({
-//                 length: 10,
-//                 numbers: true
-//             });
-//             let group = new Group ({
-//                 ...req.body,
-//                 password: generatedpsw,
-//                 mariageID: decoded.mariageID
-//             });
-//             group.save(function(err, newGroup) {
-//                 console.log(newGroup)
-//                 if (err)
-//                     res.status(404).json('erreur création groupe');
-//                 else {
-//                     Mariage.updateOne({_id: decoded.mariageID},
-//                         {$push: {groupID: newGroup}}
-//                         .then(data => res.status(200).json({ data}))
-//                         .catch(err => res.status(400).json({err}))
-//                     )
-//                 }
-//             })
-//         }
-//     })
-// }
+exports.newGroup = function (req, res) {
+    let generatedpsw = generator.generate({
+        length: 10,
+        numbers: true
+    });
+    let group = new Group ({
+        ...req.body,
+        password: generatedpsw,
+        mariageID: res.locals.mariageID
+    });
+    group.save()
+        .then(newGroup => {
+            if(!group){
+                res.status(400).json(err)
+            } else {
+                Mariage.updateOne({_id: res.locals.mariageID},
+                    {$push: {groupID: newGroup}})
+                    .then(data => res.status(200).json(data))
+                    .catch(err => res.status(400).json(err))
+            }
+        })
+}
 
-// exports.group = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Group.findOne({ _id: req.params.id })
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json( err ))
-//         }
-//     })
-// }
+exports.group = (req, res, next) => {
+    Group.findOne({ _id: req.params.id, mariageID: res.locals.mariageID })
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
+}
 
-// exports.groups = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Group.find({})
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json( err ))
-//         }
-//     })
-// }
+exports.groups = (req, res, next) => {
+    Group.find({})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
+}
 
 // exports.updateGroup = function (req, res) {
 //     jwt.verify(req.token, jwt_secret, function(err, decoded) {

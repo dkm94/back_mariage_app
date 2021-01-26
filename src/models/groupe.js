@@ -7,7 +7,7 @@ let groupSchema = new mongoose.Schema({
         type: 'string',
         required: 'A name is required.'
     },
-    mail: {
+    email: {
         type: 'string',
         required: 'Your email is required',
         unique: true

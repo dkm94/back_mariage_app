@@ -5,6 +5,7 @@ const bearerToken = require('express-bearer-token');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const db = process.env.MONGODB_URI;
+const auth = require("./middlewares/admin_auth");
 
 const routes = require("./routes");
 
@@ -15,6 +16,8 @@ const app = express();
 // Parse application data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+
+app.use(auth)
 
 app.use(bearerToken());
 
