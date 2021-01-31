@@ -6,7 +6,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const jwt_secret = process.env.JWT_SECRET_KEY;
 
-exports.register = function(req, res) {
+exports.register = (req, res) => {
+    console.log("coucou")
     let mariage = new Mariage ({
         ...req.body
     });
@@ -38,7 +39,7 @@ exports.register = function(req, res) {
                             } else {
                                 Mariage.updateOne({_id: newMariage._id},
                                     {$set: {adminID: newAdmin._id, menuID: newMenu._id }})
-                                    .then(newMariage => res.status(200).json({newMariage}))
+                                    .then(data => res.status(200).json({data}))
                                     .catch(err => res.status(400).json({err}))
                             }
                         })
