@@ -5,7 +5,7 @@ const { newGroup,
     groups,
     updateGroup,
     deleteGroup,
-} = require("../controllers/groupe_ctrl");
+} = require("../controllers/groupe_controller");
 const { adminAuth } = require("../middlewares");
 
 const router = express.Router();

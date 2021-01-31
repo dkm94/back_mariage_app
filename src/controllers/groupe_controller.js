@@ -2,7 +2,6 @@ const Mariage = require('../models/mariage');
 const Group = require('../models/groupe');
 const generator = require('generate-password');
 
-// //GROUPES
 exports.newGroup = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     let generatedpsw = generator.generate({
@@ -59,7 +58,7 @@ exports.deleteGroup = (req, res, next) => {
                     .then(data => res.status(200).json(data))
                     .catch(err => res.status(400).json(err))
             } else
-                return res.status(400).json('erreur deleted count')
+                return res.status(400).json('erreur token ou serveur')
         })
         .catch(err => res.status(400).json(err))
 }
