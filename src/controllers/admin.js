@@ -8,8 +8,6 @@ const Menu = require('../models/menu');
 const Starter = require('../models/menu-entrée');
 const Maincourse = require('../models/menu-plat');
 const Dessert = require('../models/menu-dessert');
-const jwt_secret = process.env.JWT_SECRET_KEY;
-const jwt = require('jsonwebtoken');
 const generator = require('generate-password');
 // const deleteUser = require("../middlewares/delete.user.cascade")
 
@@ -121,7 +119,7 @@ exports.deleteTable = (req, res) => {
 
 
 // //GROUPES
-exports.newGroup = function (req, res) {
+exports.newGroup = function (req, res, next) {
     const mariageId = res.locals.mariageID;
     let generatedpsw = generator.generate({
         length: 10,
@@ -159,7 +157,7 @@ exports.groups = (req, res, next) => {
         .catch(err => res.status(400).json( err ))
 }
 
-exports.updateGroup = (req, res) => {
+exports.updateGroup = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Group.updateOne({ _id: req.params.id},
         {$set: {...req.body, _id: req.params.id, mariageID: mariageId}})
@@ -183,7 +181,7 @@ exports.deleteGroup = (req, res, next) => {
 }
 
 // //CRUD guest
-exports.newGuest = (req, res) => {
+exports.newGuest = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     let guestmenu = new GuestMenu ({
         mariageID: mariageId
@@ -230,250 +228,189 @@ exports.guests = (req, res, next) => {
         .catch(err => res.status(400).json( err ))
 }
 
-// exports.updateGuest = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint. - updateGuest.")
-//         else {
-//             Guest.updateOne({_id: req.params.id},
-//                 {...req.body, _id: req.params.id})
-//             .then(() => res.status(200).json({ message: "Modification effectuée."}))
-//             .catch(err => res.status(400).json ({ err }))
-//             }
-//         }
-//     );
-// }
+exports.updateGuest = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Guest.updateOne({ _id: req.params.id},
+        {$set: {...req.body, _id: req.params.id, mariageID: mariageId}})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json({ err}))
+}
 
-// exports.deleteGuest = function (req, res) {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Guest.deleteOne({_id: req.params.id}, function(err, result){
-//                 console.log(result)
-//                 if (err)
-//                     res.send('err suppression guest')
-//                 else 
-//                 Group.updateMany({ }, { $pull: { guestID: req.params.id }},
-//                     function(err, result){
-//                         if (err)
-//                             res.status(404).json('err update group')
-//                     });
-//             });
-//             }
-//         }
-//     );
-// }
+exports.deleteGuest = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    Guest.deleteOne({_id: req.params.id, mariageID: mariageId})
+        .then(data => {
+            console.log(data.deletedCount)
+            if(data.deletedCount == 1){
+                Group.updateMany({mariageID: mariageId}, {$pull: {guestID: req.params.id}})
+                    .then(data => res.status(200).json(data))
+                    .catch(err => res.status(400).json(err))
+            } else
+                return res.status(400).json('erreur deleted count')
+        })
+        .catch(err => res.status(400).json(err))
+}
+
+// MENU
+exports.weddingMenu = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Menu.find({ mariageID: mariageId })
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
+}
 
 // //ENTREE
-// exports.newStarter = (req, res) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             let starter = new Starter ({
-//                 ...req.body,
-//                 menuID: req.params.id
-//             });
-//             starter.save()
-//                 .then(newStarter => {
-//                     if(!starter){
-//                         res.status(400).json("Erreur création menu")
-//                     } else {
-//                         Menu.updateOne({_id: req.params.id},
-//                             {$push: {starterID: newStarter}})
-//                             .then(data => res.status(200).json({ data}))
-//                             .catch(err => res.status(400).json({err}))
-//                     }
-//                 })
-//                 .catch(err => res.status(400).json({err}))
-//         }
-//     })
-// }
+exports.newStarter = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    let starter = new Starter ({
+        ...req.body,
+        menuID: req.params.id,
+        mariageID: mariageId
+    });
+    starter.save()
+        .then(newStarter => {
+            if(!starter){
+                res.status(400).json("Erreur création menu")
+            } else {
+                Menu.updateOne({_id: req.params.id, mariageID: mariageId},
+                    {$push: {starterID: newStarter._id}})
+                    .then(data => res.status(200).json({ data}))
+                    .catch(err => res.status(400).json({err}))
+            }
+        })
+        .catch(err => res.status(400).json({err}))
+}
 
-// exports.starter = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Starter.findOne({ _id: req.params.id })
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json( err ))
-//         }
-//     })
-// }
+exports.starters = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Starter.find({ mariageID: mariageId })
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
+}
 
-// exports.starters = (req, res, next) => {
-//     Starter.find({})
-//         .then(data => res.status(200).json(data))
-//         .catch(err => res.status(400).json( err ))
-// }
+exports.updateStarter = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Starter.updateOne({_id: req.params.id},
+        {...req.body, _id: req.params.id, mariageID: mariageId})
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(400).json ({ err }))
+}
 
-// exports.updateStarter = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Starter.updateOne({_id: req.params.id},
-//                 {...req.body, _id: req.params.id})
-//             .then(() => res.status(200).json({ message: "Modification effectuée."}))
-//             .catch(err => res.status(400).json ({ err }))
-//             // next();
-//         }
-//     })
-// }
-
-// exports.deleteStarter = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Starter.deleteOne({_id: req.params.id})
-//             .then(() => res.status(200).json({ message: "L'entrée a été supprimée avec succès."}))
-//             .catch(err => res.status(400).json ({ err }))
-//             // next();
-//         }
-//     })
-// }
+exports.deleteStarter = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Starter.deleteOne({_id: req.params.id, mariageID: mariageId})
+        .then(data => {
+        console.log(data.deletedCount)
+        if(data.deletedCount == 1){
+            Menu.updateMany({mariageID: mariageId}, {$pull: {starterID: req.params.id}})
+                .then(data => res.status(200).json(data))
+                .catch(err => res.status(400).json(err))
+        } else
+            return res.status(400).json('erreur deleted count')
+        })
+        .catch(err => res.status(400).json ({ err }))
+}
 
 // //PLAT
-// exports.newMaincourse = (req, res) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             let maincourse = new Starter ({
-//                 ...req.body,
-//                 menuID: req.params.id
-//             });
-//             maincourse.save()
-//                 .then(newMaincourse => {
-//                     if(!maincourse){
-//                         res.status(400).json("Erreur création plat")
-//                     } else {
-//                         Menu.updateOne({_id: req.params.id},
-//                             {$push: {maincourseID: newMaincourse}})
-//                             .then(data => res.status(200).json({ data}))
-//                             .catch(err => res.status(400).json({err}))
-//                     }
-//                 })
-//                 .catch(err => res.status(400).json({err}))
-//         }
-//     })
-// }
+exports.newMaincourse = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    let maincourse = new Maincourse ({
+        ...req.body,
+        menuID: req.params.id,
+        mariageID: mariageId
+    });
+    maincourse.save()
+        .then(newMaincourse => {
+            if(!maincourse){
+                res.status(400).json("Erreur création menu")
+            } else {
+                Menu.updateOne({_id: req.params.id, mariageID: mariageId},
+                    {$push: {maincourseID: newMaincourse._id}})
+                    .then(data => res.status(200).json({ data}))
+                    .catch(err => res.status(400).json({err}))
+            }
+        })
+        .catch(err => res.status(400).json({err}))
+}
 
-// exports.maincourse = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Maincourse.findOne({ _id: req.params.id })
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json( err ))
-//         }
-//     })
-// }
+exports.maincourses = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Maincourse.find({ mariageID: mariageId })
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
+}
 
-// exports.maincourses = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//         Maincourse.find({})
-//             .then(data => res.status(200).json(data))
-//             .catch(err => res.status(400).json( err ))
-//         }
-//     })
-// }
+exports.updateMaincourse = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Maincourse.updateOne({_id: req.params.id},
+        {...req.body, _id: req.params.id, mariageID: mariageId})
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(400).json ({ err }))
+}
 
-// exports.updateMaincourse = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Maincourse.updateOne({_id: req.params.id},
-//                 {...req.body, _id: req.params.id})
-//             .then(() => res.status(200).json({ message: "Modification effectuée."}))
-//             .catch(err => res.status(400).json ({ err }))
-//             // next();
-//         }
-//     })
-// }
-
-// exports.deleteMaincourse = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//         Maincourse.deleteOne({_id: req.params.id})
-//         .then(() => res.status(200).json({ message: "Le plat a été supprimé avec succès."}))
-//         .catch(err => res.status(400).json ({ err }))
-//         // next();
-//         }
-//     })
-// }
+exports.deleteMaincourse = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Maincourse.deleteOne({_id: req.params.id, mariageID: mariageId})
+        .then(data => {
+        console.log(data.deletedCount)
+        if(data.deletedCount == 1){
+            Menu.updateMany({mariageID: mariageId}, {$pull: {maincourseID: req.params.id}})
+                .then(data => res.status(200).json(data))
+                .catch(err => res.status(400).json(err))
+        } else
+            return res.status(400).json('erreur deleted count')
+        })
+        .catch(err => res.status(400).json ({ err }))
+}
 
 // //DESSERT
-// exports.newDessert = (req, res) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             let dessert = new Dessert ({
-//                 ...req.body,
-//                 menuID: req.params.id
-//             });
-//             dessert.save()
-//                 .then(newDessert => {
-//                     if(!dessert){
-//                         res.status(400).json("Erreur création dessert")
-//                     } else {
-//                         Menu.updateOne({_id: req.params.id},
-//                             {$push: {dessertID: newDessert}})
-//                             .then(data => res.status(200).json({ data}))
-//                             .catch(err => res.status(400).json({err}))
-//                     }
-//                 })
-//                 .catch(err => res.status(400).json({err}))
-//         }
-//     })
-// }
+exports.newDessert = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    let dessert = new Dessert ({
+        ...req.body,
+        menuID: req.params.id,
+        mariageID: mariageId
+    });
+    dessert.save()
+        .then(newDessert => {
+            if(!dessert){
+                res.status(400).json("Erreur création menu")
+            } else {
+                Menu.updateOne({_id: req.params.id, mariageID: mariageId},
+                    {$push: {dessertID: newDessert._id}})
+                    .then(data => res.status(200).json({ data}))
+                    .catch(err => res.status(400).json({err}))
+            }
+        })
+        .catch(err => res.status(400).json({err}))
+}
 
-// exports.dessert = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Dessert.findOne({ _id: req.params.id })
-//                 .then(data => res.status(200).json(data))
-//                 .catch(err => res.status(400).json( err ))
-//         }
-//     })
-// }
+exports.desserts = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Dessert.find({ mariageID: mariageId })
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
+}
 
-// exports.updateDessert = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Dessert.updateOne({_id: req.params.id},
-//                 {...req.body, _id: req.params.id})
-//             .then(() => res.status(200).json({ message: "Modification effectuée."}))
-//             .catch(err => res.status(400).json ({ err }))
-//             // next();
-//         }
-//     })
-// }
+exports.updateDessert = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Dessert.updateOne({_id: req.params.id},
+        {...req.body, _id: req.params.id, mariageID: mariageId})
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(400).json ({ err }))
+}
 
-// exports.deleteDessert = (req, res, next) => {
-//     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-//         if (err)
-//             res.status(400).json("Accès restreint.")
-//         else {
-//             Dessert.deleteOne({_id: req.params.id})
-//             .then(() => res.status(200).json({ message: "Le dessert a été supprimé avec succès."}))
-//             .catch(err => res.status(400).json ({ err }))
-//             // next();
-//         }
-//     })
-// }
+exports.deleteDessert = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Dessert.deleteOne({_id: req.params.id, mariageID: mariageId})
+        .then(data => {
+        console.log(data.deletedCount)
+        if(data.deletedCount == 1){
+            Menu.updateMany({mariageID: mariageId}, {$pull: {dessertID: req.params.id}})
+                .then(data => res.status(200).json(data))
+                .catch(err => res.status(400).json(err))
+        } else
+            return res.status(400).json('erreur deleted count')
+        })
+        .catch(err => res.status(400).json ({ err }))
+}
