@@ -1,10 +1,11 @@
 const express = require("express");
 
-const { mariage } = require("../controllers/mariage");
+const { mariage, updateMariage } = require("../controllers/mariage_controller");
 const { adminAuth } = require("../middlewares");
 
 const router = express.Router();
 
 router.get("/:id", adminAuth, mariage);
+router.put("/edit/:id", adminAuth, updateMariage);
 
 module.exports = router;

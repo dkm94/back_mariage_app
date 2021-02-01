@@ -27,7 +27,8 @@ const corsOptions = {
 }
 app.use("/api", cors(corsOptions));
 
-app.use("/api", routes);
+app.use("/api/admin", routes);
+app.use("/api/guest", routes);
 
 // app.use(deleteUser);
 app.use(function (req, res, next) {

@@ -6,10 +6,10 @@ let starterSchema = new mongoose.Schema({
     name: {
         type: 'string'
     },
-    menuID: [{
+    menuID: {
         type: Schema.Types.ObjectId, 
         ref: 'Menu'
-    }],
+    },
     mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'
