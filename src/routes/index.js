@@ -21,8 +21,8 @@ mainRouter.use("/guests", guestRouter);
 mainRouter.use("/tables", tableRouter);
 mainRouter.use("/menu", menuRouter);
 mainRouter.use("/guestmenu", guestMenuRouter);
-mainRouter.use("/starters", starterRouter);
-mainRouter.use("/maincourses", mainCourseRouter);
-mainRouter.use("/desserts", dessertRouter);
+mainRouter.use("/menu/starters", starterRouter);
+mainRouter.use("/menu/maincourses", mainCourseRouter);
+mainRouter.use("/menu/desserts", dessertRouter);
 
 module.exports = mainRouter;

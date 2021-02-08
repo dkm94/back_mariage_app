@@ -15,8 +15,10 @@ exports.newGuest = (req, res, next) => {
                 console.log(newGuestMenu)
                 let guest = new Guest ({
                     ...req.body,
+                    media: "",
                     guestMenuID: newGuestMenu._id,
                     groupID: req.params.id,
+                    tableID: null,
                     mariageID: mariageId
                 });
                 guest.save()
@@ -38,6 +40,8 @@ exports.newGuest = (req, res, next) => {
 
 exports.guest = (req, res, next) => {
     Guest.findOne({ _id: req.params.id })
+        .populate({path: "tableID", select: "name"})
+        .exec()
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
@@ -45,6 +49,8 @@ exports.guest = (req, res, next) => {
 exports.guests = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Guest.find({mariageID: mariageId})
+        .populate({path: "tableID", select: "name"})
+        .exec()
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }

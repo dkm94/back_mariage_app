@@ -20,6 +20,7 @@ exports.register = (req, res) => {
                 let admin = new Admin ({
                     ...req.body,
                     password: hash,
+                    role: "admin",
                     mariageID: newMariage._id
                 })
                 admin.save()
@@ -65,7 +66,7 @@ exports.adminLogin = function(req, res) {
                 console.log(admin)
                 if (result)
                 {
-                    var token = jwt.sign({ id: admin._id, mariageID: admin.mariageID }, jwt_secret);
+                    var token = jwt.sign({ id: admin._id, mariageID: admin.mariageID, role: admin.role}, jwt_secret);
                     res.status(200).json({auth: true, token: token, message: "Vous pouvez à présent accéder à votre compte."});
                 }
                 else
@@ -88,7 +89,7 @@ exports.guestLogin = function(req, res) {
                 console.log(group)
                 if (result)
                 {
-                    var token = jwt.sign({ mariageID: mariage._id, id: group._id, guestID: guest._id }, jwt_secret);
+                    var token = jwt.sign({ mariageID: mariage._id, id: group._id, guestID: guest._id, role:"guest" }, jwt_secret);
                     res.status(200).json({auth: true, token: token, message: "You can now access your account."});
                 }
                 else

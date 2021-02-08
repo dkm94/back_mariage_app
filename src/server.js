@@ -5,7 +5,6 @@ const bearerToken = require('express-bearer-token');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const db = process.env.MONGODB_URI;
-// const auth = require("./middlewares/admin_auth");
 
 const routes = require("./routes");
 
@@ -17,32 +16,30 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-// app.use(auth)
-
 app.use(bearerToken());
 
 const corsOptions = {
-  origin: 'https://my-wedding-app.netlify.app',
+  origin: ['https://my-wedding-app.netlify.app', 'http://localhost:3000'],
   credentials: true
 }
-app.use("/api", cors(corsOptions));
+app.use(cors(corsOptions));
+// app.use(cors())
 
+app.use("/api", routes);
 app.use("/api/admin", routes);
-app.use("/api/guest", routes);
+app.use("/api/guest",  routes);
 
 // app.use(deleteUser);
-app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "https://my-wedding-app.netlify.app");
 
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-  );
-  
+
+app.use(function (req, res, next) {
+  // res.setHeader("Access-Control-Allow-Origin", "https://my-wedding-app.netlify.app");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods","*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
   res.setHeader("Access-Control-Allow-Credentials", true);
-  
   next();
-  });
+});
 
 // BDD connection
 mongoose

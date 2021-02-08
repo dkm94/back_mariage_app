@@ -23,6 +23,9 @@ let adminSchema = new mongoose.Schema({
     media: {
         type: 'string'
     },
+    role: {
+        type: 'string'
+    },
     mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'

@@ -29,6 +29,8 @@ exports.newGroup = (req, res, next) => {
 exports.group = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Group.findOne({ _id: req.params.id, mariageID: mariageId})
+        .populate('guestID')
+        .exec()
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
@@ -36,6 +38,8 @@ exports.group = (req, res, next) => {
 exports.groups = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Group.find({mariageID: mariageId})
+        .populate('guestID')
+        .exec()
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }

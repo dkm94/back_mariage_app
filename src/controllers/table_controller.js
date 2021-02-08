@@ -37,9 +37,9 @@ exports.table = (req, res, next) => {
 }
 
 exports.tables = (req, res, next) => {
-    const mariageId = res.locals.mariageID;
+    // const mariageId = res.locals.mariageID;
     console.log("tables!")
-    Table.find({mariageID: mariageId})
+    Table.find({ })
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
@@ -54,6 +54,22 @@ exports.updateTable = (req, res) => {
 
 
 // Guest.updateMany({ params }) set tableID to null
+// exports.deleteTable = (req, res) => {
+//     console.log("delete table!")
+//     const mariageId = res.locals.mariageID;
+//     Table.deleteOne({_id: req.params.id, mariageID: mariageId})
+//         .then(data => {
+//             console.log(data.deletedCount)
+//             if(data.deletedCount == 1){
+//                 Mariage.updateOne({_id: mariageId}, {$pull: {tableID: req.params.id}})
+//                     .then(data => res.status(200).json(data))
+//                     .catch(err => res.status(400).json(err))
+//             } else
+//                 return res.status(400).json('erreur deleted count')
+//         })
+//         .catch(err => res.status(400).json(err))
+// }
+
 exports.deleteTable = (req, res) => {
     console.log("delete table!")
     const mariageId = res.locals.mariageID;
@@ -61,8 +77,16 @@ exports.deleteTable = (req, res) => {
         .then(data => {
             console.log(data.deletedCount)
             if(data.deletedCount == 1){
-                Mariage.updateOne({_id: mariageId}, {$pull: {tableID: req.params.id}})
-                    .then(data => res.status(200).json(data))
+                Guest.updateMany({groupID: req.params.id, mariageID: mariageId}, {$set: {tableID: ""}})
+                    .then(data => {
+                        console.log(data.deletedCount)
+                        if(data.deletedCount == 1){
+                            Mariage.updateOne({_id: mariageId}, {$pull: {tableID: req.params.id}})
+                                .then(data => res.status(200).json(data))
+                                .catch(err => res.status(400).json(err))
+                        } else
+                            return res.status(400).json('erreur deleted count')
+                    })
                     .catch(err => res.status(400).json(err))
             } else
                 return res.status(400).json('erreur deleted count')
