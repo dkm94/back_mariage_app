@@ -15,9 +15,9 @@ exports.newGuest = (req, res, next) => {
                 console.log(newGuestMenu)
                 let guest = new Guest ({
                     ...req.body,
-                    media: "",
+                    media: "avatar.jpg",
                     guestMenuID: newGuestMenu._id,
-                    groupID: req.params.id,
+                    groupID: null,
                     tableID: null,
                     mariageID: mariageId
                 });
@@ -46,6 +46,14 @@ exports.guest = (req, res, next) => {
         .catch(err => res.status(400).json( err ))
 }
 
+exports.getGuestbyName = (req, res, next) => {
+    Guest.findOne({ name: req.params.name })
+        .populate({path: "tableID", select: "name"})
+        .exec()
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
+}
+
 exports.guests = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Guest.find({mariageID: mariageId})
@@ -65,11 +73,10 @@ exports.updateGuest = (req, res, next) => {
 
 exports.deleteGuest = (req, res) => {
     const mariageId = res.locals.mariageID;
-    Guest.deleteOne({_id: req.params.id, mariageID: mariageId})
-        .then(data => {
-            console.log(data.deletedCount)
-            if(data.deletedCount == 1){
-                Group.updateMany({mariageID: mariageId}, {$pull: {guestID: req.params.id}})
+    Group.updateOne({ guestID: req.params.id }, {$pull: {guestID: req.params.id}})
+    .then(data => {
+            if(data.nModified === 1 || data.nModified === 0){
+                Guest.deleteOne({ _id: req.params.id })
                     .then(data => res.status(200).json(data))
                     .catch(err => res.status(400).json(err))
             } else

@@ -4,14 +4,16 @@ const { newGuest,
     guest,
     guests,
     updateGuest,
-    deleteGuest
+    deleteGuest,
+    // getGuestbyName
 } = require("../controllers/guest_controller");
 const { adminAuth } = require("../middlewares");
 
 const router = express.Router();
 
-router.post("/add/:id", adminAuth, newGuest);
+router.post("/add", adminAuth, newGuest);
 router.get("/:id", adminAuth, guest);
+// router.get("/name/:name", getGuestbyName)
 router.get("/", adminAuth, guests);
 router.put("/edit/:id", adminAuth, updateGuest);
 router.delete("/delete/:id", adminAuth, deleteGuest);
