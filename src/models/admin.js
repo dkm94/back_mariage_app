@@ -3,14 +3,6 @@ const Schema = mongoose.Schema;
 
 let adminSchema = new mongoose.Schema({
 
-    firstPerson: {
-        type: 'string',
-        required: 'A name is required.'
-    },
-    secondPerson: {
-        type: 'string',
-        required: 'A name is required.'
-    },
     email: {
         type: 'string',
         required: 'Your email is required',
@@ -18,7 +10,9 @@ let adminSchema = new mongoose.Schema({
     },
     password: {
         type: 'string',
-        required: 'The password is required'
+        required: 'The password is required',
+        minLength: 6,
+        maxLength: 40
     },
     media: {
         type: 'string'

@@ -5,15 +5,15 @@ const { newGuest,
     guests,
     updateGuest,
     deleteGuest,
-    // getGuestbyName
+    getGuestbyName
 } = require("../controllers/guest_controller");
 const { adminAuth } = require("../middlewares");
 
 const router = express.Router();
 
 router.post("/add", adminAuth, newGuest);
-router.get("/:id", adminAuth, guest);
-// router.get("/name/:name", getGuestbyName)
+router.get("/id/:id", adminAuth, guest);
+router.get("/name/:name", adminAuth, getGuestbyName);
 router.get("/", adminAuth, guests);
 router.put("/edit/:id", adminAuth, updateGuest);
 router.delete("/delete/:id", adminAuth, deleteGuest);

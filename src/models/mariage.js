@@ -3,13 +3,17 @@ const Schema = mongoose.Schema;
 
 let mariageSchema = new mongoose.Schema({
 
-    title: {
-        type: 'string',
-        required: 'A name is required.'
-    },
-    groupID: [{
+    invitationID: {
         type: Schema.Types.ObjectId, 
-        ref: 'Group'
+        ref: 'Invitation'
+    },
+    // groupID: [{
+    //     type: Schema.Types.ObjectId, 
+    //     ref: 'Group'
+    // }],
+    guestID: [{
+        type: Schema.Types.ObjectId, 
+        ref: 'Guest'
     }],
     tableID: [{
         type: Schema.Types.ObjectId, 

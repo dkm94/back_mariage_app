@@ -3,11 +3,6 @@ const Table = require('../models/table');
 const Mariage = require('../models/mariage');
 const Group = require('../models/groupe');
 const Guest = require('../models/invite');
-const GuestMenu = require('../models/menu-invité');
-const Menu = require('../models/menu');
-const Starter = require('../models/menu-entrée');
-const Maincourse = require('../models/menu-plat');
-const Dessert = require('../models/menu-dessert');
 
 //TABLE
 exports.newTable = (req, res) => {
@@ -71,46 +66,6 @@ exports.addGuestToTable = (req, res, next) => {
         })
         .catch(err => res.status(400).json(err))
 }
-// Guest.updateMany({ params }) set tableID to null
-// exports.deleteTable = (req, res) => {
-//     console.log("delete table!")
-//     const mariageId = res.locals.mariageID;
-//     Table.deleteOne({_id: req.params.id, mariageID: mariageId})
-//         .then(data => {
-//             console.log(data.deletedCount)
-//             if(data.deletedCount == 1){
-//                 Mariage.updateOne({_id: mariageId}, {$pull: {tableID: req.params.id}})
-//                     .then(data => res.status(200).json(data))
-//                     .catch(err => res.status(400).json(err))
-//             } else
-//                 return res.status(400).json('erreur deleted count')
-//         })
-//         .catch(err => res.status(400).json(err))
-// }
-
-// exports.deleteTable = (req, res) => {
-//     console.log("delete table!")
-//     const mariageId = res.locals.mariageID;
-//     Table.deleteOne({_id: req.params.id})
-//         .then(data => {
-//             console.log(data.deletedCount)
-//             if(data.deletedCount == 1){
-//                 Guest.updateMany({groupID: req.params.id, mariageID: mariageId}, {$set: {tableID: null}})
-//                     .then(data => {
-//                         console.log(data.deletedCount)
-//                         if(data.deletedCount == 1){
-//                             Mariage.updateOne({_id: mariageId}, {$pull: {tableID: req.params.id}})
-//                                 .then(data => res.status(200).json(data))
-//                                 .catch(err => res.status(400).json(err))
-//                         } else
-//                             return res.status(400).json('erreur deleted count')
-//                     })
-//                     .catch(err => res.status(400).json(err))
-//             } else
-//                 return res.status(400).json('erreur deleted count')
-//         })
-//         .catch(err => res.status(400).json(err))
-// }
 
 exports.deleteTable = (req, res) => {
     console.log("delete table!")
