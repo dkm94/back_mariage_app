@@ -4,6 +4,7 @@ const mainRouter = express.Router();
 const authRouter = require("./auth_router");
 const weddingRouter = require("./wedding_router")
 const adminRouter = require("./admin_router");
+const invitationRouter = require("./invitation_router");
 const guestRouter = require("./guest_router");
 const asyncRouter = require("./async_router");
 const tableRouter = require("./table_router");
@@ -16,6 +17,7 @@ const dessertRouter = require("./dessert_router");
 mainRouter.use("/auth", authRouter);
 mainRouter.use("/admin", adminRouter);
 mainRouter.use("/wedding", weddingRouter);
+mainRouter.use("/invitation", invitationRouter);
 mainRouter.use("/guest", asyncRouter);
 mainRouter.use("/guests", guestRouter);
 mainRouter.use("/tables", tableRouter);

@@ -5,17 +5,20 @@ let guestSchema = new mongoose.Schema({
 
     name: {
         type: String,
-        required: 'Your first name is required.'
+        required: 'A name is required.'
     },
-    email: {
-        type: String,
-        // required: 'Your email is required',
-        unique: true
-    },
-    password: {
-        type: String,
-        // required: 'The password is required'
-    },
+    // email: {
+    //     type: String,
+    //     // required: 'Your email is required',
+    //     // unique: true
+    // },
+    // password: {
+    //     type: String,
+    //     // required: 'The password is required'
+    // },
+    // role: {
+    //     type: 'string'
+    // },
     media: {
         type: String
     },

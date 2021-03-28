@@ -4,15 +4,15 @@ const generator = require('generate-password');
 
 exports.newGuest = (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    let generatedpsw = generator.generate({
-        length: 10,
-        numbers: true
-    });
+    // let generatedpsw = generator.generate({
+    //     length: 10,
+    //     numbers: true
+    // });
     let guest = new Guest ({
         ...req.body,
-        email: null,
-        password: generatedpsw,
-        media: "avatar.jpg",
+        // email: null,
+        // password: generatedpsw,
+        media: "",
         guestMenu: {
             starter: null,
             maincourse: null,
@@ -23,14 +23,13 @@ exports.newGuest = (req, res, next) => {
     });
     guest.save()
         .then(newGuest => {
-            if(!guest) {
-                res.status(400).json(err)
-            } else {
-                Wedding.updateOne({ _id: mariageId },
+            if(guest) {
+                Wedding.updateOne({_id: mariageId},
                     {$push: {guestID: newGuest}})
-                    .then(data => res.status(200).json(data))
+                    .then(newGuest => res.status(200).json(newGuest))
                     .catch(err => res.status(400).json(err))
-            }
+            } else
+                res.status(400).json(err)
         })
         .catch(err => res.status(400).json(err))
 }
@@ -53,22 +52,12 @@ exports.getGuestbyName = (req, res, next) => {
         .catch(err => res.status(400).json( err ))
 }
 
-// exports.getGuestbyName = (req, res, next) => {
-//     const mariageId = res.locals.mariageID;
-//     console.log("query", req.query)
-//     Guest.find({ name: req.query.name })
-//         .populate({path: "tableID", select: "name"})
-//         .exec()
-//         .then(data => res.status(200).json(data))
-//         .catch(err => res.status(400).json( err ))
-// }
-
 exports.guests = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     console.log("guests!")
-    Guest.find({ })
-        .populate({path: "tableID", select: "name"})
-        .exec()
+    Guest.find({ mariageID: mariageId })
+        // .populate({path: "tableID", select: "name"})
+        // .exec()
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }

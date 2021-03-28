@@ -33,9 +33,9 @@ exports.table = (req, res, next) => {
 }
 
 exports.tables = (req, res, next) => {
-    // const mariageId = res.locals.mariageID;
+    const mariageId = res.locals.mariageID;
     console.log("tables!")
-    Table.find({ })
+    Table.find({ mariageID: mariageId })
         .populate('guestID')
         .exec()
         .then(data => res.status(200).json(data))
@@ -55,13 +55,17 @@ exports.addGuestToTable = (req, res, next) => {
     Table.updateOne({ _id: req.params.id },
         {$push: {guestID: req.body.guestID}})
         .then(data => {
-            if(data) {
+            console.log(data.nModified)
+            if(data.nModified === 1) {
                 Guest.updateOne({ _id: req.body.guestID },
                     {$set: {tableID: req.params.id, mariageID: mariageId}})
                     .then(data => {
+                        console.log(data.nModified)
                         res.status(200).json(data)
                     })
                     .catch(err => res.status(400).json({ err}))
+            } else {
+                return res.status(400).json('Erreur update guest')
             }
         })
         .catch(err => res.status(400).json(err))
@@ -92,17 +96,21 @@ exports.deleteTable = (req, res) => {
 }
 
 exports.deleteGuestFromTable = (req, res, next) => {
+    console.log(req.body)
     const mariageId = res.locals.mariageID;
     Table.updateOne({ _id: req.params.id },
         {$pull: {guestID: req.body.guestID}})
-        .then(res => {
-            if(res.data != null) {
+        .then(data => {
+            if(data.nModified === 1) {
                 Guest.updateOne({ _id: req.body.guestID },
                     {$set: {tableID: null, mariageID: mariageId}})
                     .then(data => {
                         res.status(200).json(data)
                     })
                     .catch(err => res.status(400).json({ err}))
+            }
+            else {
+                res.send("Erreur update Table")
             }
         })
         .catch(err => res.status(400).json(err))

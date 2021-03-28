@@ -9,6 +9,8 @@ module.exports = (req, res, next) => {
       res.locals.adminId = adminId;
       const mariageID = decodedToken.mariageID;
       res.locals.mariageID = mariageID;
+      const invitationID = decodedToken.invitationID;
+      res.locals.invitationID = invitationID;
       if (req.body.adminId && req.body.adminId !== adminId) {
         throw 'Invalid user ID';
       } else {
