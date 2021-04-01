@@ -14,7 +14,8 @@ exports.editInvitation = (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
     const mariageId = res.locals.mariageID;
     Invitation.updateOne({ _id: req.params.id },
-        {$set: {...req.body, picture: req.file.filename, mariageID: mariageId}})
+        // {$set: {...req.body, picture: req.file.filename, mariageID: mariageId}})
+        {$set: {...req.body, mariageID: mariageId}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }

@@ -12,7 +12,7 @@ let adminSchema = new mongoose.Schema({
         type: 'string',
         required: 'The password is required',
         minLength: 6,
-        maxLength: 60
+        maxLength: 40
     },
     media: {
         type: 'string'

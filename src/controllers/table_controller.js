@@ -72,16 +72,15 @@ exports.addGuestToTable = (req, res, next) => {
 }
 
 exports.deleteTable = (req, res) => {
-    console.log("delete table!")
     const mariageId = res.locals.mariageID;
     Mariage.updateOne({ _id: mariageId}, {$pull: {tableID: req.params.id}})
         .then(data => {
             console.log("1e condition", data.nModified)
-            if(data.nModified === 1){
+            if(data != null){
                 Guest.updateMany({tableID: req.params.id}, {$set: {tableID: null}})
                     .then(data => {
                         console.log("2e condition:", data.nModified)
-                        if(data.nModified === 1 || data.nModified === 0){
+                        if(data != null){
                             Table.deleteOne({_id: req.params.id})
                                 .then(data => res.status(200).json(data))
                                 .catch(err => res.status(400).json(err))

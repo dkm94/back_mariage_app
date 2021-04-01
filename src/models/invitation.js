@@ -34,15 +34,18 @@ let invitationSchema = new mongoose.Schema({
 
     title: {
         type: String,
+        maxlength: [100, 'The address can\'t exceed 100 characters.'],
         // required: 'A title is required.'
     },
     firstPerson: {
         type: String,
-        // required: 'A name is required.'
+        maxlength: [100, 'The address can\'t exceed 100 characters.'],
+        required: 'A name is required.'
     },
     secondPerson: {
         type: String,
-        // required: 'A name is required.'
+        maxlength: [100, 'The address can\'t exceed 100 characters.'],
+        required: 'A name is required.'
     },
     picture: {
         type: String

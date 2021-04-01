@@ -45,18 +45,15 @@ router.get("/events", adminAuth, events);
 router.post("/events/add/:id", adminAuth, newEvent);
 router.put("/events/edit/:id", adminAuth, updateEvent);
 router.delete("/events/delete/:id", adminAuth, deleteEvent);
+router.get('/page/picture/:filename', (req, res) => {
 
-router.get("/page/:id", adminAuth, invitation);
-router.put("/edit/:id", adminAuth, upload.single("picture"), editInvitation);
-
-router.get('/page/picture/:filename', adminAuth, (req, res) => {
 
   const conn = mongoose.connection;
   const gfs = Grid(conn.db, mongoose.mongo)
 
   conn.once('open', () => {
     // console.log("connection ok")
-      gfs.collection('invitations')
+      gfs.collection('fs')
   })
 
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
@@ -72,7 +69,7 @@ router.get('/page/picture/:filename', adminAuth, (req, res) => {
       //read output to browser
       const readStream = gfs.createReadStream(file.filename)
       readStream.pipe(res)
-      console.log(res)
+      console.log(res.file)
   } else {
       res.status(404).json({
           err: "Not an image"
@@ -80,6 +77,10 @@ router.get('/page/picture/:filename', adminAuth, (req, res) => {
     }
   })
 })
+router.get("/page/:id", adminAuth, invitation);
+// router.put("/edit/:id", adminAuth, upload.single("picture"), editInvitation);
+router.put("/edit/:id", adminAuth, editInvitation);
+
 
 
 
