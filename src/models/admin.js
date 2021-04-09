@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 let adminSchema = new mongoose.Schema({
-
     email: {
         type: 'string',
         required: 'Your email is required',
@@ -11,8 +11,7 @@ let adminSchema = new mongoose.Schema({
     password: {
         type: 'string',
         required: 'The password is required',
-        minLength: 6,
-        maxLength: 40
+        match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.']
     },
     media: {
         type: 'string'
