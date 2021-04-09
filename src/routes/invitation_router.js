@@ -78,8 +78,8 @@ router.get('/page/picture/:filename', (req, res) => {
   })
 })
 router.get("/page/:id", adminAuth, invitation);
-// router.put("/edit/:id", adminAuth, upload.single("picture"), editInvitation);
-router.put("/edit/:id", adminAuth, editInvitation);
+router.post("/edit/:id", adminAuth, upload.single("picture"), editInvitation);
+// router.post("/edit/:id", adminAuth, editInvitation);
 
 
 
