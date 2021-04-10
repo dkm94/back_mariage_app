@@ -13,12 +13,21 @@ exports.editInvitation = (req, res, next) => {
     console.log("file reequest", req.file)
     const url = req.protocol + '://' + req.get('host');
     const mariageId = res.locals.mariageID;
-    const filename = req.file.filename;
-    Invitation.updateOne({ _id: req.params.id },
-        {$set: {...req.body, picture: filename, mariageID: mariageId}})
-        // {$set: {...req.body, mariageID: mariageId}})
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json( err ))
+    // const filename = req.file.filename;
+    if(req.file){
+        Invitation.updateOne({ _id: req.params.id },
+            {$set: {...req.body, picture: req.file.filename, mariageID: mariageId}})
+            // {$set: {...req.body, mariageID: mariageId}})
+            .then(data => res.status(200).json(data))
+            .catch(err => res.status(400).json( err ))
+    } else {
+        Invitation.updateOne({ _id: req.params.id },
+            // {$set: {...req.body, picture: req.file.filename, mariageID: mariageId}})
+            {$set: {...req.body, mariageID: mariageId}})
+            .then(data => res.status(200).json(data))
+            .catch(err => res.status(400).json( err ))
+    }
+    
 }
 
 exports.events = (req, res, next) => {
