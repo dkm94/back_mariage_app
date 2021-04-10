@@ -43,7 +43,7 @@ const { adminAuth } = require("../middlewares");
 
 router.get("/events", adminAuth, events);
 router.post("/events/add/:id", adminAuth, newEvent);
-router.put("/events/edit/:id", adminAuth, updateEvent);
+router.post("/events/edit/:id", adminAuth, updateEvent);
 router.delete("/events/delete/:id", adminAuth, deleteEvent);
 router.get('/page/picture/:filename', (req, res) => {
 

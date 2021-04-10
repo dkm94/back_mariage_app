@@ -45,7 +45,7 @@ app.use(function (req, res, next) {
 
 // BDD connection
 mongoose
-.connect(db || 'mongodb://localhost/mariage', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
+.connect(db || 'mongodb://localhost/mariage', {useNewUrlParser: true, useUnifiedTopology: true});
 
 // test
 app.route('/').get(function(req, res) {
