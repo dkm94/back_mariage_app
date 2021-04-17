@@ -9,23 +9,24 @@ const url = process.env.MONGODB_URI;
 
 const fileStorageEngine = new GridFsStorage({
   url: url,
-  // db: promise,
   file: (req, file) => {
     return new Promise((resolve, reject) => {
       crypto.randomBytes(16, (err, buf) => {
         if (err) {
           return reject(err);
         }
+        const contentType = ["image/jpeg", "image/png"];
         const filename = buf.toString('hex') + path.extname(file.originalname);
         const fileInfo = {
           filename: filename,
-          bucketName: 'fs'
+          bucketName: 'fs',
+          contentType: contentType
         };
         resolve(fileInfo);
       });
     });
   },
-  options: { useUnifiedTopology: true }
+  options: { useNewUrlParser: true, useUnifiedTopology: true }
 });
 
 const upload = multer({storage: fileStorageEngine});
@@ -46,13 +47,9 @@ router.post("/events/add/:id", adminAuth, newEvent);
 router.post("/events/edit/:id", adminAuth, updateEvent);
 router.delete("/events/delete/:id", adminAuth, deleteEvent);
 router.get('/page/picture/:filename', (req, res) => {
-
-
   const conn = mongoose.connection;
   const gfs = Grid(conn.db, mongoose.mongo)
-
   conn.once('open', () => {
-    // console.log("connection ok")
       gfs.collection('fs')
   })
 
@@ -65,7 +62,7 @@ router.get('/page/picture/:filename', (req, res) => {
       })
   }
   //check if image
-  if (file.contentType === 'image/jpeg' || file.contentType === "img/png") {
+  if (file.contentType === 'image/jpeg' || file.contentType === "image/png") {
       //read output to browser
       const readStream = gfs.createReadStream(file.filename)
       readStream.pipe(res)
@@ -79,7 +76,6 @@ router.get('/page/picture/:filename', (req, res) => {
 })
 router.get("/page/:id", adminAuth, invitation);
 router.post("/edit/:id", adminAuth, upload.single("picture"), editInvitation);
-// router.post("/edit/:id", adminAuth, editInvitation);
 
 
 

@@ -62,12 +62,19 @@ exports.guests = (req, res, next) => {
         .catch(err => res.status(400).json( err ))
 }
 
-exports.updateGuest = (req, res, next) => {
+exports.updateGuest = (req, res) => {
     const mariageId = res.locals.mariageID;
-    Guest.updateOne({ _id: req.params.id},
-        {$set: {...req.body, _id: req.params.id, mariageID: mariageId}})
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json({ err}))
+    if(req.file){
+        Guest.updateOne({ _id: req.params.id },
+            {$set: {...req.body, media: req.file.filename, mariageID: mariageId}})
+            .then(data => res.status(200).json(data))
+            .catch(err => res.status(400).json( err ))
+    } else {
+        Guest.updateOne({ _id: req.params.id },
+            {$set: {...req.body, mariageID: mariageId}})
+            .then(data => res.status(200).json(data))
+            .catch(err => res.status(400).json( err ))
+    }
 }
 
 exports.deleteGuest = (req, res) => {
