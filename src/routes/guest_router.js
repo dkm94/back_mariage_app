@@ -26,12 +26,12 @@ const fileStorageEngine = new GridFsStorage({
           if (err) {
             return reject(err);
           }
-          const contentType = ["image/jpeg", "image/png"];
+        //   const contentType = ["image/jpeg", "image/png"];
           const filename = buf.toString('hex') + path.extname(file.originalname);
           const fileInfo = {
             filename: filename,
             bucketName: 'fs',
-            contentType: contentType
+            // contentType: contentType
           };
           resolve(fileInfo);
         });
