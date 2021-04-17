@@ -30,7 +30,7 @@ const fileStorageEngine = new GridFsStorage({
           const filename = buf.toString('hex') + path.extname(file.originalname);
           const fileInfo = {
             filename: filename,
-            bucketName: 'guest',
+            bucketName: 'fs',
             contentType: contentType
           };
           resolve(fileInfo);
@@ -49,13 +49,14 @@ router.get("/", adminAuth, guests);
 router.get('/media/:filename', (req, res) => {
     const conn = mongoose.connection;
     const gfs = Grid(conn.db, mongoose.mongo)
+    // console.log(mongoose.mongo.GridStore)
     conn.once('open', () => {
-        gfs.collection('guest')
+        gfs.collection('fs')
     })
-  
+    // console.log(gfs)
     gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     //check if files exist
-    // console.log(gfs.files)
+    // console.log(gfs.files.namespace)
     if (!file || file.length == 0) {
         return res.status(404).json({
             err: "No files exist"
@@ -64,8 +65,10 @@ router.get('/media/:filename', (req, res) => {
     //check if image
     if (file.contentType === 'image/jpeg' || file.contentType === "image/png") {
         //read output to browser
+        // const writeStream = gfs.createWriteStream({"root": "guests"})
         const readStream = gfs.createReadStream(file.filename)
         readStream.pipe(res)
+        // writeStream.pipe(res)
         console.log(res.file)
     } else {
         res.status(404).json({
