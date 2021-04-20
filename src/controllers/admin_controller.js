@@ -9,11 +9,10 @@ const Starter = require('../models/menu-entrée');
 const Maincourse = require('../models/menu-plat');
 const Dessert = require('../models/menu-dessert');
 const generator = require('generate-password');
+const bcrypt = require('bcrypt');
+
 // const deleteUser = require("../middlewares/delete.user.cascade")
 
-//Fonction front pour compter le nombre de plats 
-
-//RUD admin
 exports.admin = (req, res) => {
     const adminId = res.locals.adminId;
     Admin.findOne({_id: adminId})
@@ -24,8 +23,10 @@ exports.admin = (req, res) => {
 exports.updateAdmin = (req, res) => {
     const adminId = res.locals.adminId;
     const mariageId = res.locals.mariageID;
+    let hash = bcrypt.hashSync(req.body.password, 10);
+    req.body.password = hash;
     Admin.updateOne({_id: adminId},
-        {$set: {...req.body, mariageID: mariageId}})
+        {$set: {password: hash, ...req.body, mariageID: mariageId}})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json({ err}))
 }
