@@ -31,15 +31,13 @@ exports.updateAdmin = (req, res) => {
         .catch(err => res.status(400).json({ err}))
 }
 
-// // exports.deleteAccount =  function (req, res, next) {
-// //     jwt.verify(req.token, jwt_secret, function(err, decoded) {
-// //         if (err)
-// //             res.status(400).json("Accès restreint.")
-// //         else {
-// //             Mariage.remove()
-// //                 .then(data => res.status(200).json(data))
-// //                 .catch(err => res.status(400).json({ err}))
-// //             }
-// //         }
-// //     );
-// // }
+exports.deleteAccount =  function (req, res, next) {
+    const adminId = res.locals.adminId;
+    Admin.findById(adminId).exec()
+        .then(admin => {
+            if(!admin) return res.status(400).json(err)
+            admin.remove()
+                .then(() => res.status(200).json("Le compte a été supprimé avec succès."))
+                .catch(err => res.status(400).json(err))
+        })
+}

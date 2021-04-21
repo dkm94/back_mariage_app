@@ -76,32 +76,6 @@ exports.register = (req, res) => {
 }
 
 
-
-// login admin
-
-// exports.adminLogin = function(req, res) {
-//     console.log("login!")
-//     Admin.findOne({ 
-//         email: req.body.email
-//     },function(err, admin){
-//         if(err)
-//             res.status(400).json({auth: false, message: "Echec connexion. Merci de vérifier vos identifiants."});
-//         else {
-//             bcrypt.compare(req.body.password, admin.password, function(err, result) {
-//                 console.log(admin)
-//                 if (result)
-//                 {
-//                     var token = jwt.sign({ id: admin._id, mariageID: admin.mariageID, role: admin.role}, jwt_secret);
-//                     res.status(200).json({auth: true, token: token, message: "Vous pouvez à présent accéder à votre compte."});
-//                 }
-//                 else
-//                     res.status(400).json({auth: false, message: "Vous devez avoir un compte administrateur pour accéder à cette ressource."});
-//             })
-//         }
-//     });
-
-// }
-
 exports.adminLogin = function(req, res) {
     console.log("login!")
     Admin.findOne({ 
