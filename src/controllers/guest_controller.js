@@ -35,7 +35,6 @@ exports.newGuest = (req, res, next) => {
 }
 
 exports.guest = (req, res, next) => {
-    // console.log("query", req.query)
     Guest.findOne({ _id: req.params.id })
         .populate({path: "tableID", select: "name"})
         .exec()
@@ -44,7 +43,6 @@ exports.guest = (req, res, next) => {
 }
 
 exports.getGuestbyName = (req, res, next) => {
-    console.log("query", req.query)
     Guest.findOne({ name: req.params.name })
         .populate({path: "tableID", select: "name"})
         .exec()
@@ -54,10 +52,7 @@ exports.getGuestbyName = (req, res, next) => {
 
 exports.guests = (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    console.log("guests!")
     Guest.find({ mariageID: mariageId })
-        // .populate({path: "tableID", select: "name"})
-        // .exec()
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }

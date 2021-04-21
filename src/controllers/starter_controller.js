@@ -43,7 +43,6 @@ exports.deleteStarter = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Starter.deleteOne({_id: req.params.id, mariageID: mariageId})
         .then(data => {
-        console.log(data.deletedCount)
         if(data.deletedCount == 1){
             Menu.updateMany({mariageID: mariageId}, {$pull: {starterID: req.params.id}})
                 .then(data => res.status(200).json(data))

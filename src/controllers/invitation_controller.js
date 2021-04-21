@@ -2,7 +2,6 @@ const Invitation = require("../models/invitation");
 const Event = require("../models/évènement");
 
 exports.invitation = (req, res, next) => {
-    // console.log("invitation !")
     // const mariageId = res.locals.mariageID;
     Invitation.findOne({ _id: req.params.id })
         .then(data => res.status(200).json(data))
@@ -10,19 +9,15 @@ exports.invitation = (req, res, next) => {
 }
 
 exports.editInvitation = (req, res, next) => {
-    console.log("file reequest", req.file)
     const url = req.protocol + '://' + req.get('host');
     const mariageId = res.locals.mariageID;
-    // const filename = req.file.filename;
     if(req.file){
         Invitation.updateOne({ _id: req.params.id },
             {$set: {...req.body, picture: req.file.filename, mariageID: mariageId}})
-            // {$set: {...req.body, mariageID: mariageId}})
             .then(data => res.status(200).json(data))
             .catch(err => res.status(400).json( err ))
     } else {
         Invitation.updateOne({ _id: req.params.id },
-            // {$set: {...req.body, picture: req.file.filename, mariageID: mariageId}})
             {$set: {...req.body, mariageID: mariageId}})
             .then(data => res.status(200).json(data))
             .catch(err => res.status(400).json( err ))
@@ -31,12 +26,9 @@ exports.editInvitation = (req, res, next) => {
 }
 
 exports.events = (req, res, next) => {
-    // console.log("events !")
     const invitationId = res.locals.invitationID;
     Event.find({ invitationID: invitationId })
-        .then(data => {
-            // console.log(data)
-            res.status(200).json(data)})
+        .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
 
@@ -71,7 +63,6 @@ exports.deleteEvent = (req, res) => {
     const invitationId = res.locals.invitationID;
     Invitation.updateOne({ _id: invitationId }, {$pull: {eventsID: req.params.id}})
     .then(data => {
-        console.log(data);
         if(data.nModified === 1){
             Event.deleteOne({ _id: req.params.id })
                 .then(data => res.status(200).json(data))

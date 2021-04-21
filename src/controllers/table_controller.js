@@ -13,7 +13,6 @@ exports.newTable = (req, res) => {
     });
     table.save()
         .then(newTable => {
-            console.log(newTable)
             if(table) {
                 Mariage.updateOne({_id: mariageId},
                     {$push: {tableID: newTable}})
@@ -26,7 +25,6 @@ exports.newTable = (req, res) => {
 }
 
 exports.table = (req, res, next) => {
-    console.log('tables!')
     Table.findOne({ _id: req.params.id })
     .then(data => res.status(200).json(data))
     .catch(err => res.status(400).json( err ))
@@ -34,7 +32,6 @@ exports.table = (req, res, next) => {
 
 exports.tables = (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    console.log("tables!")
     Table.find({ mariageID: mariageId })
         .populate('guestID')
         .exec()
@@ -55,14 +52,10 @@ exports.addGuestToTable = (req, res, next) => {
     Table.updateOne({ _id: req.params.id },
         {$push: {guestID: req.body.guestID}})
         .then(data => {
-            console.log(data.nModified)
             if(data.nModified === 1) {
                 Guest.updateOne({ _id: req.body.guestID },
                     {$set: {tableID: req.params.id, mariageID: mariageId}})
-                    .then(data => {
-                        console.log(data.nModified)
-                        res.status(200).json(data)
-                    })
+                    .then(data => res.status(200).json(data))
                     .catch(err => res.status(400).json({ err}))
             } else {
                 return res.status(400).json('Erreur update guest')
@@ -75,11 +68,9 @@ exports.deleteTable = (req, res) => {
     const mariageId = res.locals.mariageID;
     Mariage.updateOne({ _id: mariageId}, {$pull: {tableID: req.params.id}})
         .then(data => {
-            console.log("1e condition", data.nModified)
             if(data != null){
                 Guest.updateMany({tableID: req.params.id}, {$set: {tableID: null}})
                     .then(data => {
-                        console.log("2e condition:", data.nModified)
                         if(data != null){
                             Table.deleteOne({_id: req.params.id})
                                 .then(data => res.status(200).json(data))
@@ -95,7 +86,6 @@ exports.deleteTable = (req, res) => {
 }
 
 exports.deleteGuestFromTable = (req, res, next) => {
-    console.log(req.body)
     const mariageId = res.locals.mariageID;
     Table.updateOne({ _id: req.params.id },
         {$pull: {guestID: req.body.guestID}})

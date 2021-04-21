@@ -9,7 +9,6 @@ const jwt = require('jsonwebtoken');
 const jwt_secret = process.env.JWT_SECRET_KEY;
 
 exports.register = (req, res) => {
-    console.log("coucou")
     let mariage = new Mariage ({
         ...req.body
     });
@@ -30,7 +29,6 @@ exports.register = (req, res) => {
                         if(!admin){
                             res.status(400).json(err)
                         } else {
-                            console.log(newAdmin)
                             let menu = new Menu ({
                                 ...req.body,
                                 mariageID: newMariage._id
@@ -40,7 +38,6 @@ exports.register = (req, res) => {
                                     if(!newMenu){
                                         res.status(400).json(err)
                                     } else {
-                                        console.log(newMenu)
                                         let invitation = new Invitation ({
                                             ...req.body,
                                             title: "",
@@ -77,7 +74,6 @@ exports.register = (req, res) => {
 
 
 exports.adminLogin = function(req, res) {
-    console.log("login!")
     Admin.findOne({ 
         email: req.body.email
     },function(err, admin){
@@ -85,7 +81,6 @@ exports.adminLogin = function(req, res) {
             res.status(400).json({auth: false, message: "Echec connexion. Merci de vérifier vos identifiants."});
         else {
             bcrypt.compare(req.body.password, admin.password, function(err, result) {
-                console.log(admin)
                 if (result)
                 {
                     Mariage.findOne({ _id: admin.mariageID }, function(err, mariage){
@@ -114,7 +109,6 @@ exports.guestLogin = function(req, res) {
             res.status(400).json({auth: false, message: "Please check email/password."});
         else {
             bcrypt.compare(req.body.password, guest.password, function(err, result) {
-                console.log(guest)
                 if (result)
                 {
                     var token = jwt.sign({ id: guest._id, mariageID: mariage._id, role: guest.role }, jwt_secret);

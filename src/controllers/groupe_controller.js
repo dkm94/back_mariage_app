@@ -56,7 +56,6 @@ exports.deleteGroup = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Group.deleteOne({_id: req.params.id, mariageID: mariageId})
         .then(data => {
-            console.log(data.deletedCount)
             if(data.deletedCount == 1){
                 Mariage.updateOne({_id: mariageId}, {$pull: {groupID: req.params.id}})
                     .then(data => res.status(200).json(data))

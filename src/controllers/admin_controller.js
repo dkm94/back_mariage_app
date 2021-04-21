@@ -1,17 +1,5 @@
 const Admin = require('../models/admin');
-const Table = require('../models/table');
-const Mariage = require('../models/mariage');
-const Group = require('../models/groupe');
-const Guest = require('../models/invite');
-const GuestMenu = require('../models/menu-invité');
-const Menu = require('../models/menu');
-const Starter = require('../models/menu-entrée');
-const Maincourse = require('../models/menu-plat');
-const Dessert = require('../models/menu-dessert');
-const generator = require('generate-password');
 const bcrypt = require('bcrypt');
-
-// const deleteUser = require("../middlewares/delete.user.cascade")
 
 exports.admin = (req, res) => {
     const adminId = res.locals.adminId;

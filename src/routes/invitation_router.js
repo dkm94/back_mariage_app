@@ -54,8 +54,6 @@ router.get('/page/picture/:filename', (req, res) => {
   })
 
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-  //check if files exist
-  // console.log(gfs.files)
   if (!file || file.length == 0) {
       return res.status(404).json({
           err: "No files exist"
@@ -66,7 +64,6 @@ router.get('/page/picture/:filename', (req, res) => {
       //read output to browser
       const readStream = gfs.createReadStream(file.filename)
       readStream.pipe(res)
-      console.log(res.file)
   } else {
       res.status(404).json({
           err: "Not an image"
