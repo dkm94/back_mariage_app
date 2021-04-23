@@ -60,7 +60,7 @@ router.get('/page/picture/:filename', (req, res) => {
       })
   }
   //check if image
-  if (file.contentType === 'image/jpeg' || file.contentType === "image/png") {
+  if (file.contentType === 'image/jpeg' || file.contentType === "image/png" || file.contentType === 'image/jpg') {
       //read output to browser
       const readStream = gfs.createReadStream(file.filename)
       readStream.pipe(res)
