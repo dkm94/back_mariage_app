@@ -15,12 +15,10 @@ const fileStorageEngine = new GridFsStorage({
         if (err) {
           return reject(err);
         }
-        const contentType = ["image/jpeg", "image/png"];
         const filename = buf.toString('hex') + path.extname(file.originalname);
         const fileInfo = {
           filename: filename,
-          bucketName: 'fs',
-          contentType: contentType
+          bucketName: 'fs'
         };
         resolve(fileInfo);
       });
@@ -60,7 +58,7 @@ router.get('/page/picture/:filename', (req, res) => {
       })
   }
   //check if image
-  if (file.contentType === 'image/jpeg' || file.contentType === "image/png" || file.contentType === 'image/jpg') {
+  if (file.contentType === 'image/jpeg' || file.contentType === "image/png") {
       //read output to browser
       const readStream = gfs.createReadStream(file.filename)
       readStream.pipe(res)
