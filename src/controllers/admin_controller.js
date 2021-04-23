@@ -1,6 +1,12 @@
 const Admin = require('../models/admin');
 const bcrypt = require('bcrypt');
 
+exports.admins = (req, res) => {
+    Admin.find()
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(400).json( err ))
+}
+
 exports.admin = (req, res) => {
     const adminId = res.locals.adminId;
     Admin.findOne({_id: adminId})
