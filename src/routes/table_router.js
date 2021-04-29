@@ -15,7 +15,7 @@ const router = express.Router();
 router.post("/add", adminAuth, newTable);
 router.get("/:id", adminAuth, table);
 router.get("/", adminAuth, tables);
-router.put("/edit/:id", adminAuth, updateTable);
+router.post("/edit/:id", adminAuth, updateTable);
 router.put("/addGuest/:id", adminAuth, addGuestToTable);
 router.put("/deleteGuest/:id", adminAuth, deleteGuestFromTable);
 router.delete("/delete/:id", adminAuth, deleteTable);
