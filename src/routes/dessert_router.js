@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/add/:id", adminAuth, newDessert);
 router.get("/", adminAuth, desserts);
-router.put("/edit/:id", adminAuth, updateDessert);
+router.post("/edit/:id", adminAuth, updateDessert);
 router.delete("/delete/:id", adminAuth, deleteDessert);
 
 module.exports = router;

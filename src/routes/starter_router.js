@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/add/:id", adminAuth, newStarter);
 router.get("/", adminAuth, starters);
-router.put("/edit/:id", adminAuth, updateStarter);
+router.post("/edit/:id", adminAuth, updateStarter);
 router.delete("/delete/:id", adminAuth, deleteStarter);
 
 module.exports = router;

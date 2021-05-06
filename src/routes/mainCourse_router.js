@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/add/:id", adminAuth, newMaincourse);
 router.get("/", adminAuth, maincourses);
-router.put("/edit/:id", adminAuth, updateMaincourse);
+router.post("/edit/:id", adminAuth, updateMaincourse);
 router.delete("/delete/:id", adminAuth, deleteMaincourse);
 
 module.exports = router;
