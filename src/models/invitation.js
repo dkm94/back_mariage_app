@@ -11,13 +11,17 @@ let invitationSchema = new mongoose.Schema({
     title: {
         type: String
     },
-    firstPerson: {
-        firstName: String,
-        lastName: String
+    firstPerson_firstName: {
+        type: String
     },
-    secondPerson: {
-        firstName: String,
-        lastName: String
+    firstPerson_lastName: {
+        type: String
+    },
+    secondPerson_firstName: {
+        type: String
+    },
+    secondPerson_lastName: {
+        type: String
     },
     picture: {
         type: String
