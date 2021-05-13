@@ -12,10 +12,12 @@ let invitationSchema = new mongoose.Schema({
         type: String
     },
     firstPerson: {
-        type: String
+        firstName: String,
+        lastName: String
     },
     secondPerson: {
-        type: String
+        firstName: String,
+        lastName: String
     },
     picture: {
         type: String
@@ -25,7 +27,7 @@ let invitationSchema = new mongoose.Schema({
         default: formatted
     },
     rsvp: {
-        type: String
+        type: String,
     },
     eventsID: [{
         type: Schema.Types.ObjectId, 
