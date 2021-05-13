@@ -24,6 +24,9 @@ let invitationSchema = new mongoose.Schema({
         type: String,
         default: formatted
     },
+    rsvp: {
+        type: String
+    },
     eventsID: [{
         type: Schema.Types.ObjectId, 
         ref: 'Event'
