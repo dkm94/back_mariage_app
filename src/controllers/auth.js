@@ -3,6 +3,7 @@ const Mariage = require('../models/mariage');
 // const Group = require('../models/groupe');
 const Guest = require("../models/invite");
 const Invitation = require("../models/invitation");
+const Budget = require("../models/budget");
 const Menu = require('../models/menu');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -54,10 +55,23 @@ exports.register = (req, res) => {
                                                 if(!newInvitation){
                                                     res.status(400).json(err)
                                                 } else {
-                                                    Mariage.updateOne({_id: newMariage._id},
-                                                        {$set: {adminID: newAdmin._id, menuID: newMenu._id, invitationID: newInvitation._id}})
-                                                        .then(data => res.status(200).json({data}))
-                                                        .catch(err => res.status(400).json({err}))
+                                                    let budget = new Budget({
+                                                        ...req.body,
+                                                        currency: "",
+                                                        operations: [],
+                                                        mariageID: newMariage._id
+                                                    })
+                                                    budget.save()
+                                                        .then(newBudget => {
+                                                            if(!newBudget){
+                                                                res.status(400).json(err)
+                                                            } else {
+                                                                Mariage.updateOne({_id: newMariage._id},
+                                                                    {$set: {adminID: newAdmin._id, menuID: newMenu._id, invitationID: newInvitation._id, budgetID: newBudget._id}})
+                                                                    .then(data => res.status(200).json(data))
+                                                                    .catch(err => res.status(400).json(err))
+                                                            }
+                                                        })
                                                 }
                                             })
                                             .catch(err => res.status(400).json( err ))
@@ -87,7 +101,7 @@ exports.adminLogin = function(req, res) {
                         if(err)
                             res.status(400).json("Erreur id mariage")
                             else {
-                                var token = jwt.sign({ id: admin._id, mariageID: admin.mariageID, role: admin.role, invitationID: mariage.invitationID }, jwt_secret);
+                                var token = jwt.sign({ id: admin._id, mariageID: admin.mariageID, role: admin.role, invitationID: mariage.invitationID, budgetID: mariage.budgetID }, jwt_secret);
                                 res.status(200).json({auth: true, token: token, message: "Vous pouvez à présent accéder à votre compte."});
                             }
                     })

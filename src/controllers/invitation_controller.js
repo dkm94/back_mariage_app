@@ -2,7 +2,6 @@ const Invitation = require("../models/invitation");
 const Event = require("../models/évènement");
 
 exports.invitation = (req, res, next) => {
-    // const mariageId = res.locals.mariageID;
     Invitation.findOne({ _id: req.params.id })
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
@@ -43,8 +42,8 @@ exports.newEvent = (req, res, next) => {
             if(newEvent) {
                 Invitation.updateOne({_id: req.params.id},
                     {$push: {eventsID: event}})
-                    .then(data => res.status(200).json({ data}))
-                    .catch(err => res.status(400).json({err}))
+                    .then(data => res.status(200).json(data))
+                    .catch(err => res.status(400).json(err))
             } else
                 res.status(400).json(err)
         })
