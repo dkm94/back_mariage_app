@@ -57,7 +57,7 @@ exports.register = (req, res) => {
                                                 } else {
                                                     let budget = new Budget({
                                                         ...req.body,
-                                                        currency: "",
+                                                        currency: "€",
                                                         operations: [],
                                                         mariageID: newMariage._id
                                                     })

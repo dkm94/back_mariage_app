@@ -12,7 +12,7 @@ const { adminAuth } = require("../middlewares");
 
 const router = express.Router();
 
-router.get("/operations", adminAuth, operations);
+router.get("/operations/", adminAuth, operations);
 router.post("/operations/add/:id", adminAuth, newOperation);
 router.post("/operations/edit/:id", adminAuth, updateOperation);
 router.delete("/operations/delete/:id", adminAuth, deleteOperation);
