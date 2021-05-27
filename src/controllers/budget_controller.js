@@ -29,6 +29,7 @@ exports.newOperation = (req, res) => {
     const budgetId = res.locals.budgetID;
     let operation = new Operation ({
         ...req.body,
+        price: req.body.price * 100,
         budgetID: budgetId
     });
     operation.save()
