@@ -12,7 +12,7 @@ let operationSchema = new mongoose.Schema({
         type: String
     },
     price: { 
-        type: Currency 
+        type: Number
     },
     budgetID: {
         type: Schema.Types.ObjectId, 
