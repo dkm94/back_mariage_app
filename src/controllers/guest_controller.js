@@ -43,7 +43,8 @@ exports.guest = (req, res, next) => {
 }
 
 exports.getGuestbyName = (req, res, next) => {
-    Guest.findOne({ name: req.params.name })
+    const mariageId = res.locals.mariageID;
+    Guest.find({ name: req.query.name, mariageID: mariageId })
         .populate({path: "tableID", select: "name"})
         .exec()
         .then(data => res.status(200).json(data))

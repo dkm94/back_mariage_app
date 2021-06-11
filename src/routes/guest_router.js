@@ -44,8 +44,8 @@ const upload = multer({storage: fileStorageEngine});
 
 router.post("/add", adminAuth, newGuest);
 router.get("/id/:id", adminAuth, guest);
-router.get("/name/:name", adminAuth, getGuestbyName);
-router.get("/", adminAuth, guests);
+router.get("/all/", adminAuth, guests);
+router.get("/all/name", adminAuth, getGuestbyName);
 router.get('/media/:filename', (req, res) => {
     const conn = mongoose.connection;
     const gfs = Grid(conn.db, mongoose.mongo)
