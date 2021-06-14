@@ -27,6 +27,10 @@ let mariageSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Budget'
     },
+    todoListID: [{
+        type: Schema.Types.ObjectId, 
+        ref: 'Todolist'
+    }],
     adminID: {
         type: Schema.Types.ObjectId, 
         ref: 'Admin'

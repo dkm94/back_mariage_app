@@ -1,7 +1,7 @@
-const moongoose = require('mongoose');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let todolistSchema = new.mongoose.Schema({
+let todolistSchema = new mongoose.Schema({
     text: {
         type: String,
         required: 'A task is required.'
@@ -18,4 +18,4 @@ let todolistSchema = new.mongoose.Schema({
     }
 })
 
-module.exports = moongoose.model('Todolist', todolistSchema)
+module.exports = mongoose.model('Todolist', todolistSchema)

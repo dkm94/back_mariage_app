@@ -14,6 +14,7 @@ const starterRouter = require("./starter_router");
 const mainCourseRouter = require("./mainCourse_router");
 const dessertRouter = require("./dessert_router");
 const budgetRouter = require("./budget_router");
+const todolistRouter = require("./todolist_router");
 
 mainRouter.use("/auth", authRouter);
 mainRouter.use("/admin", adminRouter);
@@ -24,6 +25,7 @@ mainRouter.use("/guests", guestRouter);
 mainRouter.use("/tables", tableRouter);
 mainRouter.use("/menu", menuRouter);
 mainRouter.use("/budget", budgetRouter);
+mainRouter.use("/todolist", todolistRouter);
 mainRouter.use("/guestmenu", guestMenuRouter);
 mainRouter.use("/menu/starters", starterRouter);
 mainRouter.use("/menu/maincourses", mainCourseRouter);
