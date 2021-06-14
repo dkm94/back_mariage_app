@@ -9,7 +9,7 @@ let todolistSchema = new mongoose.Schema({
     color: {
         type: String
     },
-    isComplete: {
+    isCompleted: {
         type: Boolean,
     },
     mariageID: {
