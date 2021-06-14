@@ -5,6 +5,7 @@ exports.newTodo = (req, res) => {
     const mariageId = res.locals.mariageID;
     let todo = new Todo ({
         ...req.body,
+        color: "fcf9ed",
         isCompleted: false,
         mariageID: mariageId
     });
