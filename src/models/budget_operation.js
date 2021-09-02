@@ -5,8 +5,12 @@ var Currency = mongoose.Types.Currency;
 
 let operationSchema = new mongoose.Schema({
     
-    title:{
-        type: String
+    category:{
+        type: String,
+        enum: [
+            'rental', 'clothing/beauty', 'decoration/flowers', 'jewelry', 'animation', 'caterer', 'wedding invitations', 'various'
+        ],
+        default: 'various'
     },
     description: {
         type: String
