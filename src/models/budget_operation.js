@@ -24,7 +24,7 @@ let operationSchema = new mongoose.Schema({
     date: {
         type: String,
         default: formatted
-    }
+    },
     budgetID: {
         type: Schema.Types.ObjectId, 
         ref: 'Budget'
