@@ -8,9 +8,9 @@ let operationSchema = new mongoose.Schema({
     category:{
         type: String,
         enum: [
-            'rental', 'clothing/beauty', 'decoration/flowers', 'jewelry', 'animation', 'caterer', 'wedding invitations', 'various'
+            'Locations', 'Habillement/Beauté', 'Décoration/Fleurs', 'Alliances/Bijoux', 'Animation', 'Traiteur', 'Faire-part', 'Autres'
         ],
-        default: 'various'
+        default: 'Autres'
     },
     description: {
         type: String
