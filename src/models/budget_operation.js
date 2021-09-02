@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 require('mongoose-currency').loadType(mongoose);
 var Currency = mongoose.Types.Currency;
-const start = Date.now();
-const date = new Date(start);
-const formatted = date.toLocaleDateString("fr-FR");
+const t = new Date();
+const date = ('0' + t.getDate()).slice(-2);
+const month = ('0' + (t.getMonth() + 1)).slice(-2);
+const year = t.getFullYear();
+const time = `${date}/${month}/${year}`;
 
 let operationSchema = new mongoose.Schema({
     
@@ -23,7 +25,7 @@ let operationSchema = new mongoose.Schema({
     },
     date: {
         type: String,
-        default: formatted
+        default: time
     },
     budgetID: {
         type: Schema.Types.ObjectId, 
