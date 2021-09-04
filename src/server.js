@@ -4,7 +4,7 @@ const cors = require('cors');
 const bearerToken = require('express-bearer-token');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const db = process.env.MONGODB_URI;
+// const db = process.env.MONGODB_URI;
 
 const routes = require("./routes");
 
@@ -44,13 +44,31 @@ app.use(function (req, res, next) {
 });
 
 // BDD connection
+
+const url = 'mongodb://mariage.uybvy.mongodb.net/mariage?retryWrites=true&w=majority'
+
 mongoose
-.connect(db || 'mongodb://localhost/mariage', {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
+.connect(url, 
+  {
+    dbName: 'mariage',
+    user: 'admin_mariage',
+    pass: 'ImraN0iVQ92qEZhm',
+    useNewUrlParser: true, 
+    useCreateIndex: true, 
+    useUnifiedTopology: true}
+);
 
 // test
 app.route('/').get(function(req, res) {
     res.send('hello world');
 });
+// const database = mongoose.connection
+// database.once('open', _ => {
+//   console.log('Database connected:', url)
+// })
 
+// database.on('error', err => {
+//   console.error('connection error:', err)
+// })
 
 module.exports = app;
