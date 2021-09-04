@@ -22,6 +22,9 @@ let guestSchema = new mongoose.Schema({
     media: {
         type: String
     },
+    family: {
+        type: String
+    },
     // groupID: {
     //     type: Schema.Types.ObjectId, 
     //     ref: 'Group'
