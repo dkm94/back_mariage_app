@@ -4,7 +4,7 @@ const cors = require('cors');
 const bearerToken = require('express-bearer-token');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-// const db = process.env.MONGODB_URI;
+const db = process.env.MONGODB_URI;
 
 const routes = require("./routes");
 
@@ -18,12 +18,19 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(bearerToken());
 
+mongoose
+.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
+.then(res => console.log(res, "connecté"))
+.catch(err => console.log(err))
+// console.log(db)
+
 const corsOptions = {
   origin: ['https://my-wedding-app.netlify.app', 'http://localhost:3000'],
   credentials: true
 }
 app.use(cors(corsOptions));
 // app.use(cors())
+
 
 app.use("/api", routes);
 app.use("/api/admin", routes);
@@ -45,18 +52,19 @@ app.use(function (req, res, next) {
 
 // BDD connection
 
-const url = 'mongodb://mariage.uybvy.mongodb.net/mariage?retryWrites=true&w=majority'
+// const url = 'mongodb://mariage.uybvy.mongodb.net/mariage?retryWrites=true&w=majority'
 
-mongoose
-.connect(url, 
-  {
-    dbName: 'mariage',
-    user: 'admin_mariage',
-    pass: 'ImraN0iVQ92qEZhm',
-    useNewUrlParser: true, 
-    useCreateIndex: true, 
-    useUnifiedTopology: true}
-);
+// mongoose
+// .connect(url, 
+//   {
+//     dbName: 'mariage',
+//     user: 'admin_mariage',
+//     pass: 'ImraN0iVQ92qEZhm',
+//     useNewUrlParser: true, 
+//     useCreateIndex: true, 
+//     useUnifiedTopology: true}
+// );
+
 
 // test
 app.route('/').get(function(req, res) {
@@ -64,7 +72,7 @@ app.route('/').get(function(req, res) {
 });
 // const database = mongoose.connection
 // database.once('open', _ => {
-//   console.log('Database connected:', url)
+//   console.log('Database connected:', MONGODB_URI)
 // })
 
 // database.on('error', err => {
