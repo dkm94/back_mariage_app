@@ -19,9 +19,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bearerToken());
 
 mongoose
-.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
-.then(res => console.log(res, "connecté"))
-.catch(err => console.log(err))
+.connect(db, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true})
+// .then(res => console.log(res, "connecté"))
+// .catch(err => console.log(err))
 // console.log(db)
 
 const corsOptions = {
