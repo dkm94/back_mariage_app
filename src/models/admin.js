@@ -21,6 +21,12 @@ let adminSchema = new mongoose.Schema({
         required: 'The password is required',
         match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.']
     },
+    firstPerson: {
+        type: "string"
+    },
+    secondPerson: {
+        type: "string"
+    },
     media: {
         type: 'string'
     },
