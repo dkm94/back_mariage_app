@@ -40,11 +40,9 @@ app.use("/api/guest",  routes);
 
 
 app.use(function (req, res, next) {
-  // res.setHeader("Access-Control-Allow-Origin", "https://my-wedding-app.netlify.app");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  // res.setHeader("Access-Control-Allow-Methods","*");
+  // res.setHeader("Access-Control-Allow-Origin", "*");
   res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
-  // res.setHeader("Access-Control-Allow-Headers", "*");
+  // res.header("Access-Control-Allow-Headers", "Origin, Authorization, X-Requested-With, Content-Type, Accept");
   res.header("Access-Control-Allow-Headers", "Origin, Authorization, X-Requested-With, Content-Type, Accept");
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();

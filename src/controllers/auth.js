@@ -136,10 +136,10 @@ exports.guestLogin = function(req, res) {
 
 }
 
-exports.resetPassword = function(req, res) {
-    Admin.findOne({ 
-        email: req.body.email
-    })
-    .then(data => res.status(200).json(data))
-    .catch((err) => res.status(400).json({ message: "Adresse mail introuvable."}))
-}
+// exports.resetPassword = function(req, res) {
+//     Admin.findOne({ 
+//         email: req.body.email
+//     })
+//     .then(data => res.status(200).json(data))
+//     .catch((err) => res.status(400).json({ message: "Adresse mail introuvable."}))
+// }
