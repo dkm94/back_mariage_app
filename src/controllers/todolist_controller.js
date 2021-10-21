@@ -11,14 +11,10 @@ exports.newTodo = (req, res) => {
     });
     todo.save()
         .then(newTodo => {
-            if(!todo){
-                res.status(400).json("Erreur création todo")
-            } else {
-                Wedding.updateOne({_id: mariageId},
-                    {$push: {todoListID: newTodo._id}})
-                    .then(data => res.status(200).json(data))
-                    .catch(err => res.status(400).json(err))
-            }
+            Wedding.updateOne({_id: mariageId},
+                {$push: {todoListID: newTodo}})
+                .then(data => res.status(200).json(data))
+                .catch(err => res.status(400).json(err))
         })
         .catch(err => res.status(400).json({err}))
 }
@@ -42,6 +38,7 @@ exports.deleteTodo = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Wedding.updateOne({_id: mariageId}, {$pull: {todoListID: req.params.id}})
         .then(data => {
+        res.json(data)
         if(data != null){
             Todo.deleteOne({_id: req.params.id, mariageID: mariageId})
                 .then(data => res.status(200).json(data))
