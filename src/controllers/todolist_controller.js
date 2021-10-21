@@ -40,7 +40,7 @@ exports.updateTodo = (req, res, next) => {
 
 exports.deleteTodo = (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    Wedding.updateOne({mariageID: mariageId}, {$pull: {todoListID: req.params.id}})
+    Wedding.updateOne({_id: mariageId}, {$pull: {todoListID: req.params.id}})
         .then(data => {
         if(data != null){
             Todo.deleteOne({_id: req.params.id, mariageID: mariageId})
