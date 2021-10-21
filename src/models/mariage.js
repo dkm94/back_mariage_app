@@ -3,6 +3,12 @@ const Schema = mongoose.Schema;
 
 let mariageSchema = new mongoose.Schema({
 
+    firstPerson: {
+        type: "string"
+    },
+    secondPerson: {
+        type: "string"
+    },
     invitationID: {
         type: Schema.Types.ObjectId, 
         ref: 'Invitation'

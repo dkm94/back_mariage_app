@@ -14,76 +14,135 @@ exports.register = (req, res) => {
         ...req.body
     });
     mariage.save()
-        .then(newMariage => {
-            if(!mariage){
-                res.status(400).json(err)
-            } else {
-                let hash = bcrypt.hashSync(req.body.password, 10);
-                let admin = new Admin ({
+    .then(newMariage => {
+        const {firstPerson, secondPerson, email, password} = req.body;
+        if(!firstPerson || !secondPerson || !email || !password){
+            return res.status(422).json({error: "Merci de renseigner tous les champs."})
+        }
+        let hash = bcrypt.hashSync(req.body.password, 10);
+        let admin = new Admin ({
+            ...req.body,
+            password: hash,
+            role: "admin",
+            mariageID: newMariage._id
+        })
+        admin.save()
+        .then(newAdmin => {
+            let menu = new Menu ({
+                ...req.body,
+                mariageID: newMariage._id
+            })
+            menu.save()
+            .then(newMenu => {
+                let invitation = new Invitation ({
                     ...req.body,
-                    password: hash,
-                    role: "admin",
+                    title: "",
+                    picture: "",
+                    date: "",
+                    places: [],
+                    infos: "",
                     mariageID: newMariage._id
                 })
-                admin.save()
-                    .then(newAdmin => {
-                        if(!admin){
-                            res.status(400).json(err)
-                        } else {
-                            let menu = new Menu ({
-                                ...req.body,
-                                mariageID: newMariage._id
-                            })
-                            menu.save()
-                                .then(newMenu => {
-                                    if(!newMenu){
-                                        res.status(400).json(err)
-                                    } else {
-                                        let invitation = new Invitation ({
-                                            ...req.body,
-                                            title: "",
-                                            firstPerson: "",
-                                            secondPerson: "",
-                                            picture: "",
-                                            date: "",
-                                            places: [],
-                                            infos: "",
-                                            mariageID: newMariage._id
-                                        })
-                                        invitation.save()
-                                            .then(newInvitation => {
-                                                if(!newInvitation){
-                                                    res.status(400).json(err)
-                                                } else {
-                                                    let budget = new Budget({
-                                                        ...req.body,
-                                                        currency: "€",
-                                                        operations: [],
-                                                        mariageID: newMariage._id
-                                                    })
-                                                    budget.save()
-                                                        .then(newBudget => {
-                                                            if(!newBudget){
-                                                                res.status(400).json(err)
-                                                            } else {
-                                                                Mariage.updateOne({_id: newMariage._id},
-                                                                    {$set: {adminID: newAdmin._id, menuID: newMenu._id, invitationID: newInvitation._id, budgetID: newBudget._id}})
-                                                                    .then(data => res.status(200).json(data))
-                                                                    .catch(err => res.status(400).json(err))
-                                                            }
-                                                        })
-                                                }
-                                            })
-                                            .catch(err => res.status(400).json( err ))
-                                    }
-                                })
-                                .catch(err => res.status(400).json( err ))
-                        }
+                invitation.save()
+                .then(newInvitation => {
+                    let budget = new Budget({
+                        ...req.body,
+                        currency: "€",
+                        operations: [],
+                        mariageID: newMariage._id
                     })
-                    .catch(err => res.status(400).json( err ))  
-            }
+                    budget.save()
+                    .then(newBudget => {
+                        Mariage.updateOne({_id: newMariage._id},
+                        {$set: {
+                            adminID: newAdmin._id, 
+                            menuID: newMenu._id, 
+                            invitationID: newInvitation._id, 
+                            budgetID: newBudget._id}})
+                        .then(data => res.status(200).json(newMariage))
+                        .catch(err => res.status(400).json(err))
+                    })
+                    .catch(err => console.log(err))
+                })
+                .catch(err => console.log(err))
+            })
+            .catch(err => console.log(err))
         })
-        .catch(err => res.status(400).json( err ))    
+        .catch(err => console.log(err))
+    })
+    .catch(err => console.log(err))
+    // let mariage = new Mariage ({
+    //     ...req.body
+    // });
+    // mariage.save()
+    //     .then(newMariage => {
+    //         if(!mariage){
+    //             res.status(400).json({message: "Erreur création du mariage."})
+    //         } else {
+    //             let hash = bcrypt.hashSync(req.body.password, 10);
+    //             let admin = new Admin ({
+    //                 ...req.body,
+    //                 password: hash,
+    //                 role: "admin",
+    //                 mariageID: newMariage._id
+    //             })
+    //             admin.save()
+    //                 .then(newAdmin => {
+    //                     if(!admin){
+    //                         res.status(400).json({message: "Erreur création du compte."})
+    //                     } else {
+    //                         let menu = new Menu ({
+    //                             ...req.body,
+    //                             mariageID: newMariage._id
+    //                         })
+    //                         menu.save()
+    //                             .then(newMenu => {
+    //                                 if(!newMenu){
+    //                                     res.status(400).json(err)
+    //                                 } else {
+    //                                     let invitation = new Invitation ({
+    //                                         ...req.body,
+    //                                         title: "",
+    //                                         picture: "",
+    //                                         date: "",
+    //                                         places: [],
+    //                                         infos: "",
+    //                                         mariageID: newMariage._id
+    //                                     })
+    //                                     invitation.save()
+    //                                         .then(newInvitation => {
+    //                                             if(!newInvitation){
+    //                                                 res.status(400).json(err)
+    //                                             } else {
+    //                                                 let budget = new Budget({
+    //                                                     ...req.body,
+    //                                                     currency: "€",
+    //                                                     operations: [],
+    //                                                     mariageID: newMariage._id
+    //                                                 })
+    //                                                 budget.save()
+    //                                                     .then(newBudget => {
+    //                                                         if(!newBudget){
+    //                                                             res.status(400).json(err)
+    //                                                         } else {
+    //                                                             Mariage.updateOne({_id: newMariage._id},
+    //                                                                 {$set: {adminID: newAdmin._id, menuID: newMenu._id, invitationID: newInvitation._id, budgetID: newBudget._id}})
+    //                                                                 .then(data => res.status(200).json(data))
+    //                                                                 .catch(err => res.status(400).json(err))
+    //                                                         }
+    //                                                     })
+    //                                             }
+    //                                         })
+    //                                         .catch(err => res.status(400).json( err ))
+    //                                 }
+    //                             })
+    //                             .catch(err => res.status(400).json( err ))
+    //                     }
+    //                 })
+    //                 .catch(err => res.status(400).json( err ))  
+    //         }
+    //     })
+    //     .catch(err => res.status(400).json("Erreur création du compte"));    
 }
 
 
