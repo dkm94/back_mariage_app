@@ -6,6 +6,6 @@ const { adminAuth } = require("../middlewares");
 const router = express.Router();
 
 router.get("/:id", adminAuth, mariage);
-router.put("/edit/:id", adminAuth, updateMariage);
+router.post("/edit/:id", adminAuth, updateMariage);
 
 module.exports = router;
