@@ -9,10 +9,10 @@ let mariageSchema = new mongoose.Schema({
     secondPerson: {
         type: "string"
     },
-    invitationID: {
-        type: Schema.Types.ObjectId, 
-        ref: 'Invitation'
-    },
+    // invitationID: {
+    //     type: Schema.Types.ObjectId, 
+    //     ref: 'Invitation'
+    // },
     // groupID: [{
     //     type: Schema.Types.ObjectId, 
     //     ref: 'Group'
