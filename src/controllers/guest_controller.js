@@ -24,12 +24,9 @@ exports.newGuest = (req, res, next) => {
     });
     guest.save()
         .then(newGuest => {
-            if(guest) {
-                Wedding.updateOne({_id: mariageId},
-                    {$push: {guestID: newGuest}})
-                res.send(newGuest)
-            } else
-                res.status(400).json(err)
+            Wedding.updateOne({_id: mariageId},
+                {$push: {guestID: newGuest}})
+                .then(data => res.status(200).json(newGuest))
         })
         .catch(err => res.status(400).json(err))
 }
