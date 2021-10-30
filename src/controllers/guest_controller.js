@@ -27,8 +27,7 @@ exports.newGuest = (req, res, next) => {
             if(guest) {
                 Wedding.updateOne({_id: mariageId},
                     {$push: {guestID: newGuest}})
-                    .then(newGuest => res.status(200).json(newGuest))
-                    .catch(err => res.status(400).json(err))
+                res.send(newGuest)
             } else
                 res.status(400).json(err)
         })
