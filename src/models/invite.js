@@ -22,10 +22,11 @@ let guestSchema = new mongoose.Schema({
     media: {
         type: String
     },
-    family: {
-        type: String,
-        enum: [ "1", "2" ]
-    },
+    // family: {
+    //     type: String,
+    //     enum: ['1','2'],
+    //     default: '1'
+    // },
     // groupID: {
     //     type: Schema.Types.ObjectId, 
     //     ref: 'Group'
