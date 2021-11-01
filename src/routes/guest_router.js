@@ -11,6 +11,7 @@ const { newGuest,
     guest,
     guests,
     updateGuest,
+    updateFile,
     deleteGuest,
     getGuestbyName
 } = require("../controllers/guest_controller");
