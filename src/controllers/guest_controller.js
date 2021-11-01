@@ -58,15 +58,25 @@ exports.guests = (req, res, next) => {
 exports.updateGuest = (req, res) => {
     const mariageId = res.locals.mariageID;
     if(req.file){
-        Guest.updateOne({ _id: req.params.id },
-            {$set: {...req.body, media: req.file.filename, mariageID: mariageId}})
-            .then(data => res.status(200).json(data))
-            .catch(err => res.status(400).json( err ))
+        Guest.findOneAndUpdate({ _id: req.params.id },
+            {$set: {...req.body, media: req.file.filename, mariageID: mariageId}},
+            {new: true}, (err, doc) => {
+                if(err) {
+                    console.log(err)
+                } else {
+                    return res.status(200).json(doc)
+                }
+            })
     } else {
-        Guest.updateOne({ _id: req.params.id },
-            {$set: {...req.body, mariageID: mariageId}})
-            .then(data => res.status(200).json(data))
-            .catch(err => res.status(400).json( err ))
+        Guest.findOneAndUpdate({ _id: req.params.id },
+            {$set: {...req.body, mariageID: mariageId}},
+            {new: true}, (err, doc) => {
+                if(err) {
+                    console.log(err)
+                } else {
+                    return res.status(200).json(doc)
+                }
+            })
     }
 }
 

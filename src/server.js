@@ -18,6 +18,7 @@ app.use(bearerToken());
 
 mongoose
 .connect(db, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true})
+mongoose.set('useFindAndModify', false);
 // .then(res => console.log(res, "connecté"))
 // .catch(err => console.log(err))
 
