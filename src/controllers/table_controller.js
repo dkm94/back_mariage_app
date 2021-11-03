@@ -26,9 +26,11 @@ exports.table = (req, res, next) => {
     .catch(err => res.status(400).json( err ))
 }
 
-exports.tables = async (req, res, next) => {
+exports.tables = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Table.find({ mariageID: mariageId })
+        .populate('guestID')
+        .exec()
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
