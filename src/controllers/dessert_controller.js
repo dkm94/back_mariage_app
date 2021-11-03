@@ -10,14 +10,9 @@ exports.newDessert = (req, res) => {
     });
     dessert.save()
         .then(newDessert => {
-            if(!dessert){
-                res.status(400).json("Erreur création menu")
-            } else {
-                Menu.updateOne({_id: req.params.id, mariageID: mariageId},
-                    {$push: {dessertID: newDessert._id}})
-                    .then(data => res.status(200).json({ data}))
-                    .catch(err => res.status(400).json({err}))
-            }
+            Menu.updateOne({_id: req.params.id, mariageID: mariageId},
+                {$push: {dessertID: newDessert._id}})
+                .then(data => res.status(200).json(newDessert))
         })
         .catch(err => res.status(400).json({err}))
 }

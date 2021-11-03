@@ -12,14 +12,9 @@ exports.newStarter = (req, res) => {
     });
     starter.save()
         .then(newStarter => {
-            if(!starter){
-                res.status(400).json("Erreur création menu")
-            } else {
-                Menu.updateOne({_id: req.params.id, mariageID: mariageId},
-                    {$push: {starterID: newStarter._id}})
-                    .then(data => res.status(200).json({ data}))
-                    .catch(err => res.status(400).json({err}))
-            }
+            Menu.updateOne({_id: req.params.id, mariageID: mariageId},
+                {$push: {starterID: newStarter._id}})
+                .then(data => res.status(200).json(newStarter))
         })
         .catch(err => res.status(400).json({err}))
 }
