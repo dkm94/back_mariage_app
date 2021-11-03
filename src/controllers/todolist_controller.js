@@ -11,12 +11,9 @@ exports.newTodo = (req, res) => {
     });
     todo.save()
         .then(newTodo => {
-            if(todo){
-                Wedding.updateOne({_id: mariageId},
-                    {$push: {todoListID: newTodo}})
-                    .then(data => res.status(200).json(data))
-                    .catch(err => res.status(400).json(err))
-           }
+            Wedding.updateOne({_id: mariageId},
+                {$push: {todoListID: newTodo}})
+                .then(data => res.status(200).json(newTodo))
         })
         .catch(err => res.status(400).json({err}))
 }
