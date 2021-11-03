@@ -34,14 +34,9 @@ exports.newOperation = (req, res) => {
     });
     operation.save()
         .then(newExpense => {
-            if(!operation){
-                res.status(400).json("Erreur création operation")
-            } else {
-                Budget.updateOne({_id: req.params.id},
-                    {$push: {operationsID: newExpense}})
-                    .then(data => res.status(200).json(data))
-                    .catch(err => res.status(400).json(err))
-            }
+            Budget.updateOne({_id: req.params.id},
+                {$push: {operationsID: newExpense}})
+                .then(data => res.status(200).json(newExpense))
         })
         .catch(err => res.status(400).json({err}))
 }
