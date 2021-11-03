@@ -24,7 +24,8 @@ let guestSchema = new mongoose.Schema({
     },
     family: {
         type: String,
-        enum: ['1','2']
+        enum: ['1','2'],
+        default: "1"
     },
     // groupID: {
     //     type: Schema.Types.ObjectId, 

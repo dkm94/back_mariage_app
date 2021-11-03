@@ -13,7 +13,6 @@ exports.newGuest = (req, res, next) => {
         // email: null,
         // password: generatedpsw,
         media: "",
-        family: "",
         guestMenu: {
             starter: null,
             maincourse: null,
