@@ -28,8 +28,8 @@ exports.table = (req, res, next) => {
 
 exports.tables = async (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    const tables = Table.find({ mariageID: mariageId })
-        .then(data => res.status(200).json(tables))
+    Table.find({ mariageID: mariageId })
+        .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
 
