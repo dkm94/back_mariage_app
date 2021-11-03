@@ -1,7 +1,5 @@
-const Admin = require('../models/admin');
 const Table = require('../models/table');
 const Mariage = require('../models/mariage');
-const Group = require('../models/groupe');
 const Guest = require('../models/invite');
 
 //TABLE
@@ -13,29 +11,25 @@ exports.newTable = (req, res) => {
     });
     table.save()
         .then(newTable => {
-            if(table) {
-                Mariage.updateOne({_id: mariageId},
-                    {$push: {tableID: newTable}})
-                    .then(newTable => res.status(200).json(newTable))
-                    .catch(err => res.status(400).json(err))
-            } else
-                res.status(400).json(err)
+            Mariage.updateOne({_id: mariageId},
+                {$push: {tableID: newTable}})
+                .then(data => res.status(200).json(newTable))
         })
         .catch(err => res.status(400).json({err}))
 }
 
 exports.table = (req, res, next) => {
     Table.findOne({ _id: req.params.id })
+    .populate('guestID')
+    .exec()
     .then(data => res.status(200).json(data))
     .catch(err => res.status(400).json( err ))
 }
 
-exports.tables = (req, res, next) => {
+exports.tables = async (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    Table.find({ mariageID: mariageId })
-        .populate('guestID')
-        .exec()
-        .then(data => res.status(200).json(data))
+    const tables = Table.find({ mariageID: mariageId })
+        .then(data => res.status(200).json(tables))
         .catch(err => res.status(400).json( err ))
 }
 
