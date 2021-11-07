@@ -22,11 +22,11 @@ mongoose.set('useFindAndModify', false);
 // .then(res => console.log(res, "connecté"))
 // .catch(err => console.log(err))
 
-// const corsOptions = {
-//   origin: ['https://my-wedding-app.netlify.app', 'http://localhost:3000'],
-//   credentials: true
-// }
-app.use(cors());
+const corsOptions = {
+  origin: ['https://my-wedding-app.netlify.app', 'http://localhost:3000'],
+  credentials: true
+}
+app.use(cors(corsOptions));
 
 app.use("/api", routes);
 app.use("/api/admin", routes);
