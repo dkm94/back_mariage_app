@@ -22,22 +22,21 @@ mongoose.set('useFindAndModify', false);
 // .then(res => console.log(res, "connecté"))
 // .catch(err => console.log(err))
 
-// const corsOptions = {
-//   origin: ['https://my-wedding-app.netlify.app', 'http://localhost:3000'],
-//   credentials: true
-// }
-const whitelist = ['https://my-wedding-app.netlify.app', 'http://localhost:3000']
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error())
-    }
-  },
+  origin: ['https://my-wedding-app.netlify.app', 'http://localhost:3000'],
+  credentials: true
 }
+// const whitelist = ['https://my-wedding-app.netlify.app', 'http://localhost:3000']
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true)
+//     } else {
+//       callback(new Error())
+//     }
+//   },
+// }
 app.use(cors(corsOptions));
-
 app.use("/api", routes);
 app.use("/api/admin", routes);
 app.use("/api/guest",  routes);
