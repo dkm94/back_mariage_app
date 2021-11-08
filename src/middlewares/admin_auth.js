@@ -15,6 +15,10 @@ module.exports = (req, res, next) => {
       res.locals.budgetID = budgetID;
       const menuID = decodedToken.menuID;
       res.locals.menuID = menuID;
+      const firstPerson = decodedToken.firstPerson;
+      res.locals.firstPerson = firstPerson;
+      const secondPerson = decodedToken.secondPerson;
+      res.locals.secondPerson = secondPerson;
       if (req.body.adminId && req.body.adminId !== adminId) {
         throw 'Invalid user ID';
       } else {

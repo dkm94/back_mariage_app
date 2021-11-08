@@ -109,7 +109,16 @@ exports.adminLogin = function(req, res) {
                         if(err)
                             res.status(400).json("Erreur id mariage")
                             else {
-                                var token = jwt.sign({ id: admin._id, mariageID: admin.mariageID, role: admin.role, invitationID: mariage.invitationID, budgetID: mariage.budgetID }, jwt_secret);
+                                var token = jwt.sign({ 
+                                    id: admin._id, 
+                                    mariageID: admin.mariageID, 
+                                    role: admin.role, invitationID: 
+                                    mariage.invitationID, 
+                                    budgetID: mariage.budgetID, 
+                                    firstPerson: mariage.firstPerson,
+                                    secondPerson: mariage.secondPerson
+                                }, jwt_secret
+                                );
                                 res.status(200).json({auth: true, token: token, message: "Vous pouvez à présent accéder à votre compte."});
                             }
                     })
