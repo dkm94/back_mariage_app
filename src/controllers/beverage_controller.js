@@ -29,11 +29,6 @@ exports.updateBeverage = (req, res, next) => {
 exports.deleteBeverage = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Beverage.deleteOne({_id: req.params.id, mariageID: mariageId})
-        .then(data => {
-        if(data.deletedCount == 1){
-            return data;
-        } else
-            return res.status(400).json('erreur deleted count')
-        })
+        .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json ({ err }))
 }

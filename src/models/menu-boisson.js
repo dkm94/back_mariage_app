@@ -7,7 +7,7 @@ let beverageSchema = new Schema({
     name: {
         type: 'string',
         maxLength: 100,
-        require: 'A value is required'
+        required: 'A value is required'
     },
     quantity: {
         type: Number,
