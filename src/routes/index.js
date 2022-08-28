@@ -32,5 +32,6 @@ mainRouter.use("/menu/starters", starterRouter);
 mainRouter.use("/menu/maincourses", mainCourseRouter);
 mainRouter.use("/menu/desserts", dessertRouter);
 mainRouter.use("/menu/apetizers", apetizerRouter);
+mainRouter.use("/menu/beverages", apetizerRouter);
 
 module.exports = mainRouter;

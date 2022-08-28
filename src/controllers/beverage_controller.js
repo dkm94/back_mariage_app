@@ -1,34 +1,39 @@
-const Apetizer = require("../models/menu-aperitif");
+const Beverage = require("../models/menu-boisson");
 
-exports.newApetizer = (req, res) => {
+exports.newBeverage = (req, res) => {
     const mariageId = res.locals.mariageID;
-    let apetizer = new Apetizer ({
+    let beverage = new Beverage ({
         ...req.body,
         mariageID: mariageId
     });
-    apetizer.save()
+    beverage.save()
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
 
-exports.apetizers = (req, res, next) => {
+exports.beverages = (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    Apetizer.find({ mariageID: mariageId })
+    Beverage.find({ mariageID: mariageId })
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
 
-exports.updateApetizer = (req, res, next) => {
+exports.updateBeverage = (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    Apetizer.updateOne({_id: req.params.id},
+    Beverage.updateOne({_id: req.params.id},
         {...req.body, _id: req.params.id, mariageID: mariageId})
     .then(data => res.status(200).json(data))
     .catch(err => res.status(400).json ({ err }))
 }
 
-exports.deleteApetizer = (req, res, next) => {
+exports.deleteBeverage = (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    Apetizer.deleteOne({_id: req.params.id, mariageID: mariageId})
-        .then(data => res.status(200).json(data))
+    Beverage.deleteOne({_id: req.params.id, mariageID: mariageId})
+        .then(data => {
+        if(data.deletedCount == 1){
+            return data;
+        } else
+            return res.status(400).json('erreur deleted count')
+        })
         .catch(err => res.status(400).json ({ err }))
 }
