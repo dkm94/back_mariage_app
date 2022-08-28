@@ -11,10 +11,6 @@ module.exports = (req, res, next) => {
       res.locals.mariageID = mariageID;
       const invitationID = decodedToken.invitationID;
       res.locals.invitationID = invitationID;
-      const budgetID = decodedToken.budgetID;
-      res.locals.budgetID = budgetID;
-      const menuID = decodedToken.menuID;
-      res.locals.menuID = menuID;
       const firstPerson = decodedToken.firstPerson;
       res.locals.firstPerson = firstPerson;
       const secondPerson = decodedToken.secondPerson;

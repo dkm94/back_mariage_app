@@ -1,37 +1,42 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 require('mongoose-currency').loadType(mongoose);
-var Currency = mongoose.Types.Currency;
 const t = new Date();
 const date = ('0' + t.getDate()).slice(-2);
 const month = ('0' + (t.getMonth() + 1)).slice(-2);
 const year = t.getFullYear();
 const time = `${date}/${month}/${year}`;
 
-let operationSchema = new mongoose.Schema({
+let operationSchema = new Schema({
     
     category:{
         type: String,
         enum: [
             'Locations', 'Habillement/Beauté', 'Décoration/Fleurs', 'Alliances/Bijoux', 'Animation', 'Traiteur', 'Faire-part', 'Autres'
         ],
-        default: 'Autres'
+        default: 'Autres',
+        required: 'A value is required'
     },
     description: {
-        type: String
+        type: String,
+        maxlength: 255,
+        required: 'A value is required'
     },
     price: { 
-        type: Number
+        type: Number,
+        min: 1,
+        max: 999999,
+        required: 'A value is required'
     },
     date: {
         type: String,
         default: time
     },
-    budgetID: {
+    mariageID: {
         type: Schema.Types.ObjectId, 
-        ref: 'Budget'
+        ref: 'Mariage'
     }
-    
 });
 
-module.exports = mongoose.model('Operations', operationSchema);
+module.exports = model('Operations', operationSchema);
