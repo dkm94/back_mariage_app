@@ -15,16 +15,19 @@ let operationSchema = new Schema({
         enum: [
             'Locations', 'Habillement/Beauté', 'Décoration/Fleurs', 'Alliances/Bijoux', 'Animation', 'Traiteur', 'Faire-part', 'Autres'
         ],
-        default: 'Autres'
+        default: 'Autres',
+        required: 'A value is required'
     },
     description: {
         type: String,
-        maxlength: 255
+        maxlength: 255,
+        required: 'A value is required'
     },
     price: { 
         type: Number,
         min: 1,
-        max: 999999
+        max: 999999,
+        required: 'A value is required'
     },
     date: {
         type: String,

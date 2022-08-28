@@ -1,17 +1,8 @@
-const Budget = require("../models/budget");
-const Wedding = require("../models/budget");
 const Operation = require("../models/budget_operation");
 
-exports.budget = (req, res) => {
-    const budgetId = res.locals.budgetID;
-    Budget.findOne({ _id: budgetId })
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json(err))
-}
-
 exports.operations = (req, res) => {
-    const budgetId = res.locals.budgetID;
-    Operation.find({ budgetID: budgetId })
+    const mariageId = res.locals.mariageID;
+    Operation.find({ mariageID: mariageId })
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json(err))
 }
@@ -26,19 +17,15 @@ exports.operation = (req, res) => {
 }
 
 exports.newOperation = (req, res) => {
-    const budgetId = res.locals.budgetID;
+    const mariageId = res.locals.mariageID;
     let operation = new Operation ({
         ...req.body,
         price: req.body.price * 100,
-        budgetID: budgetId
+        mariageID: mariageId
     });
     operation.save()
-        .then(newExpense => {
-            Budget.updateOne({_id: req.params.id},
-                {$push: {operationsID: newExpense}})
-                .then(data => res.status(200).json(newExpense))
-        })
-        .catch(err => res.status(400).json({err}))
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json (err))
 }
 
 exports.updateOperation = (req, res) => {
@@ -51,15 +38,7 @@ exports.updateOperation = (req, res) => {
 
 exports.deleteOperation = (req, res) => {
     const mariageId = res.locals.mariageID;
-    const budgetId = res.locals.budgetID;
-    Budget.updateOne({ _id: budgetId }, {$pull: {operationsID: req.params.id}})
-        .then(data => {
-            if(data.nModified === 1){
-                Operation.deleteOne({ _id: req.params.id })
-                    .then(data => res.status(200).json(data))
-                    .catch(err => res.status(400).json(err))
-            } else
-                return res.status(400).json('erreur deleted count')
-        })
-        .catch(err => res.status(400).json ({ err }))
+    Operation.deleteOne({ _id: req.params.id, mariageID: mariageId })
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json(err))
 }
