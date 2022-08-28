@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 const Starter = require("./menu-entrée");
 const Maincourse = require("./menu-plat");
 const Dessert = require("./menu-dessert");
@@ -10,16 +11,18 @@ const Invitation = require('./invitation');
 const Mariage = require('./mariage');
 
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
-let adminSchema = new mongoose.Schema({
+let adminSchema = new Schema({
     email: {
         type: 'string',
         required: 'Your email is required',
-        unique: true
+        unique: true,
+        maxLength: 100
     },
     password: {
         type: 'string',
         required: 'The password is required',
-        match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.']
+        match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.'],
+        maxLength: 100
     },
     media: {
         type: 'string'
@@ -51,4 +54,4 @@ adminSchema.pre('remove', async function(next) {
     }
 });
 
-module.exports = mongoose.model('Admin', adminSchema);
+module.exports = model('Admin', adminSchema);

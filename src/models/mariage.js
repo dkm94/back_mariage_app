@@ -1,47 +1,19 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-let mariageSchema = new mongoose.Schema({
+let mariageSchema = new Schema({
 
     firstPerson: {
-        type: "string"
+        type: "string",
+        maxLength: 100,
+        required: true
     },
     secondPerson: {
-        type: "string"
-    },
-    // invitationID: {
-    //     type: Schema.Types.ObjectId, 
-    //     ref: 'Invitation'
-    // },
-    // groupID: [{
-    //     type: Schema.Types.ObjectId, 
-    //     ref: 'Group'
-    // }],
-    guestID: [{
-        type: Schema.Types.ObjectId, 
-        ref: 'Guest'
-    }],
-    tableID: [{
-        type: Schema.Types.ObjectId, 
-        ref: 'Table'
-    }],
-    menuID: {
-        type: Schema.Types.ObjectId, 
-        ref: 'Menu'
-    },
-    budgetID: {
-        type: Schema.Types.ObjectId, 
-        ref: 'Budget'
-    },
-    todoListID: [{
-        type: Schema.Types.ObjectId, 
-        ref: 'Todolist'
-    }],
-    adminID: {
-        type: Schema.Types.ObjectId, 
-        ref: 'Admin'
+        type: "string",
+        maxLength: 100,
+        required: true
     }
-    
 });
 
-module.exports = mongoose.model('Mariage', mariageSchema);
+module.exports = model('Mariage', mariageSchema);

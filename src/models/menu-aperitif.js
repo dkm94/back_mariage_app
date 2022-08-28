@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
-let maincourseSchema = new Schema({
+let apetizerSchema = new Schema({
 
     name: {
         type: 'string',
@@ -16,4 +16,4 @@ let maincourseSchema = new Schema({
     
 });
 
-module.exports = model('MainCourse', maincourseSchema);
+module.exports = model('Apetizer', apetizerSchema);

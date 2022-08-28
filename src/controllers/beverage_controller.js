@@ -1,34 +1,34 @@
-const Maincourse = require("../models/menu-plat")
+const Beverage = require("../models/menu-boisson");
 
-exports.newMaincourse = (req, res) => {
+exports.newBeverage = (req, res) => {
     const mariageId = res.locals.mariageID;
-    let maincourse = new Maincourse ({
+    let beverage = new Beverage ({
         ...req.body,
         mariageID: mariageId
     });
-    maincourse.save()
+    beverage.save()
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
 
-exports.maincourses = (req, res, next) => {
+exports.beverages = (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    Maincourse.find({ mariageID: mariageId })
+    Beverage.find({ mariageID: mariageId })
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json( err ))
 }
 
-exports.updateMaincourse = (req, res, next) => {
+exports.updateBeverage = (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    Maincourse.updateOne({_id: req.params.id},
+    Beverage.updateOne({_id: req.params.id},
         {...req.body, _id: req.params.id, mariageID: mariageId})
     .then(data => res.status(200).json(data))
     .catch(err => res.status(400).json ({ err }))
 }
 
-exports.deleteMaincourse = (req, res, next) => {
+exports.deleteBeverage = (req, res, next) => {
     const mariageId = res.locals.mariageID;
-    Maincourse.deleteOne({_id: req.params.id, mariageID: mariageId})
+    Beverage.deleteOne({_id: req.params.id, mariageID: mariageId})
         .then(data => res.status(200).json(data))
         .catch(err => res.status(400).json ({ err }))
 }
