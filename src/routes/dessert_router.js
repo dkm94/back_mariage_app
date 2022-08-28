@@ -8,7 +8,7 @@ const { adminAuth } = require("../middlewares");
 
 const router = express.Router();
 
-router.post("/add/:id", adminAuth, newDessert);
+router.post("/add", adminAuth, newDessert);
 router.get("/", adminAuth, desserts);
 router.post("/edit/:id", adminAuth, updateDessert);
 router.delete("/delete/:id", adminAuth, deleteDessert);

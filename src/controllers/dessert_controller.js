@@ -1,20 +1,14 @@
-const Menu = require('../models/menu');
 const Dessert = require('../models/menu-dessert');
 
 exports.newDessert = (req, res) => {
     const mariageId = res.locals.mariageID;
     let dessert = new Dessert ({
         ...req.body,
-        menuID: req.params.id,
         mariageID: mariageId
     });
     dessert.save()
-        .then(newDessert => {
-            Menu.updateOne({_id: req.params.id, mariageID: mariageId},
-                {$push: {dessertID: newDessert._id}})
-                .then(data => res.status(200).json(newDessert))
-        })
-        .catch(err => res.status(400).json({err}))
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
 }
 
 exports.desserts = (req, res, next) => {
@@ -35,13 +29,6 @@ exports.updateDessert = (req, res, next) => {
 exports.deleteDessert = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     Dessert.deleteOne({_id: req.params.id, mariageID: mariageId})
-        .then(data => {
-        if(data.deletedCount == 1){
-            Menu.updateMany({mariageID: mariageId}, {$pull: {dessertID: req.params.id}})
-                .then(data => res.status(200).json(data))
-                .catch(err => res.status(400).json(err))
-        } else
-            return res.status(400).json('erreur deleted count')
-        })
-        .catch(err => res.status(400).json ({ err }))
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json( err ))
 }
