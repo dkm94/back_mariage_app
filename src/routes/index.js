@@ -15,6 +15,7 @@ const mainCourseRouter = require("./mainCourse_router");
 const dessertRouter = require("./dessert_router");
 const budgetRouter = require("./budget_router");
 const todolistRouter = require("./todolist_router");
+const apetizerRouter = require("./apetizer_router");
 
 mainRouter.use("/auth", authRouter);
 mainRouter.use("/admin", adminRouter);
@@ -30,5 +31,6 @@ mainRouter.use("/guestmenu", guestMenuRouter);
 mainRouter.use("/menu/starters", starterRouter);
 mainRouter.use("/menu/maincourses", mainCourseRouter);
 mainRouter.use("/menu/desserts", dessertRouter);
+mainRouter.use("/menu/apetizers", apetizerRouter);
 
 module.exports = mainRouter;
