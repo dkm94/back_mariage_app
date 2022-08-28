@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-let mariageSchema = new mongoose.Schema({
+let mariageSchema = new Schema({
 
     firstPerson: {
         type: "string",
@@ -15,4 +16,4 @@ let mariageSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Mariage', mariageSchema);
+module.exports = model('Mariage', mariageSchema);

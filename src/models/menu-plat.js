@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-let maincourseSchema = new mongoose.Schema({
+let maincourseSchema = new Schema({
 
     name: {
         type: 'string',
@@ -15,4 +16,4 @@ let maincourseSchema = new mongoose.Schema({
     
 });
 
-module.exports = mongoose.model('MainCourse', maincourseSchema);
+module.exports = model('MainCourse', maincourseSchema);

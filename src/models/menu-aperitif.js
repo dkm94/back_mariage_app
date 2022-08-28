@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-let apetizerSchema = new mongoose.Schema({
+let apetizerSchema = new Schema({
 
     name: {
         type: 'string',
@@ -15,4 +16,4 @@ let apetizerSchema = new mongoose.Schema({
     
 });
 
-module.exports = mongoose.model('Apetizer', apetizerSchema);
+module.exports = model('Apetizer', apetizerSchema);

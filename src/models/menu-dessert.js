@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-let dessertSchema = new mongoose.Schema({
+let dessertSchema = new Schema({
 
     name: {
         type: 'string',
@@ -15,4 +16,4 @@ let dessertSchema = new mongoose.Schema({
     
 });
 
-module.exports = mongoose.model('Dessert', dessertSchema);
+module.exports = model('Dessert', dessertSchema);

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-let tableSchema = new mongoose.Schema({
+let tableSchema = new Schema({
 
     name: {
         type: 'string',
@@ -13,4 +14,4 @@ let tableSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Table', tableSchema);
+module.exports = model('Table', tableSchema);

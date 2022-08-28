@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-let beverageSchema = new mongoose.Schema({
+let beverageSchema = new Schema({
 
     name: {
         type: 'string',
@@ -20,4 +21,4 @@ let beverageSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('Beverage', beverageSchema);
+module.exports = model('Beverage', beverageSchema);

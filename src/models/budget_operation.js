@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 require('mongoose-currency').loadType(mongoose);
 const t = new Date();
 const date = ('0' + t.getDate()).slice(-2);
@@ -7,7 +8,7 @@ const month = ('0' + (t.getMonth() + 1)).slice(-2);
 const year = t.getFullYear();
 const time = `${date}/${month}/${year}`;
 
-let operationSchema = new mongoose.Schema({
+let operationSchema = new Schema({
     
     category:{
         type: String,
@@ -35,4 +36,4 @@ let operationSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Operations', operationSchema);
+module.exports = model('Operations', operationSchema);

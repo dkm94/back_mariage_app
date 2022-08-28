@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-let guestSchema = new mongoose.Schema({
+let guestSchema = new Schema({
 
     name: {
         type: String,
@@ -25,4 +26,4 @@ let guestSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Guest', guestSchema);
+module.exports = model('Guest', guestSchema);
