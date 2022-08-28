@@ -92,3 +92,21 @@ exports.deleteGuest = (req, res) => {
         })
         .catch(err => res.status(400).json(err))
 }
+
+exports.addGuestToTable = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Guest.updateOne({ _id: req.params.id },
+        {$set: {tableID: req.body.tableID, mariageID: mariageId}})
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json({ err}))
+}
+
+exports.deleteGuestFromTable = (req, res, next) => {
+    const mariageId = res.locals.mariageID;
+    Guest.updateOne({ _id: req.params.id },
+        {$set: {tableID: null, mariageID: mariageId}})
+        .then(data => {
+            res.status(200).json(data)
+        })
+        .catch(err => res.status(400).json({ err}))
+}
