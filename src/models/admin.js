@@ -14,12 +14,14 @@ let adminSchema = new mongoose.Schema({
     email: {
         type: 'string',
         required: 'Your email is required',
-        unique: true
+        unique: true,
+        maxLength: 100
     },
     password: {
         type: 'string',
         required: 'The password is required',
-        match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.']
+        match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.'],
+        maxLength: 100
     },
     media: {
         type: 'string'

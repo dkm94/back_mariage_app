@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 require('mongoose-currency').loadType(mongoose);
-var Currency = mongoose.Types.Currency;
 const t = new Date();
 const date = ('0' + t.getDate()).slice(-2);
 const month = ('0' + (t.getMonth() + 1)).slice(-2);
@@ -18,20 +17,22 @@ let operationSchema = new mongoose.Schema({
         default: 'Autres'
     },
     description: {
-        type: String
+        type: String,
+        maxlength: 255
     },
     price: { 
-        type: Number
+        type: Number,
+        min: 1,
+        max: 999999
     },
     date: {
         type: String,
         default: time
     },
-    budgetID: {
+    mariageID: {
         type: Schema.Types.ObjectId, 
-        ref: 'Budget'
+        ref: 'Mariage'
     }
-    
 });
 
 module.exports = mongoose.model('Operations', operationSchema);

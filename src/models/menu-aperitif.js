@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let starterSchema = new mongoose.Schema({
+let apetizerSchema = new mongoose.Schema({
 
     name: {
         type: 'string',
@@ -12,7 +12,7 @@ let starterSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'
     }
-
+    
 });
 
-module.exports = mongoose.model('Starter', starterSchema);
+module.exports = mongoose.model('Apetizer', apetizerSchema);

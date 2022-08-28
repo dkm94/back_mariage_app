@@ -4,12 +4,10 @@ const Schema = mongoose.Schema;
 let dessertSchema = new mongoose.Schema({
 
     name: {
-        type: 'string'
+        type: 'string',
+        maxLength: 100,
+        required: 'A value is required'
     },
-    menuID: [{
-        type: Schema.Types.ObjectId, 
-        ref: 'Menu'
-    }],
     mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'

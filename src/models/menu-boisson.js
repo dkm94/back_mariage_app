@@ -1,12 +1,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let starterSchema = new mongoose.Schema({
+let beverageSchema = new mongoose.Schema({
 
     name: {
         type: 'string',
         maxLength: 100,
-        required: 'A value is required'
+        require: 'A value is required'
+    },
+    quantity: {
+        type: Number,
+        min: 1,
+        max: 999
     },
     mariageID: {
         type: Schema.Types.ObjectId, 
@@ -15,4 +20,4 @@ let starterSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('Starter', starterSchema);
+module.exports = mongoose.model('Beverage', beverageSchema);

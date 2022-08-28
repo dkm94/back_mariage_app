@@ -5,12 +5,8 @@ let tableSchema = new mongoose.Schema({
 
     name: {
         type: 'string',
-        required: 'A name is required.'
+        required: 'A value is required.'
     },
-    guestID: [{
-        type: Schema.Types.ObjectId, 
-        ref: 'Guest'
-    }],
     mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'

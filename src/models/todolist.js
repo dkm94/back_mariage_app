@@ -4,10 +4,7 @@ const Schema = mongoose.Schema;
 let todolistSchema = new mongoose.Schema({
     text: {
         type: String,
-        required: 'A task is required.'
-    },
-    color: {
-        type: String
+        required: 'A value is required.'
     },
     isCompleted: {
         type: Boolean,
