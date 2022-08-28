@@ -43,23 +43,6 @@ exports.updateTable = (req, res) => {
         .catch(err => res.status(400).json({ err}))
 }
 
-exports.addGuestToTable = (req, res, next) => {
-    const mariageId = res.locals.mariageID;
-    Table.updateOne({ _id: req.params.id },
-        {$push: {guestID: req.body.guestID}})
-        .then(data => {
-            if(data.nModified === 1) {
-                Guest.updateOne({ _id: req.body.guestID },
-                    {$set: {tableID: req.params.id, mariageID: mariageId}})
-                    .then(data => res.status(200).json(data))
-                    .catch(err => res.status(400).json({ err}))
-            } else {
-                return res.status(400).json('Erreur update guest')
-            }
-        })
-        .catch(err => res.status(400).json(err))
-}
-
 exports.deleteTable = (req, res) => {
     const mariageId = res.locals.mariageID;
     Mariage.updateOne({ _id: mariageId}, {$pull: {tableID: req.params.id}})
@@ -79,24 +62,4 @@ exports.deleteTable = (req, res) => {
                 return res.status(400).json('erreur update guests')
         })
         .catch(err => res.status(400).json('erreur update mariage'))
-}
-
-exports.deleteGuestFromTable = (req, res, next) => {
-    const mariageId = res.locals.mariageID;
-    Table.updateOne({ _id: req.params.id },
-        {$pull: {guestID: req.body.guestID}})
-        .then(data => {
-            if(data.nModified === 1) {
-                Guest.updateOne({ _id: req.body.guestID },
-                    {$set: {tableID: null, mariageID: mariageId}})
-                    .then(data => {
-                        res.status(200).json(data)
-                    })
-                    .catch(err => res.status(400).json({ err}))
-            }
-            else {
-                res.send("Erreur update Table")
-            }
-        })
-        .catch(err => res.status(400).json(err))
 }
