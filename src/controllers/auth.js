@@ -1,10 +1,6 @@
 const Admin = require('../models/admin');
 const Mariage = require('../models/mariage');
-// const Group = require('../models/groupe');
 const Guest = require("../models/invite");
-const Invitation = require("../models/invitation");
-const Budget = require("../models/budget");
-const Menu = require('../models/menu');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const sendGridTransport = require('nodemailer-sendgrid-transport');
@@ -31,104 +27,58 @@ exports.register = (req, res) => {
             mariageID: newMariage._id
         })
         admin.save()
-        .then(newAdmin => {
-            let menu = new Menu ({
-                ...req.body,
-                mariageID: newMariage._id
+        .then(data => {
+            const msg = {
+                to: admin.email,
+                from: "myweddingapp.mwa@gmail.com",
+                subject: "Votre compte a été créé avec succès.",
+                text: "<span>Rendez-vous sur votre tableau de bord pour commencer à visualiser les détais du mariage.</span>",
+                html: "<h1>Bienvenue sur My Wedding</h1>"
+            }
+            sgMail
+            .send(msg)
+            .then(() => {
+                console.log('Email sent')
             })
-            menu.save()
-            .then(newMenu => {
-                let invitation = new Invitation ({
-                    ...req.body,
-                    title: "",
-                    picture: "",
-                    date: "",
-                    places: [],
-                    infos: "",
-                    mariageID: newMariage._id
-                })
-                invitation.save()
-                .then(newInvitation => {
-                    let budget = new Budget({
-                        ...req.body,
-                        currency: "€",
-                        operations: [],
-                        mariageID: newMariage._id
-                    })
-                    budget.save()
-                    .then(newBudget => {
-                        Mariage.updateOne({_id: newMariage._id},
-                        {$set: {
-                            adminID: newAdmin._id, 
-                            menuID: newMenu._id, 
-                            invitationID: newInvitation._id, 
-                            budgetID: newBudget._id}})
-                        .then(data => {
-                            const msg = {
-                                to: admin.email,
-                                from: "myweddingapp.mwa@gmail.com",
-                                subject: "Votre compte a été créé avec succès.",
-                                text: "<span>Rendez-vous sur votre tableau de bord pour commencer à visualiser les détais du mariage.</span>",
-                                html: "<h1>Bienvenue sur My Wedding</h1>"
-                            }
-                            sgMail
-                            .send(msg)
-                            .then(() => {
-                                console.log('Email sent')
-                            })
-                            .catch((error) => {
-                            console.error(error)
-                            })
-                            res.status(200).json({message: "Accès autorisé, bienvenue sur votre compte."})
-                        })
-                        .catch(err => res.status(400).json(err))
-                    })
-                    .catch(err => console.log(err))
-                })
-                .catch(err => console.log(err))
+            .catch((error) => {
+            console.error(error)
             })
-            .catch(err => console.log(err))
+            res.status(200).json({message: "Accès autorisé, bienvenue sur votre compte."})
         })
-        .catch(err => console.log(err))
+        .catch(err => res.status(400).json(err))
     })
     .catch(err => console.log(err))  
 }
 
 
 exports.adminLogin = function(req, res) {
-    Admin.findOne({ 
-        email: req.body.email
-    },function(err, admin){
-        if(err)
-            res.status(400).json({auth: false, message: "Echec connexion. Merci de vérifier vos identifiants."});
-        else {
+    let token;
+    Admin.findOne({ email: req.body.email })
+        .then(admin => {
             bcrypt.compare(req.body.password, admin.password, function(err, result) {
                 if (result)
                 {
-                    Mariage.findOne({ _id: admin.mariageID }, function(err, mariage){
-                        if(err)
-                            res.status(400).json("Erreur id mariage")
-                            else {
-                                var token = jwt.sign({ 
-                                    id: admin._id, 
-                                    mariageID: admin.mariageID, 
-                                    role: admin.role, invitationID: 
-                                    mariage.invitationID, 
-                                    budgetID: mariage.budgetID, 
-                                    firstPerson: mariage.firstPerson,
-                                    secondPerson: mariage.secondPerson
-                                }, jwt_secret
-                                );
-                                res.status(200).json({auth: true, token: token, message: "Vous pouvez à présent accéder à votre compte."});
-                            }
+                    Mariage.findOne({ _id: admin.mariageID })
+                    .then(mariage => {
+                        token = jwt.sign({ 
+                            id: admin._id, 
+                            mariageID: admin.mariageID, 
+                            role: admin.role,
+                            firstPerson: mariage.firstPerson,
+                            secondPerson: mariage.secondPerson
+                        }, jwt_secret);
+                        res.status(200).json({auth: true, token: token, message: "Vous pouvez à présent accéder à votre compte."});
                     })
+                    .catch(err => console.log(err))
                 }
-                else
-                    res.status(400).json({auth: false, message: "Vous devez avoir un compte administrateur pour accéder à cette ressource."});
+                else {
+                    res.status(400).json({auth: false, message: "Echec connexion. Merci de vérifier vos identifiants."});
+                }
             })
-        }
-    });
-
+        })
+        .catch(err => {
+            console.log(error)
+        })
 }
 
 exports.guestLogin = function(req, res) {
