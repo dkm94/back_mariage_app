@@ -81,16 +81,9 @@ exports.updateGuest = (req, res) => {
 
 exports.deleteGuest = (req, res) => {
     const mariageId = res.locals.mariageID;
-    Wedding.updateOne({ _id: mariageId }, {$pull: {guestID: req.params.id}})
-    .then(data => {
-            if(data.nModified === 1){
-                Guest.deleteOne({ _id: req.params.id })
-                    .then(data => res.status(200).json(data))
-                    .catch(err => res.status(400).json(err))
-            } else
-                return res.status(400).json('erreur deleted count')
-        })
-        .catch(err => res.status(400).json(err))
+    Guest.deleteOne({ _id: req.params.id })
+        .then(data => res.status(200).json(data))
+        .catch(err => res.status(400).json ({ err }))
 }
 
 exports.addGuestToTable = (req, res, next) => {
