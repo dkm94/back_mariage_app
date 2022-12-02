@@ -6,8 +6,8 @@ const nodemailer = require('nodemailer');
 const sendGridTransport = require('nodemailer-sendgrid-transport');
 const jwt = require('jsonwebtoken');
 const jwt_secret = process.env.JWT_SECRET_KEY;
-const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+// const sgMail = require('@sendgrid/mail')
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 exports.register = (req, res) => {
     let mariage = new Mariage ({
@@ -28,21 +28,21 @@ exports.register = (req, res) => {
         })
         admin.save()
         .then(data => {
-            const msg = {
-                to: admin.email,
-                from: "myweddingapp.mwa@gmail.com",
-                subject: "Votre compte a été créé avec succès.",
-                text: "<span>Rendez-vous sur votre tableau de bord pour commencer à visualiser les détais du mariage.</span>",
-                html: "<h1>Bienvenue sur My Wedding</h1>"
-            }
-            sgMail
-            .send(msg)
-            .then(() => {
-                console.log('Email sent')
-            })
-            .catch((error) => {
-            console.error(error)
-            })
+            // const msg = {
+            //     to: admin.email,
+            //     from: "myweddingapp.mwa@gmail.com",
+            //     subject: "Votre compte a été créé avec succès.",
+            //     text: "<span>Rendez-vous sur votre tableau de bord pour commencer à visualiser les détais du mariage.</span>",
+            //     html: "<h1>Bienvenue sur My Wedding</h1>"
+            // }
+            // sgMail
+            // .send(msg)
+            // .then(() => {
+            //     console.log('Email sent')
+            // })
+            // .catch((error) => {
+            // console.error(error)
+            // })
             res.status(200).json({message: "Accès autorisé, bienvenue sur votre compte."})
         })
         .catch(err => res.status(400).json(err))
