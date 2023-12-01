@@ -20,7 +20,7 @@ exports.newOperation = (req, res) => {
     const mariageId = res.locals.mariageID;
     let operation = new Operation ({
         ...req.body,
-        price: req.body.price * 100,
+        price: req.body.price,
         mariageID: mariageId
     });
     operation.save()
