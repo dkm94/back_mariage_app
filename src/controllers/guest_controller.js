@@ -2,6 +2,11 @@ const Wedding = require('../models/mariage');
 const Guest = require('../models/invite');
 const generator = require('generate-password');
 
+const getGuest = async (id) => {
+        const guest = await Guest.findOne({ _id: id })
+        return guest
+}
+
 exports.newGuest = (req, res, next) => {
     const mariageId = res.locals.mariageID;
     // let generatedpsw = generator.generate({
@@ -79,11 +84,28 @@ exports.updateGuest = (req, res) => {
     }
 }
 
-exports.deleteGuest = (req, res) => {
-    const mariageId = res.locals.mariageID;
-    Guest.deleteOne({ _id: req.params.id })
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json ({ err }))
+exports.deleteGuest = async (res) => {
+    const { locals, params } = res;
+    const mariageId = locals.mariageID;
+    const id = params.id;
+    try {
+        const guest = await getGuest(id)
+        if(!guest){
+            res.status(404).send({ success: false, message: "Invité introuvable !" })
+            return;
+        }
+
+        const result = await Guest.deleteOne({ _id: id, mariageID: mariageId });
+        const { deletedCount } = result;
+        if (!deletedCount) {
+        res.status(404).send({ success: false, message: "Echec lors de la suppression de l'invité" });
+        return;
+        }
+
+        res.status(204).send({ success: true, message: "L'invité a bien été supprimé" });
+    } catch (err) {
+        res.status(500).send({ success: false, message: "Echec serveur" })
+    }
 }
 
 exports.addGuestToTable = (req, res, next) => {
