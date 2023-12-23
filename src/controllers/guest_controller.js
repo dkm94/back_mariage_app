@@ -52,11 +52,22 @@ exports.getGuestbyName = (req, res, next) => {
         .catch(err => res.status(400).json( err ))
 }
 
-exports.guests = (req, res, next) => {
-    const mariageId = res.locals.mariageID;
-    Guest.find({ mariageID: mariageId })
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json( err ))
+exports.guests = async (req, res, next) => {
+    const { locals } = res;
+    const mariageId = locals.mariageID;
+
+    try {
+        const guests = await Guest.find({ mariageID: mariageId })
+        
+        if(!guests){
+            res.send({ success: false, message: "Invités introuvables !", statusCode: 404 })
+            return;
+        }
+
+        res.send({ success: true, data: guests, statusCode: 200 });
+    } catch (err) {
+        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+    }
 }
 
 exports.updateGuest = (req, res) => {
@@ -89,7 +100,7 @@ exports.deleteGuest = async (req, res) => {
     const { params } = req;
     const mariageId = locals.mariageID;
     const id = params.id;
-    
+
     try {
         const guest = await getGuest(id)
         if(!guest){
