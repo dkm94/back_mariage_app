@@ -84,27 +84,29 @@ exports.updateGuest = (req, res) => {
     }
 }
 
-exports.deleteGuest = async (res) => {
-    const { locals, params } = res;
+exports.deleteGuest = async (req, res) => {
+    const { locals } = res;
+    const { params } = req;
     const mariageId = locals.mariageID;
     const id = params.id;
+    
     try {
         const guest = await getGuest(id)
         if(!guest){
-            res.status(404).send({ success: false, message: "Invité introuvable !" })
+            res.send({ success: false, message: "Invité introuvable !", statusCode: 404 })
             return;
         }
 
         const result = await Guest.deleteOne({ _id: id, mariageID: mariageId });
         const { deletedCount } = result;
         if (!deletedCount) {
-        res.status(404).send({ success: false, message: "Echec lors de la suppression de l'invité" });
+        res.send({ success: false, message: "Echec lors de la suppression de l'invité", statusCode: 404 });
         return;
         }
 
-        res.status(204).send({ success: true, message: "L'invité a bien été supprimé" });
+        res.send({ success: true, message: "L'invité a bien été supprimé", statusCode: 200 });
     } catch (err) {
-        res.status(500).send({ success: false, message: "Echec serveur" })
+        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
     }
 }
 
