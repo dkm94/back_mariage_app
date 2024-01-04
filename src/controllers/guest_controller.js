@@ -122,11 +122,11 @@ exports.deleteGuest = async (req, res) => {
 }
 
 exports.addGuestToTable = async (req, res, next) => {
-    try {
-        const mariageID = res.locals.mariageID;
-        const guestIds = req.body.guestIds;
-        const tableID = req.params.id;
+    const mariageID = res.locals.mariageID;
+    const guestIds = req.body.guestIds;
+    const tableID = req.params.id;
 
+    try {
         // Vérifier l'existence des guests
         const existingGuests = await Guest.find({ _id: { $in: guestIds } });
 
@@ -139,7 +139,7 @@ exports.addGuestToTable = async (req, res, next) => {
         if (nonExistingGuestIds.length > 0) {
             return res.status(404).json({
                 success: false,
-                message: `Erreur. Les invités avec les IDs suivants sont introuvables: ${nonExistingGuestIds.join(', ')}`,
+                message: `Erreur: les invités avec les IDs suivants sont introuvables: ${nonExistingGuestIds.join(', ')}`,
                 statusCode: 404
             });
         }
