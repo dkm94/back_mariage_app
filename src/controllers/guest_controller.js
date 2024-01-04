@@ -121,20 +121,47 @@ exports.deleteGuest = async (req, res) => {
     }
 }
 
-exports.addGuestToTable = (req, res, next) => {
-    const mariageId = res.locals.mariageID;
-    Guest.updateOne({ _id: req.params.id },
-        {$set: {tableID: req.body.tableID, mariageID: mariageId}})
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json({ err}))
-}
+exports.addGuestToTable = async (req, res, next) => {
+    const mariageID = res.locals.mariageID;
+    const guestIds = req.body.guestIds;
+    const tableID = req.params.id;
 
-exports.deleteGuestFromTable = (req, res, next) => {
-    const mariageId = res.locals.mariageID;
-    Guest.updateOne({ _id: req.params.id },
-        {$set: {tableID: null, mariageID: mariageId}})
-        .then(data => {
-            res.status(200).json(data)
-        })
-        .catch(err => res.status(400).json({ err}))
+    try {
+        // Vérifier l'existence des guests
+        const existingGuests = await Guest.find({ _id: { $in: guestIds } });
+
+        // Filtrer les IDs des guests qui existent réellement
+        const existingGuestIds = existingGuests.map(guest => guest._id.toString());
+
+        // Filtrer les IDs des guests qui n'existent pas
+        const nonExistingGuestIds = guestIds.filter(guestId => !existingGuestIds.includes(guestId));
+
+        if (nonExistingGuestIds.length > 0) {
+            return res.status(404).json({
+                success: false,
+                message: `Erreur: les invités avec les IDs suivants sont introuvables: ${nonExistingGuestIds.join(', ')}`,
+                statusCode: 404
+            });
+        }
+
+        // Effectuer les mises à jour uniquement pour les guests existants
+        const updatePromises = existingGuests.map(guest => {
+            return Guest.updateOne(
+                { _id: guest._id },
+                { $set: { tableID, mariageID } }
+            );
+        });
+
+        const updateResults = await Promise.all(updatePromises);
+
+        const hasFailedUpdate = updateResults.some(result => result.nModified === 0);
+
+        if (hasFailedUpdate) {
+            res.status(400).json({ success: false, message: "Erreur concernant la modification de la table", statusCode: 400 });
+        } else {
+            res.status(200).json({ success: true, message: "La table a été modifiée", statusCode: 200 });
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Echec serveur", statusCode: 500 });
+    }
 }
