@@ -2,6 +2,11 @@ const Table = require('../models/table');
 const Mariage = require('../models/mariage');
 const Guest = require('../models/invite');
 
+const findTableById = async (id) => {
+    const table = await Table.findById({ _id: id })
+    return table;
+}   
+
 //TABLE
 exports.newTable = (req, res) => {
     const mariageId = res.locals.mariageID;
@@ -18,21 +23,38 @@ exports.newTable = (req, res) => {
         .catch(err => res.status(400).json({err}))
 }
 
-exports.table = (req, res, next) => {
-    Table.findOne({ _id: req.params.id })
-    .populate('guestID')
-    .exec()
-    .then(data => res.status(200).json(data))
-    .catch(err => res.status(400).json( err ))
+exports.table = async (req, res, next) => {
+    try {
+        const table = await findTableById(req.params.id)
+
+        if(!table) {
+            res.send({ success: false, message: "Table introuvable !", statusCode: 404 })
+            return;
+        }
+
+        res.send({ success: true, data: table, statusCode: 200 });
+        } catch (err) {
+            res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+        }
+        
 }
 
-exports.tables = (req, res, next) => {
-    const mariageId = res.locals.mariageID;
-    Table.find({ mariageID: mariageId })
-        .populate('guestID')
-        .exec()
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json( err ))
+exports.tables = async (req, res, next) => {
+    const { locals } = res;
+    const mariageId = locals.mariageID;
+
+    try {
+        const tables = await Table.find({ mariageID: mariageId }).populate('guestID').exec()
+        
+        if(!tables){
+            res.send({ success: false, message: "Tables introuvables !", statusCode: 404 })
+            return;
+        }
+
+        res.send({ success: true, data: tables, statusCode: 200 });
+    } catch (err) {
+        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+    }
 }
 
 exports.updateTable = (req, res) => {
