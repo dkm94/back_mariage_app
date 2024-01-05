@@ -5,13 +5,20 @@ const model = mongoose.model;
 let tableSchema = new Schema({
 
     name: {
-        type: 'string',
+        type: String,
         required: 'A value is required.'
     },
     mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'
-    }
+    },
+    guestID: [
+        {
+            type: Schema.Types.ObjectId, 
+            ref: 'Guest'
+        }
+    
+    ]
 });
 
 module.exports = model('Table', tableSchema);

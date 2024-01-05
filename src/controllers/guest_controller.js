@@ -1,10 +1,16 @@
 const Wedding = require('../models/mariage');
 const Guest = require('../models/invite');
+const Table = require('../models/table');
 const generator = require('generate-password');
 
 const getGuest = async (id) => {
-        const guest = await Guest.findOne({ _id: id })
-        return guest
+    const guest = await Guest.findOne({ _id: id })
+    return guest
+}
+
+const getTableById = async (id) => {
+    const table = await Table.findOne({ _id: id })
+    return table
 }
 
 exports.newGuest = (req, res, next) => {
@@ -152,14 +158,21 @@ exports.addGuestToTable = async (req, res, next) => {
             );
         });
 
-        const updateResults = await Promise.all(updatePromises);
+        await Promise.all(updatePromises);
 
-        const hasFailedUpdate = updateResults.some(result => result.nModified === 0);
+        const table = await getTableById(tableID);
 
-        if (hasFailedUpdate) {
-            res.status(400).json({ success: false, message: "Erreur concernant la modification de la table", statusCode: 400 });
+        if (!table) {
+            res.status(404).json({ success: false, message: "Table introuvable !", statusCode: 404 });
+            return;
+        }
+
+        const result = await Table.updateOne({ _id: table._id }, {$set: {guestID: guestIds}})
+
+        if (result.ok) {
+            res.status(200).json({ success: true, message: "La table a bien été modifiée", statusCode: 200 });
         } else {
-            res.status(200).json({ success: true, message: "La table a été modifiée", statusCode: 200 });
+            res.status(400).json({ success: false, message: "Echec de la modification de la table", statusCode: 400 });
         }
     } catch (err) {
         res.status(500).json({ success: false, message: "Echec serveur", statusCode: 500 });

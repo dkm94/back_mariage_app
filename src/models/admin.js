@@ -13,22 +13,22 @@ const Mariage = require('./mariage');
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 let adminSchema = new Schema({
     email: {
-        type: 'string',
+        type: String,
         required: 'Your email is required',
         unique: true,
         maxLength: 100
     },
     password: {
-        type: 'string',
+        type: String,
         required: 'The password is required',
         match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.'],
         maxLength: 100
     },
     media: {
-        type: 'string'
+        type: String
     },
     role: {
-        type: 'string'
+        type: String
     },
     mariageID: {
         type: Schema.Types.ObjectId, 

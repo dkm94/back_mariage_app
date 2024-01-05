@@ -13,7 +13,11 @@ let mariageSchema = new Schema({
         type: "string",
         maxLength: 100,
         required: true
-    }
+    },
+    tableID: [{
+        type: Schema.Types.ObjectId, 
+        ref: 'Table'
+    }],
 });
 
 module.exports = model('Mariage', mariageSchema);
