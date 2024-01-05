@@ -81,7 +81,7 @@ exports.updateTable = async (req, res) => {
             return;
         }
 
-        const result = await Table.updateOne({ _id }, { $set: {...req.body, _id, mariageID }})
+        const result = await Table.updateOne({ _id }, { $set: { name: req.body.name }})
 
         if (result.nModified > 0) {
             res.status(200).json({ success: true, message: "La table a bien été modifiée", statusCode: 200 });
