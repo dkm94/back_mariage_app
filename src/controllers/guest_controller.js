@@ -127,7 +127,7 @@ exports.deleteGuest = async (req, res) => {
     }
 }
 
-exports.addGuestToTable = async (req, res, next) => { // update la table précédente
+exports.addGuestToTable = async (req, res, next) => {
     const mariageID = res.locals.mariageID;
     const guestIds = req.body.guestIds;
     const tableID = req.params.id;
@@ -158,12 +158,13 @@ exports.addGuestToTable = async (req, res, next) => { // update la table précé
 
         const tablesToUpdate = await Table.find({ guestID: { $in: guestIds } });
 
-        // retirer les invités de leur précédente table
+        // Retirer les invités de leur précédente table
         tablesToUpdate.forEach(async (table) => {
             const updatedGuestIDs = table.guestID.filter(id => !guestIds.includes(id.toString()));
             await Table.updateOne({ _id: table._id }, { $set: { guestID: updatedGuestIDs } });
         });
 
+        // Modifier la nouvelle table avec la nouvele liste d'invités
         const table = await getTableById(tableID);
         if (!table) {
             res.status(404).json({ success: false, message: "Table introuvable !", statusCode: 404 });
