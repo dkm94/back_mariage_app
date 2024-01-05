@@ -135,13 +135,10 @@ exports.addGuestToTable = async (req, res, next) => {
     try {
         // Vérifier l'existence des guests
         const existingGuests = await Guest.find({ _id: { $in: guestIds } });
-
         // Filtrer les IDs des guests qui existent réellement
         const existingGuestIds = existingGuests.map(guest => guest._id.toString());
-
         // Filtrer les IDs des guests qui n'existent pas
         const nonExistingGuestIds = guestIds.filter(guestId => !existingGuestIds.includes(guestId));
-
         if (nonExistingGuestIds.length > 0) {
             return res.status(404).json({
                 success: false,
@@ -157,23 +154,29 @@ exports.addGuestToTable = async (req, res, next) => {
                 { $set: { tableID, mariageID } }
             );
         });
-
         await Promise.all(updatePromises);
 
-        const table = await getTableById(tableID);
+        const tablesToUpdate = await Table.find({ guestID: { $in: guestIds } });
 
+        // Retirer les invités de leur précédente table
+        tablesToUpdate.forEach(async (table) => {
+            const updatedGuestIDs = table.guestID.filter(id => !guestIds.includes(id.toString()));
+            await Table.updateOne({ _id: table._id }, { $set: { guestID: updatedGuestIDs } });
+        });
+
+        // Modifier la nouvelle table avec la nouvele liste d'invités
+        const table = await getTableById(tableID);
         if (!table) {
             res.status(404).json({ success: false, message: "Table introuvable !", statusCode: 404 });
             return;
         }
-
         const result = await Table.updateOne({ _id: table._id }, {$set: {guestID: guestIds}})
-
-        if (result.ok) {
-            res.status(200).json({ success: true, message: "La table a bien été modifiée", statusCode: 200 });
-        } else {
+        if (!result.ok) {
             res.status(400).json({ success: false, message: "Echec de la modification de la table", statusCode: 400 });
+            return;
         }
+
+        res.status(200).json({ success: true, message: "La liste des invités a bien été modifiée", statusCode: 200 });
     } catch (err) {
         res.status(500).json({ success: false, message: "Echec serveur", statusCode: 500 });
     }
