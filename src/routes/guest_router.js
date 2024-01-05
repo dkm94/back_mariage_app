@@ -14,7 +14,7 @@ const { newGuest,
     updateFile,
     deleteGuest,
     getGuestbyName,
-    addGuestToTable,
+    updateTableWithGuests,
 } = require("../controllers/guest_controller");
 const { adminAuth } = require("../middlewares");
 
@@ -74,6 +74,6 @@ router.get('/media/:filename', (req, res) => {
   })
 router.post("/edit/:id", adminAuth, upload.single("media"), updateGuest);
 router.delete("/delete/:id", adminAuth, deleteGuest);
-router.post("/addtable/:id", adminAuth, addGuestToTable);
+router.post("/addtable/:id", adminAuth, updateTableWithGuests);
 
 module.exports = router;
