@@ -127,50 +127,65 @@ exports.deleteGuest = async (req, res) => {
     }
 }
 
-exports.updateTableWithGuests = async (req, res, next) => {
+exports.updateTableWithGuests = async (req, res, next) => { 
     const mariageID = res.locals.mariageID;
     const guestIds = req.body.guestIds;
     const tableID = req.params.id;
 
     try {
-        // Vérifier l'existence des guests
-        const existingGuests = await Guest.find({ _id: { $in: guestIds } });
-        // Filtrer les IDs des guests qui existent réellement
-        const existingGuestIds = existingGuests.map(guest => guest._id.toString());
-        // Filtrer les IDs des guests qui n'existent pas
-        const nonExistingGuestIds = guestIds.filter(guestId => !existingGuestIds.includes(guestId));
-        if (nonExistingGuestIds.length > 0) {
-            return res.status(404).json({
-                success: false,
-                message: `Erreur: les invités avec les IDs suivants sont introuvables: ${nonExistingGuestIds.join(', ')}`,
-                statusCode: 404
+
+        // Si tous les invités de la table ont été supprimés 
+        if(guestIds.length === 0) {
+            const guestsToDeleteFromTable = await Guest.find({ tableID });
+            const promises = guestsToDeleteFromTable.map(guest => {
+                return Guest.updateOne(
+                    { _id: guest._id },
+                    { $set: { tableID: null } }
+                );
             });
+            await Promise.all(promises);
+        } else {
+            // Vérifier l'existence des guests
+            const existingGuests = await Guest.find({ _id: { $in: guestIds } });
+            // Filtrer les IDs des guests qui existent réellement
+            const existingGuestIds = existingGuests.map(guest => guest._id.toString());
+            // Filtrer les IDs des guests qui n'existent pas
+            const nonExistingGuestIds = guestIds.filter(guestId => !existingGuestIds.includes(guestId));
+            if (nonExistingGuestIds.length > 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Erreur: les invités avec les IDs suivants sont introuvables: ${nonExistingGuestIds.join(', ')}`,
+                    statusCode: 404
+                });
+            }
+
+            // Effectuer les mises à jour uniquement pour les guests existants
+            const updatePromises = existingGuests.map(guest => {
+                return Guest.updateOne(
+                    { _id: guest._id },
+                    { $set: { tableID, mariageID } }
+                );
+            });
+            await Promise.all(updatePromises);
+
+            // Trouver les tables qui contiennent les invités qui seront déplacés
+            const tablesToUpdate = await Table.find({ guestID: { $in: guestIds } });
+
+            // Mettre à jour la table initiale
+            tablesToUpdate.forEach(async (table) => {
+                const updatedGuestIDs = table.guestID.filter(id => !guestIds.includes(id.toString()));
+                await Table.updateOne({ _id: table._id }, { $set: { guestID: updatedGuestIDs } });
+            });
+
         }
-
-        // Effectuer les mises à jour uniquement pour les guests existants
-        const updatePromises = existingGuests.map(guest => {
-            return Guest.updateOne(
-                { _id: guest._id },
-                { $set: { tableID, mariageID } }
-            );
-        });
-        await Promise.all(updatePromises);
-
-        const tablesToUpdate = await Table.find({ guestID: { $in: guestIds } });
-
-        // Retirer les invités de leur précédente table
-        tablesToUpdate.forEach(async (table) => {
-            const updatedGuestIDs = table.guestID.filter(id => !guestIds.includes(id.toString()));
-            await Table.updateOne({ _id: table._id }, { $set: { guestID: updatedGuestIDs } });
-        });
-
+      
         // Modifier la nouvelle table avec la nouvele liste d'invités
         const table = await getTableById(tableID);
         if (!table) {
             res.status(404).json({ success: false, message: "Table introuvable !", statusCode: 404 });
             return;
         }
-        const result = await Table.updateOne({ _id: table._id }, {$set: {guestID: guestIds}})
+        const result = await Table.updateOne({ _id: tableID }, { $set: { guestID: guestIds }})
         if (!result.ok) {
             res.status(400).json({ success: false, message: "Echec de la modification de la table", statusCode: 400 });
             return;
