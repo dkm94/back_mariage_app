@@ -4,8 +4,8 @@ const Table = require('../models/table');
 const generator = require('generate-password');
 
 const getGuest = async (id) => {
-        const guest = await Guest.findOne({ _id: id })
-        return guest
+    const guest = await Guest.findOne({ _id: id })
+    return guest
 }
 
 const getTableById = async (id) => {
