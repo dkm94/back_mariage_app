@@ -127,7 +127,7 @@ exports.deleteGuest = async (req, res) => {
     }
 }
 
-exports.addGuestToTable = async (req, res, next) => {
+exports.updateTableWithGuests = async (req, res, next) => {
     const mariageID = res.locals.mariageID;
     const guestIds = req.body.guestIds;
     const tableID = req.params.id;
