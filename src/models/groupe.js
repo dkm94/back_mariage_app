@@ -4,16 +4,16 @@ const Schema = mongoose.Schema;
 let groupSchema = new mongoose.Schema({
 
     name: {
-        type: 'string',
+        type: String,
         required: 'A name is required.'
     },
     email: {
-        type: 'string',
+        type: String,
         required: 'Your email is required',
         unique: true
     },
     password: {
-        type: 'string',
+        type: String,
         required: 'The password is required'
     },
     guestID: [{

@@ -41,13 +41,20 @@ exports.table = async (req, res, next) => {
 
 exports.tables = async (req, res, next) => {
     const { locals } = res;
-    const mariageId = locals.mariageID;
+    const mariageID = locals.mariageID;
 
     try {
-        const tables = await Table.find({ mariageID: mariageId }).populate('guestID').exec()
+        const tables = await Table.find({ mariageID })
         
-        if(!tables){
-            res.send({ success: false, message: "Tables introuvables !", statusCode: 404 })
+        // Récupérer les invités pour chaque table
+        const tablesWithGuests = await Promise.all(tables.map(async (table) => {
+            const guests = await Guest.find({ tableID: table._id });
+            // Ajouter les invités à chaque table
+            return { ...table.toObject(), guestID: guests.map(guest => guest._id) };
+        }));
+
+        if (!tablesWithGuests) {
+            res.send({ success: false, message: "Tables introuvables !", statusCode: 404 });
             return;
         }
 

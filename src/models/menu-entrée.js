@@ -5,7 +5,7 @@ const model = mongoose.model;
 let starterSchema = new Schema({
 
     name: {
-        type: 'string',
+        type: String,
         maxLength: 100,
         required: 'A value is required'
     },
