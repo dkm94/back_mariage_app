@@ -74,20 +74,26 @@ exports.updateTable = async (req, res) => {
     const _id = req.params.id;
 
     try {
-        const table = findTableById(_id);
+        const table = await findTableById(_id);
 
         if(!table) {
             res.send({ success: false, message: "Table introuvable !", statusCode: 404 })
             return;
         }
 
-        const result = await Table.updateOne({ _id }, { $set: { name: req.body.name }})
-
-        if (result.nModified > 0) {
-            res.status(200).json({ success: true, message: "La table a bien été modifiée", statusCode: 200 });
+        if(table.name === req.body.name) {
+            res.send({ success: true, statusCode: 204 })
+            return;
         } else {
-            res.status(400).json({ success: false, message: "Echec de la modification de la table", statusCode: 400 });
+            const result = await Table.updateOne({ _id }, { $set: { name: req.body.name }})
+    
+            if (result.nModified > 0) {
+                res.status(200).json({ success: true, message: "La table a bien été modifiée", statusCode: 200 });
+            } else {
+                res.status(400).json({ success: false, message: "Echec de la modification de la table", statusCode: 400 });
+            }
         }
+
     }
     catch (err) {
         // exemple console.log(err) CastError: Cast to ObjectId failed for value "656656221099c0044c6bee7d5" (type string) at path "_id" for model "Table"
