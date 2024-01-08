@@ -129,24 +129,35 @@ exports.deleteGuest = async (req, res) => {
 
 exports.updateTableWithGuests = async (req, res, next) => { 
     const mariageID = res.locals.mariageID;
-    const guestIds = req.body.guestIds;
+    const arrayOfGuests = req.body.guestIds;
     const tableID = req.params.id;
-
+    
+    // Supprimer d'éventuels doublons dans le tableau d'invités
+    const guestIds = [...new Set(arrayOfGuests)];
+    
     try {
-
-        // Si tous les invités de la table ont été supprimés 
+        // Est-ce que la table existe ?
+        const table = await getTableById(tableID);
+        if (!table) {
+            res.status(404).json({ success: false, message: "Table introuvable !", statusCode: 404 });
+            return;
+        }        
+        
+        // La table existe
+        // Si la table est vide, on récupère tous les invités qui y étaient et on leur donne une valeur tableID null
         if(guestIds.length === 0) {
             const guestsToDeleteFromTable = await Guest.find({ tableID });
             const promises = guestsToDeleteFromTable.map(guest => {
                 return Guest.updateOne(
                     { _id: guest._id },
                     { $set: { tableID: null } }
-                );
-            });
-            await Promise.all(promises);
-        } else {
-            // Vérifier l'existence des guests
-            const existingGuests = await Guest.find({ _id: { $in: guestIds } });
+                    );
+                });
+                await Promise.all(promises);
+            } else { // Si la table contient des invités
+                
+                // 1) Est-ce que les invités existent ?
+                const existingGuests = await Guest.find({ _id: { $in: guestIds } });
             // Filtrer les IDs des guests qui existent réellement
             const existingGuestIds = existingGuests.map(guest => guest._id.toString());
             // Filtrer les IDs des guests qui n'existent pas
@@ -159,38 +170,35 @@ exports.updateTableWithGuests = async (req, res, next) => {
                 });
             }
 
-            // Effectuer les mises à jour uniquement pour les guests existants
+            // 2) Vérifier que les invités ne sont pas déjà placés sur une autre table
+            const guestsWithTable = existingGuests.filter(guest => guest && guest.tableID && guest.tableID.toString() !== tableID);
+            if (guestsWithTable.length > 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Erreur: les invités suivants sont déjà installés sur une autre table: ${guestsWithTable.map(guest => guest.name).join(', ')}`,
+                    statusCode: 400
+                });
+            }
+            
+            // 4) Mette à jour les invités avec leur nouvelle table
             const updatePromises = existingGuests.map(guest => {
                 return Guest.updateOne(
                     { _id: guest._id },
                     { $set: { tableID, mariageID } }
                 );
-            });
+            }); 
             await Promise.all(updatePromises);
 
-            // Trouver les tables qui contiennent les invités qui seront déplacés
-            const tablesToUpdate = await Table.find({ guestID: { $in: guestIds } });
-
-            // Mettre à jour la table initiale
-            tablesToUpdate.forEach(async (table) => {
-                const updatedGuestIDs = table.guestID.filter(id => !guestIds.includes(id.toString()));
-                await Table.updateOne({ _id: table._id }, { $set: { guestID: updatedGuestIDs } });
-            });
 
         }
-      
-        // Modifier la nouvelle table avec la nouvele liste d'invités
-        const table = await getTableById(tableID);
-        if (!table) {
-            res.status(404).json({ success: false, message: "Table introuvable !", statusCode: 404 });
-            return;
-        }
+        // 5) Mettre à jour la table avec les nouveaux invités // ça ne marche pas
         const result = await Table.updateOne({ _id: tableID }, { $set: { guestID: guestIds }})
         if (!result.ok) {
             res.status(400).json({ success: false, message: "Echec de la modification de la table", statusCode: 400 });
             return;
         }
-
+        
+        
         res.status(200).json({ success: true, message: "La liste des invités a bien été modifiée", statusCode: 200 });
     } catch (err) {
         res.status(500).json({ success: false, message: "Echec serveur", statusCode: 500 });
