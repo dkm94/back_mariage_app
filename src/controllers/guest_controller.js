@@ -194,10 +194,9 @@ exports.updateTableWithGuests = async (req, res, next) => {
         // 5) Mettre à jour la table avec les nouveaux invités // ça ne marche pas
         const result = await Table.updateOne({ _id: tableID }, { $set: { guestID: guestIds }})
         if (!result.ok) {
-            res.status(400).json({ success: false, message: "Echec de la modification de la table", statusCode: 400 });
+            res.status(422).json({ success: false, message: "Echec de la modification de la table", statusCode: 422 });
             return;
         }
-        
         
         res.status(200).json({ success: true, message: "La liste des invités a bien été modifiée", statusCode: 200 });
     } catch (err) {
