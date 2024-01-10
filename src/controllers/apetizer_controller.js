@@ -11,11 +11,22 @@ exports.newApetizer = (req, res) => {
         .catch(err => res.status(400).json( err ))
 }
 
-exports.apetizers = (req, res, next) => {
-    const mariageId = res.locals.mariageID;
-    Apetizer.find({ mariageID: mariageId })
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json( err ))
+exports.apetizers = async (req, res, next) => {
+    const { locals } = res;
+    const mariageID = locals.mariageID;
+
+    try {
+        const apetizers = await Apetizer.find({ mariageID })
+        
+        if(!apetizers){
+            res.send({ success: false, message: "Impossible de charger les apéritifs du menu", statusCode: 404 })
+            return;
+        }
+
+        res.send({ success: true, data: apetizers, statusCode: 200 });
+    } catch (err) {
+        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+    }
 }
 
 exports.updateApetizer = (req, res, next) => {
