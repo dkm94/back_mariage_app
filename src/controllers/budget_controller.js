@@ -1,10 +1,21 @@
 const Operation = require("../models/budget_operation");
 
-exports.operations = (req, res) => {
-    const mariageId = res.locals.mariageID;
-    Operation.find({ mariageID: mariageId })
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json(err))
+exports.operations = async (req, res) => {
+    const { locals } = res;
+    const mariageID = locals.mariageID;
+
+    try {
+        const operations = await Operation.find({ mariageID })
+        
+        if(!operations){
+            res.send({ success: false, message: "Impossible de charger votre journal d'opérations", statusCode: 404 })
+            return;
+        }
+
+        res.send({ success: true, data: operations, statusCode: 200 });
+    } catch (err) {
+        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+    }
 }
 
 exports.operation = (req, res) => {
