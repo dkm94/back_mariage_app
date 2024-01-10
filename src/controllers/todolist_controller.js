@@ -19,6 +19,7 @@ exports.newTodo = (req, res) => {
 }
 
 exports.todos = async (req, res, next) => {
+    const { locals } = res;
     const mariageID = locals.mariageID;
 
     try {
