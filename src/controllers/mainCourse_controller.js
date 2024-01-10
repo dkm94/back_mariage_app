@@ -11,11 +11,22 @@ exports.newMaincourse = (req, res) => {
         .catch(err => res.status(400).json( err ))
 }
 
-exports.maincourses = (req, res, next) => {
-    const mariageId = res.locals.mariageID;
-    Maincourse.find({ mariageID: mariageId })
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json( err ))
+exports.maincourses = async (req, res, next) => {
+    const { locals } = res;
+    const mariageID = locals.mariageID;
+
+    try {
+        const maincourses = await Maincourse.find({ mariageID })
+        
+        if(!maincourses){
+            res.send({ success: false, message: "Impossible de charger les plats du menu", statusCode: 404 })
+            return;
+        }
+
+        res.send({ success: true, data: maincourses, statusCode: 200 });
+    } catch (err) {
+        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+    }
 }
 
 exports.updateMaincourse = (req, res, next) => {
