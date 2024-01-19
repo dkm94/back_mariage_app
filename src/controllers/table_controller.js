@@ -13,19 +13,30 @@ const findWeddingById = async (id) => {
 } 
 
 //TABLE
-exports.newTable = (req, res) => {
-    const mariageId = res.locals.mariageID;
-    let table = new Table ({
-        ...req.body,
-        mariageID: mariageId
-    });
-    table.save()
-        .then(newTable => {
-            Mariage.updateOne({_id: mariageId},
-                {$push: {tableID: newTable}})
-                .then(data => res.status(200).json(newTable))
-        })
-        .catch(err => res.status(400).json({err}))
+exports.newTable = async (req, res) => {
+    try {
+        const mariageId = res.locals.mariageID;
+        const tableName = req.body.name;
+
+        const existingTable = await Table.findOne({ name: tableName, mariageID: mariageId });
+        if (existingTable) {
+            return res.status(400).json({ success: false, message: "Une table avec le même nom existe déjà." });
+        }
+
+        let table = new Table({
+            ...req.body,
+            mariageID: mariageId
+        });
+
+        const newTable = await table.save();
+
+        await Mariage.updateOne({ _id: mariageId },
+            { $push: { tableID: newTable } });
+
+        res.status(200).json({ success: true, data: newTable });
+    } catch (err) {
+        res.send({ success: false, message: err.message || "Une erreur s'est produite lors de la création de la table.", statusCode: 500 })
+    }
 }
 
 exports.table = async (req, res, next) => {
