@@ -13,22 +13,22 @@ exports.operations = async (req, res) => {
         const operations = await Operation.find({ mariageID })
         
         if(!operations){
-            res.send({ success: false, message: "Impossible de charger votre journal d'opérations", statusCode: 404 })
+            res.status(404).json({ success: false, message: "Impossible de charger votre journal d'opérations" })
             return;
         }
 
-        res.send({ success: true, data: operations, statusCode: 200 });
+        res.status(200).json({ success: true, data: operations });
     } catch (err) {
-        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+        res.status(500).json({ success: false, message: "Echec serveur" })
     }
 }
 
 exports.operation = async (req, res) => {
     try {
         const data = await Operation.findOne({ _id: req.params.id });
-        res.status(200).json(data);
+        res.status(200).json({ success: true, data });
     } catch (err) {
-        res.status(400).json({ success: false,  message: err.message || "Oups, une erreur s'est produite lors de la récupération de l'opération" });
+        res.status(400).json({ success: false,  message: "Oups, une erreur s'est produite lors de la récupération de l'opération" });
     }
 }
 
@@ -44,7 +44,7 @@ exports.newOperation = async (req, res) => {
         const data = await operation.save();
         res.status(200).json({ success: true, data });
     } catch (err) {
-        res.status(400).json({ success: false,  message: err.message || "Oups, une erreur s'est produite lors de la création de l'opération" });
+        res.status(400).json({ success: false,  message: "Oups, une erreur s'est produite lors de la création de l'opération" });
     }
 }
 
@@ -71,24 +71,32 @@ exports.updateOperation = async (req, res) => {
             { ...req.body, _id: req.params.id, mariageID: mariageId }
         );
 
-        if (todoDeleteResult.nModified === 1) {
-            res.status(200).json({ success: true });
+        if (result.nModified === 1) {
+            res.status(200).json({ success: true, message: "Modification enregistrée" });
         } else {
-            res.status(400).json({ success: false, message: "Erreur lors de la suppression du todo." });
+            res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression de l'opération." });
         }
 
     } catch (err) {
-        res.status(400).json({ success: false, message: err.message || "Oups, une erreur s'est produite lors de la mise à jour de l'opération." });
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la mise à jour de l'opération." });
     }
 }
 
 exports.deleteOperation = async (req, res) => {
     try {
+        const existingTodo = await findTodoById(req.params.id);
+        if (!existingTodo) {
+            return res.status(404).json({ success: false, message: "Oups, l'opération que vous souhaitez supprimer n'existe pas" });
+        }
+
         const mariageId = res.locals.mariageID;
         const result = await Operation.deleteOne({ _id: req.params.id, mariageID: mariageId });
 
-        res.status(200).json({ success: true, data: result });
+        if (result.deletedCount === 0) {
+            return res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression du l'opération" });
+        }
+        res.status(200).json({ success: true, message: "Opération suprimée" });
     } catch (err) {
-        res.status(400).json({ success: false, message: err.message || "Oups, une erreur s'est produite lors de la suppression de l'opération" });
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression de l'opération" });
     }
 }

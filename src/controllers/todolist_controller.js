@@ -27,7 +27,7 @@ exports.newTodo = async (req, res) => {
 
         res.status(200).json({ success: true, data: newTodo });
     } catch (err) {
-        res.status(400).json({ success: false, message: err.message || "Oups, une erreur s'est produite lors de la création de la tâche" });
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la création de la tâche" });
     }
 }
 
@@ -66,7 +66,7 @@ exports.updateTodo = async (req, res) => {
 
         res.status(200).json({ success: true, data: result });
     } catch (err) {
-        res.status(400).json({ success: false, message: err.message || "Oups, une erreur s'est produite lors de la mise à jour du todo." });
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la mise à jour du todo." });
     }
 }
 
@@ -87,12 +87,12 @@ exports.deleteTodo = async (req, res) => {
 
         const todoDeleteResult = await Todo.deleteOne({ _id: req.params.id, mariageID: mariageId });
 
-        if (todoDeleteResult.deletedCount === 1) {
+        if (todoDeleteResult.deletedCount === 0) {
             return res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression du la tâche" });
         }
 
         res.status(200).json({ success: true });
     } catch (err) {
-        res.status(400).json({ success: false, message: err.message || "Oups, une erreur s'est produite lors de la suppression du la tâche" });
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression du la tâche" });
     }
 }
