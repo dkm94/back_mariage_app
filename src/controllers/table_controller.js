@@ -88,12 +88,17 @@ exports.updateTable = async (req, res) => {
         const table = await findTableById(_id);
 
         if(!table) {
-            res.send({ success: false, message: "Table introuvable !", statusCode: 404 })
+            res.status(404).json({ success: false, message: "Table introuvable !" })
+            return;
+        }
+
+        if(!req.body.name){
+            res.status(400).json({ success: false, message: "La champ ne peut être vide" });
             return;
         }
 
         if(table.name === req.body.name) {
-            res.send({ success: true, statusCode: 204 })
+            res.status(204).json({ success: false, message: "La valeur indiquée reste inchangée" })
             return;
         } else {
             const result = await Table.updateOne({ _id }, { $set: { name: req.body.name }})

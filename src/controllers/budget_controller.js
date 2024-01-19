@@ -71,7 +71,12 @@ exports.updateOperation = async (req, res) => {
             { ...req.body, _id: req.params.id, mariageID: mariageId }
         );
 
-        res.status(200).json({ success: true, message: result });
+        if (todoDeleteResult.nModified === 1) {
+            res.status(200).json({ success: true });
+        } else {
+            res.status(400).json({ success: false, message: "Erreur lors de la suppression du todo." });
+        }
+
     } catch (err) {
         res.status(400).json({ success: false, message: err.message || "Oups, une erreur s'est produite lors de la mise à jour de l'opération." });
     }
