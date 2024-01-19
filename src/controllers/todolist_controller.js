@@ -64,6 +64,12 @@ exports.updateTodo = async (req, res) => {
             { ...req.body, _id: req.params.id, mariageID: mariageId }
         );
 
+        if (result.nModified === 1) {
+            res.status(200).json({ success: true, message: "Modification enregistrée" });
+        } else {
+            res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression de la tâche." });
+        }
+
         res.status(200).json({ success: true, data: result });
     } catch (err) {
         res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la mise à jour du todo." });

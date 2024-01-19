@@ -42,16 +42,15 @@ exports.table = async (req, res, next) => {
     try {
         const table = await findTableById(req.params.id)
 
-        if(!table) {
-            res.status(404).json({ success: false, message: "Table introuvable !" })
-            return;
-        }
+    if(!table) {
+        res.status(404).json({ success: false, message: "Table introuvable !" })
+        return;
+    }
 
-        res.status(200).json({ success: true, data: table });
-        } catch (err) {
-            res.status(500).json({ success: false, message: "Echec serveur" })
-        }
-        
+    res.status(200).json({ success: true, data: table });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Echec serveur" })
+    }
 }
 
 exports.tables = async (req, res, next) => {

@@ -1,37 +1,83 @@
 const Admin = require('../models/admin');
 const bcrypt = require('bcrypt');
 
-exports.admins = (req, res) => {
-    Admin.find()
-    .then(data => res.status(200).json(data))
-    .catch(err => res.status(400).json( err ))
+const findAdminById = async (id) => {
+    const admin = await Admin.findById({ _id: id })
+    return admin;
+}   
+
+exports.admins = async (req, res) => {
+    try {
+        const admins = await Admin.find()
+        
+        if(!admins){
+            res.status(404).json({ success: false, message: "Liste d'admins introuvable !" })
+            return;
+        }
+
+        res.status(200).json({ success: true, data: admins });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Echec serveur" })
+    }
 }
 
-exports.admin = (req, res) => {
-    const adminId = res.locals.adminId;
-    Admin.findOne({_id: adminId})
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json( err ))
+exports.admin = async (req, res) => {
+    try {
+        const admin = await findAdminById(req.params.id)
+
+    if(!admin) {
+        res.status(404).json({ success: false, message: "Compte introuvable !" })
+        return;
+    }
+
+    res.status(200).json({ success: true, data: admin });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Echec serveur" })
+    }
 }
 
-exports.updateAdmin = (req, res) => {
-    const adminId = res.locals.adminId;
-    const mariageId = res.locals.mariageID;
-    let hash = bcrypt.hashSync(req.body.password, 10);
-    req.body.password = hash;
-    Admin.updateOne({_id: adminId},
-        {$set: {password: hash, ...req.body, mariageID: mariageId}})
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json({ err}))
+exports.updateAdmin = async (req, res) => {
+    try {
+        const adminId = res.locals.adminId;
+        const mariageId = res.locals.mariageID;
+
+        const existingAdmin = await findAdminById(adminId);
+        if (!existingAdmin) {
+            return res.status(404).json({ success: false, message: "Impossible de trouver les données liées à votre compte" });
+        }
+
+        const hash = bcrypt.hashSync(req.body.password, 10);
+        req.body.password = hash;
+
+        const result = await Admin.updateOne(
+            { _id: adminId },
+            { $set: { password: hash, ...req.body, mariageID: mariageId } }
+        );
+
+        if (result.nModified === 1) {
+            res.status(200).json({ success: true, message: "Modification enregistrée" });
+        } else {
+            res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression de votre compte" });
+        }
+
+        res.status(200).json({ success: true, message: "Modification enregistrée" });
+    } catch (err) {
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la mise à jour de l'administrateur." });
+    }
 }
 
-exports.deleteAccount =  function (req, res, next) {
-    const adminId = res.locals.adminId;
-    Admin.findById(adminId).exec()
-        .then(admin => {
-            if(!admin) return res.status(400).json(err)
-            admin.remove()
-                .then(() => res.status(200).json("Le compte a été supprimé avec succès."))
-                .catch(err => res.status(400).json(err))
-        })
+exports.deleteAccount = async (req, res, next) => {
+    try {
+        const adminId = res.locals.adminId;
+
+        const existingAdmin = findAdminById(adminId).exec();
+        if (!existingAdmin) {
+            return res.status(404).json({ success: false, message: "Votre compte est introuvable !" });
+        }
+
+        await existingAdmin.remove();
+        res.status(200).json({ success: true, message: "Votre compte a été supprimé avec succès" });
+    } catch (err) {
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression de l'administrateur." });
+    }
 }
