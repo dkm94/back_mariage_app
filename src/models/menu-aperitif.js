@@ -7,7 +7,7 @@ let apetizerSchema = new Schema({
     name: {
         type: String,
         maxLength: 100,
-        required: 'A value is required'
+        required: 'Veuilez compléter le champ'
     },
     mariageID: {
         type: Schema.Types.ObjectId, 

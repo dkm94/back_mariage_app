@@ -1,5 +1,10 @@
 const Dessert = require('../models/menu-dessert');
 
+const findBeverageById = async (id) => {
+    const beverage = await Beverage.findById({ _id: id })
+    return beverage;
+}
+
 exports.newDessert = (req, res) => {
     const mariageId = res.locals.mariageID;
     let dessert = new Dessert ({

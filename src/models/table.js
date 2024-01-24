@@ -6,7 +6,7 @@ let tableSchema = new Schema({
 
     name: {
         type: String,
-        required: 'A value is required.'
+        required: 'Veuilez compléter le champ.'
     },
     mariageID: {
         type: Schema.Types.ObjectId, 

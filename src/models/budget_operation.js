@@ -16,18 +16,18 @@ let operationSchema = new Schema({
             'Locations', 'Habillement/Beauté', 'Décoration/Fleurs', 'Alliances/Bijoux', 'Animation', 'Traiteur', 'Faire-part', 'Autres'
         ],
         default: 'Autres',
-        required: 'A value is required'
+        required: 'Veuilez compléter le champ'
     },
     description: {
         type: String,
         maxlength: 255,
-        required: 'A value is required'
+        required: 'Veuilez compléter le champ'
     },
     price: { 
         type: Number,
         min: 1,
         max: 999999,
-        required: 'A value is required'
+        required: 'Veuilez compléter le champ'
     },
     date: {
         type: String,

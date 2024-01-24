@@ -67,7 +67,7 @@ exports.updateTodo = async (req, res) => {
         if (result.nModified === 1) {
             res.status(200).json({ success: true, message: "Modification enregistrée" });
         } else {
-            res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression de la tâche." });
+            res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la modification de la tâche." });
         }
 
         res.status(200).json({ success: true, data: result });
@@ -99,6 +99,6 @@ exports.deleteTodo = async (req, res) => {
 
         res.status(200).json({ success: true });
     } catch (err) {
-        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression du la tâche" });
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression de la tâche" });
     }
 }
