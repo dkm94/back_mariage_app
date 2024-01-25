@@ -101,13 +101,13 @@ exports.adminLogin = async function (req, res) {
       });
     }
 
-    bcrypt.compare(req.body.password, admin.password, function (err, same) {
+    bcrypt.compare(req.body.password, admin.password, async function (err, same) {
 
       if (!same) {
         return res.status(404).json({ success: false, message: "Echec connexion, veuillez vérifier vos identifiants" })
       }
 
-      const mariage = Mariage.findOne({ _id: admin.mariageID });
+      const mariage = await Mariage.findOne({ _id: admin.mariageID });
       if(!mariage){
         return res.status(404).json({ success: false, message: "Echec connexion, veuillez vérifier vos identifiants" })
       }
