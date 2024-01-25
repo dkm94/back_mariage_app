@@ -145,7 +145,7 @@ exports.updateTableWithGuests = async (req, res, next) => {
         // Est-ce que la table existe ?
         const table = await getTableById(tableID);
         if (!table) {
-            res.status(404).json({ success: false, message: "Table introuvable !", statusCode: 404 });
+            res.status(404).json({ success: false, message: "Table introuvable !" });
             return;
         }        
         
@@ -200,12 +200,12 @@ exports.updateTableWithGuests = async (req, res, next) => {
         // 5) Mettre à jour la table avec les nouveaux invités // ça ne marche pas
         const result = await Table.updateOne({ _id: tableID }, { $set: { guestID: guestIds }})
         if (!result.ok) {
-            res.status(422).json({ success: false, message: "Echec de la modification de la table", statusCode: 422 });
+            res.status(422).json({ success: false, message: "Echec de la modification de la table" });
             return;
         }
         
-        res.status(200).json({ success: true, message: "La liste des invités a bien été modifiée", statusCode: 200 });
+        res.status(200).json({ success: true, message: "La liste des invités a bien été modifiée" });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Echec serveur", statusCode: 500 });
+        res.status(500).json({ success: false, message: "Echec serveur" });
     }
 }
