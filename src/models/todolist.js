@@ -5,7 +5,7 @@ const model = mongoose.model;
 let todolistSchema = new Schema({
     text: {
         type: String,
-        required: 'A value is required.'
+        required: 'Veuilez compléter le champ.'
     },
     isCompleted: {
         type: Boolean,

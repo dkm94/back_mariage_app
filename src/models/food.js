@@ -2,18 +2,22 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
-let starterSchema = new Schema({
+let foodSchema = new Schema({
 
     name: {
         type: String,
         maxLength: 100,
-        required: 'A value is required'
+        required: 'Veuilez compléter le champ'
+    },
+    category: {
+       type: String,
+       enum: [ "apetizer", "starter", "maincourse", "dessert", "beverage"] 
     },
     mariageID: {
         type: Schema.Types.ObjectId, 
         ref: 'Mariage'
     }
-
+    
 });
 
-module.exports = model('Starter', starterSchema);
+module.exports = model('Food', foodSchema);

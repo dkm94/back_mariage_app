@@ -12,36 +12,45 @@ const findWeddingById = async (id) => {
     return wedding;
 } 
 
-//TABLE
-exports.newTable = (req, res) => {
-    const mariageId = res.locals.mariageID;
-    let table = new Table ({
-        ...req.body,
-        mariageID: mariageId
-    });
-    table.save()
-        .then(newTable => {
-            Mariage.updateOne({_id: mariageId},
-                {$push: {tableID: newTable}})
-                .then(data => res.status(200).json(newTable))
-        })
-        .catch(err => res.status(400).json({err}))
+exports.newTable = async (req, res) => {
+    try {
+        const mariageId = res.locals.mariageID;
+        const tableName = req.body.name;
+
+        const existingTable = await Table.findOne({ name: tableName, mariageID: mariageId });
+        if (existingTable) {
+            return res.status(400).json({ success: false, message: "Une table avec le même nom existe déjà." });
+        }
+
+        let table = new Table({
+            ...req.body,
+            mariageID: mariageId
+        });
+
+        const newTable = await table.save();
+
+        await Mariage.updateOne({ _id: mariageId },
+            { $push: { tableID: newTable } });
+
+        res.status(200).json({ success: true, data: newTable });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Une erreur s'est produite lors de la création de la table." })
+    }
 }
 
 exports.table = async (req, res, next) => {
     try {
         const table = await findTableById(req.params.id)
 
-        if(!table) {
-            res.send({ success: false, message: "Table introuvable !", statusCode: 404 })
-            return;
-        }
+    if(!table) {
+        res.status(404).json({ success: false, message: "Table introuvable !" })
+        return;
+    }
 
-        res.send({ success: true, data: table, statusCode: 200 });
-        } catch (err) {
-            res.send({ success: false, message: "Echec serveur", statusCode: 500 })
-        }
-        
+    res.status(200).json({ success: true, data: table });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Echec serveur" })
+    }
 }
 
 exports.tables = async (req, res, next) => {
@@ -59,13 +68,13 @@ exports.tables = async (req, res, next) => {
         }));
 
         if (!tablesWithGuests) {
-            res.send({ success: false, message: "Tables introuvables !", statusCode: 404 });
+            res.status(404).json({ success: false, message: "Tables introuvables !" });
             return;
         }
 
-        res.send({ success: true, data: tables, statusCode: 200 });
+        res.status(200).json({ success: true, data: tables });
     } catch (err) {
-        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+        res.status(500).json({ success: false, message: "Echec serveur" })
     }
 }
 
@@ -77,27 +86,32 @@ exports.updateTable = async (req, res) => {
         const table = await findTableById(_id);
 
         if(!table) {
-            res.send({ success: false, message: "Table introuvable !", statusCode: 404 })
+            res.status(404).json({ success: false, message: "Table introuvable !" })
+            return;
+        }
+
+        if(!req.body.name){
+            res.status(400).json({ success: false, message: "La champ ne peut être vide" });
             return;
         }
 
         if(table.name === req.body.name) {
-            res.send({ success: true, statusCode: 204 })
+            res.status(204).json({ success: false, message: "La valeur indiquée reste inchangée" })
             return;
         } else {
             const result = await Table.updateOne({ _id }, { $set: { name: req.body.name }})
     
             if (result.nModified > 0) {
-                res.status(200).json({ success: true, message: "La table a bien été modifiée", statusCode: 200 });
+                res.status(200).json({ success: true, message: "La table a bien été modifiée" });
             } else {
-                res.status(400).json({ success: false, message: "Echec de la modification de la table", statusCode: 400 });
+                res.status(400).json({ success: false, message: "Echec de la modification de la table" });
             }
         }
 
     }
     catch (err) {
         // exemple console.log(err) CastError: Cast to ObjectId failed for value "656656221099c0044c6bee7d5" (type string) at path "_id" for model "Table"
-        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+        res.status(500).json({ success: false, message: "Echec serveur" })
     }
 }
 
@@ -108,19 +122,19 @@ exports.deleteTable = async (req, res) => {
     try {
         const table = await findTableById(tableID);
         if(!table) {
-            res.send({ success: false, message: "Table introuvable !", statusCode: 404 })
+            res.status(404).json({ success: false, message: "La table que vous souhaitez supprimer n'existe pas" })
             return;
         }
 
         const wedding = await findWeddingById(_id);
         if(!wedding) {
-            res.send({ success: false, message: "Mariage introuvable !", statusCode: 404 })
+            res.status(404).json({ success: false, message: "Le mariage associé à ce compte n'existe pas" })
             return;
         }
 
         const weddingResult = await Mariage.updateOne({ _id: res.locals.mariageID }, { $pull: { tableID: req.params.id } }) 
         if (weddingResult.nModified === 0) {
-            res.status(400).json({ success: false, message: "Echec de la modification du mariage", statusCode: 400 });
+            res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la modification des paramètres du mariage" });
             return;
         }
 
@@ -128,26 +142,26 @@ exports.deleteTable = async (req, res) => {
         if(!guests || guests.length === 0) {
             const result = await Table.deleteOne({ _id: tableID })
             if (result.deletedCount === 0) {
-                res.status(400).json({ success: false, message: "Echec de la suppression de la table", statusCode: 400 });
+                res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression du la table" });
                 return;
             }
             
-            res.status(200).json({ success: true, message: "La table a bien été supprimée", statusCode: 200 });
+            res.status(200).json({ success: true, message: "La table a bien été supprimée" });
             return;
         }
         const updateGuestsResult = await Guest.updateMany({ tableID }, { $set: { tableID: null } })
         if (updateGuestsResult.nModified === 0) {
-            res.status(400).json({ success: false, message: "Echec de modification des paramètres invités", statusCode: 400 });
+            res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la modification des paramètres invités" });
             return;
         }
 
         const deleteTableResult = await Table.deleteOne({ _id: tableID })
         if (deleteTableResult.deletedCount === 0) {
-            res.status(400).json({ success: false, message: "Echec de la suppression de la table", statusCode: 400 });
+            res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression du la table" });
             return;
         }
-        res.status(200).json({ success: true, message: "La table a bien été supprimée", statusCode: 200 });
-        } catch (e) {
-            res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+        res.status(200).json({ success: true, message: "La table a bien été supprimée" });
+        } catch (err) {
+            res.status(500).json({ success: false, message: "Echec serveur" })
         }
 }

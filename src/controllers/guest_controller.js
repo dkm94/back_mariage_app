@@ -1,7 +1,7 @@
 const Wedding = require('../models/mariage');
 const Guest = require('../models/invite');
 const Table = require('../models/table');
-const generator = require('generate-password');
+// const generator = require('generate-password');
 
 const getGuest = async (id) => {
     const guest = await Guest.findOne({ _id: id })
@@ -13,40 +13,42 @@ const getTableById = async (id) => {
     return table
 }
 
-exports.newGuest = (req, res, next) => {
-    const mariageId = res.locals.mariageID;
-    // let generatedpsw = generator.generate({
-    //     length: 10,
-    //     numbers: true
-    // });
-    let guest = new Guest ({
-        ...req.body,
-        // email: null,
-        // password: generatedpsw,
-        media: "",
-        guestMenu: {
-            starter: null,
-            maincourse: null,
-            dessert: null
-        },
-        tableID: null,
-        mariageID: mariageId
-    });
-    guest.save()
-        .then(newGuest => {
-            Wedding.updateOne({_id: mariageId},
-                {$push: {guestID: newGuest}})
-                .then(data => res.status(200).json(newGuest))
-        })
-        .catch(err => res.status(400).json(err))
+exports.newGuest = async (req, res, next) => {
+    try {
+        const mariageId = res.locals.mariageID;
+
+        let guest = new Guest({
+            ...req.body,
+            media: "",
+            tableID: null,
+            mariageID: mariageId
+        });
+
+        const newGuest = await guest.save();
+
+        await Wedding.updateOne({ _id: mariageId }, { $push: { guestID: newGuest }});
+
+        res.status(200).json({ success: true, data: newGuest });
+    } catch (err) {
+        res.status(400).json({ success: false, message: "Erreur serveur" });
+    }
 }
 
-exports.guest = (req, res, next) => {
-    Guest.findOne({ _id: req.params.id })
-        .populate({path: "tableID", select: "name"})
-        .exec()
-        .then(data => res.status(200).json(data))
-        .catch(err => res.status(400).json( err ))
+exports.guest = async (req, res, next) => {
+    try {
+        const guest = await Guest.findOne({ _id: req.params.id })
+            .populate({ path: "tableID", select: "name" })
+            .exec();
+        
+            if(!guest){
+                res.status(404).json({ success: false, message: "Invité introuvable" })
+                return;
+            }
+
+        res.status(200).json({ success: true, data: guest });
+    } catch (err) {
+        res.status(400).json({ success: false, message: "Erreur serveur"});
+    }
 }
 
 exports.getGuestbyName = (req, res, next) => {
@@ -66,38 +68,42 @@ exports.guests = async (req, res, next) => {
         const guests = await Guest.find({ mariageID: mariageId })
         
         if(!guests){
-            res.send({ success: false, message: "Invités introuvables !", statusCode: 404 })
+            res.status(404).json({ success: false, message: "Invités introuvables !" })
             return;
         }
 
-        res.send({ success: true, data: guests, statusCode: 200 });
+        res.status(200).json({ success: true, data: guests });
     } catch (err) {
-        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+        res.status(500).json({ success: false, message: "Echec serveur" })
     }
 }
 
-exports.updateGuest = (req, res) => {
-    const mariageId = res.locals.mariageID;
-    if(req.file){
-        Guest.findOneAndUpdate({ _id: req.params.id },
-            {$set: {...req.body, media: req.file.filename, mariageID: mariageId}},
-            {new: true}, (err, doc) => {
-                if(err) {
-                    console.log(err)
-                } else {
-                    return res.status(200).json(doc)
-                }
-            })
-    } else {
-        Guest.findOneAndUpdate({ _id: req.params.id },
-            {$set: {...req.body, mariageID: mariageId}},
-            {new: true}, (err, doc) => {
-                if(err) {
-                    console.log(err)
-                } else {
-                    return res.status(200).json(doc)
-                }
-            })
+exports.updateGuest = async (req, res) => {
+    try {
+        const guest = await getGuest(req.params.id);
+        if (!guest) {
+            res.status(404).json({ success: false, message: "Invité introuvable !" });
+            return;
+        }
+
+        const mariageId = res.locals.mariageID;
+        let updateFields = { ...req.body, mariageID: mariageId };
+
+        if (req.file) {
+            updateFields.media = req.file.filename;
+        }
+
+        const options = { new: true };
+        const result = await Guest.updateOne({ _id: req.params.id }, { $set: updateFields }, options);
+
+        if (result.nModified === 0) {
+            res.status(422).json({ success: false, message: "Oups, une erreur est survenue lors de la modification de l'invité" });
+            return;
+        }
+
+        res.status(200).json({ success: true, message: "Modifications enregistrées"});
+    } catch (err) {
+        res.status(400).json({ success: false, message: "Erreur serveur" });
     }
 }
 
@@ -110,20 +116,20 @@ exports.deleteGuest = async (req, res) => {
     try {
         const guest = await getGuest(id)
         if(!guest){
-            res.send({ success: false, message: "Invité introuvable !", statusCode: 404 })
+            res.status(404).json({ success: false, message: "Invité introuvable !" })
             return;
         }
 
         const result = await Guest.deleteOne({ _id: id, mariageID: mariageId });
         const { deletedCount } = result;
         if (!deletedCount) {
-        res.send({ success: false, message: "Echec lors de la suppression de l'invité", statusCode: 404 });
+        res.status(404).json({ success: false, message: "Echec lors de la suppression de l'invité" });
         return;
         }
 
-        res.send({ success: true, message: "L'invité a bien été supprimé", statusCode: 200 });
+        res.status(200).json({ success: true, message: "L'invité a bien été supprimé" });
     } catch (err) {
-        res.send({ success: false, message: "Echec serveur", statusCode: 500 })
+        res.status(500).json({ success: false, message: "Echec serveur" })
     }
 }
 
@@ -139,7 +145,7 @@ exports.updateTableWithGuests = async (req, res, next) => {
         // Est-ce que la table existe ?
         const table = await getTableById(tableID);
         if (!table) {
-            res.status(404).json({ success: false, message: "Table introuvable !", statusCode: 404 });
+            res.status(404).json({ success: false, message: "Table introuvable !" });
             return;
         }        
         
@@ -194,12 +200,12 @@ exports.updateTableWithGuests = async (req, res, next) => {
         // 5) Mettre à jour la table avec les nouveaux invités // ça ne marche pas
         const result = await Table.updateOne({ _id: tableID }, { $set: { guestID: guestIds }})
         if (!result.ok) {
-            res.status(422).json({ success: false, message: "Echec de la modification de la table", statusCode: 422 });
+            res.status(422).json({ success: false, message: "Echec de la modification de la table" });
             return;
         }
         
-        res.status(200).json({ success: true, message: "La liste des invités a bien été modifiée", statusCode: 200 });
+        res.status(200).json({ success: true, message: "La liste des invités a bien été modifiée" });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Echec serveur", statusCode: 500 });
+        res.status(500).json({ success: false, message: "Echec serveur" });
     }
 }
