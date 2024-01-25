@@ -46,7 +46,7 @@ adminSchema.pre('remove', async function(next) {
         await Mariage.deleteOne({adminID: this._id}).exec();
         next();
     } catch (error) {
-        console.log(error)
+        res.status(500).json({ success: false, message: "Erreur serveur" });
     }
 });
 
