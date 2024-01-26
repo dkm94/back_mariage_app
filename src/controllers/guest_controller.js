@@ -77,35 +77,58 @@ exports.guests = async (req, res, next) => {
         res.status(500).json({ success: false, message: "Echec serveur" })
     }
 }
-
-exports.updateGuest = async (req, res) => {
-    try {
-        const guest = await getGuest(req.params.id);
-        if (!guest) {
-            res.status(404).json({ success: false, message: "Invité introuvable !" });
-            return;
-        }
-
-        const mariageId = res.locals.mariageID;
-        let updateFields = { ...req.body, mariageID: mariageId };
-
-        if (req.file) {
-            updateFields.media = req.file.filename;
-        }
-
-        const options = { new: true };
-        const result = await Guest.updateOne({ _id: req.params.id }, { $set: updateFields }, options);
-
-        if (result.nModified === 0) {
-            res.status(422).json({ success: false, message: "Oups, une erreur est survenue lors de la modification de l'invité" });
-            return;
-        }
-
-        res.status(200).json({ success: true, message: "Modifications enregistrées"});
-    } catch (err) {
-        res.status(400).json({ success: false, message: "Erreur serveur" });
+exports.updateGuest = (req, res) => {
+    const mariageId = res.locals.mariageID;
+    if(req.file){
+        Guest.findOneAndUpdate({ _id: req.params.id },
+            {$set: {...req.body, media: req.file.filename, mariageID: mariageId}},
+            {new: true}, (err, doc) => {
+                if(err) {
+                    res.status(400).json({ success: false, message: "La modification a échoué" })
+                } else {
+                    res.status(200).json(doc)
+                }
+            })
+    } else {
+        Guest.findOneAndUpdate({ _id: req.params.id },
+            {$set: {...req.body, mariageID: mariageId}},
+            {new: true}, (err, doc) => {
+                if(err) {
+                    res.status(400).json({ success: false, message: "La modification a échoué" })
+                } else {
+                    res.status(200).json(doc)
+                }
+            })
     }
 }
+// exports.updateGuest = async (req, res) => {
+//     try {
+//         const guest = await getGuest(req.params.id);
+//         if (!guest) {
+//             res.status(404).json({ success: false, message: "Invité introuvable !" });
+//             return;
+//         }
+
+//         const mariageId = res.locals.mariageID;
+//         let updateFields = { ...req.body, mariageID: mariageId };
+
+//         if (req.file) {
+//             updateFields.media = req.file.filename;
+//         }
+
+//         const options = { new: true };
+//         const result = await Guest.updateOne({ _id: req.params.id }, { $set: updateFields }, options);
+
+//         if (result.nModified === 0) {
+//             res.status(422).json({ success: false, message: "Oups, une erreur est survenue lors de la modification de l'invité" });
+//             return;
+//         }
+
+//         res.status(200).json({ success: true, message: "Modifications enregistrées"});
+//     } catch (err) {
+//         res.status(400).json({ success: false, message: "Erreur serveur" });
+//     }
+// }
 
 exports.deleteGuest = async (req, res) => {
     const { locals } = res;
@@ -119,6 +142,9 @@ exports.deleteGuest = async (req, res) => {
             res.status(404).json({ success: false, message: "Invité introuvable !" })
             return;
         }
+
+        // le retirer de la table
+    
 
         const result = await Guest.deleteOne({ _id: id, mariageID: mariageId });
         const { deletedCount } = result;
