@@ -72,7 +72,7 @@ exports.updateTodo = async (req, res) => {
 
         res.status(200).json({ success: true, data: result });
     } catch (err) {
-        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la mise à jour du todo." });
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la mise à jour de la tâche" });
     }
 }
 
@@ -97,7 +97,7 @@ exports.deleteTodo = async (req, res) => {
             return res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression du la tâche" });
         }
 
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true, message: "Tâche supprimée" });
     } catch (err) {
         res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression de la tâche" });
     }
