@@ -88,7 +88,7 @@ exports.deleteTodo = async (req, res) => {
         const weddingUpdateResult = await Wedding.updateOne({ _id: mariageId }, { $pull: { todoListID: req.params.id } });
 
         if (weddingUpdateResult.nModified !== 1) {
-            return res.status(400).json({ success: false, message: "Oups, la mariage n'a pas été mis à jour" });
+            return res.status(400).json({ success: false, message: "Oups, le mariage n'a pas été mis à jour" });
         }
 
         const todoDeleteResult = await Todo.deleteOne({ _id: req.params.id, mariageID: mariageId });

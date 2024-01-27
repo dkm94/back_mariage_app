@@ -36,6 +36,10 @@ const corsOptions = {
 //     }
 //   },
 // }
+
+// create public routes files for auth
+// create private routes files for the rest
+// delete api/guest
 app.use(cors(corsOptions));
 app.use("/api", routes);
 app.use("/api/admin", routes);
