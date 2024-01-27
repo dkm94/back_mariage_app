@@ -84,7 +84,7 @@ exports.updateOperation = async (req, res) => {
 
 exports.deleteOperation = async (req, res) => {
     try {
-        const existingTodo = await findTodoById(req.params.id);
+        const existingTodo = await findOperationById(req.params.id);
         if (!existingTodo) {
             return res.status(404).json({ success: false, message: "Oups, l'opération que vous souhaitez supprimer n'existe pas" });
         }
