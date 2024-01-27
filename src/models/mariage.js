@@ -18,6 +18,10 @@ let mariageSchema = new Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Table'
     }],
+    todoListID: [{
+        type: Schema.Types.ObjectId, 
+        ref: 'Todolist'
+    }],
 });
 
 module.exports = model('Mariage', mariageSchema);
