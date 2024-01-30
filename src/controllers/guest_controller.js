@@ -86,7 +86,7 @@ exports.updateGuest = (req, res) => {
                 if(err) {
                     res.status(400).json({ success: false, message: "La modification a échoué" })
                 } else {
-                    res.status(200).json(doc)
+                    res.status(200).json({ data: doc, success: true, message: "Modification enregistrée" })
                 }
             })
     } else {
@@ -96,7 +96,7 @@ exports.updateGuest = (req, res) => {
                 if(err) {
                     res.status(400).json({ success: false, message: "La modification a échoué" })
                 } else {
-                    res.status(200).json(doc)
+                    res.status(200).json({ data: doc, success: true, message: "Modification enregistrée" })
                 }
             })
     }
