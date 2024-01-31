@@ -70,7 +70,7 @@ exports.deleteAccount = async (req, res, next) => {
     try {
         const adminId = res.locals.adminId;
 
-        const existingAdmin = findAdminById(adminId).exec();
+        const existingAdmin = await findAdminById(adminId).exec();
         if (!existingAdmin) {
             return res.status(404).json({ success: false, message: "Votre compte est introuvable !" });
         }
