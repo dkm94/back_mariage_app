@@ -64,6 +64,13 @@ exports.register = async (req, res) => {
         .json({ success: false, message: "Tous les champs doivent être remplis" });
     }
 
+    const existedUser = await Admin.findOne({ email: email });
+    if (existedUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Un compte existe déjà avec cet email" });
+    }
+
     let mariage = new Mariage({
       ...req.body,
     });
