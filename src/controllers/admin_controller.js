@@ -68,9 +68,7 @@ exports.updateAdmin = async (req, res) => {
 
 exports.deleteAccount = async (req, res, next) => {
     try {
-        const adminId = res.locals.adminId;
-
-        const existingAdmin = await findAdminById(adminId).exec();
+        const existingAdmin = await findAdminById(req.params.id)
         if (!existingAdmin) {
             return res.status(404).json({ success: false, message: "Votre compte est introuvable !" });
         }
@@ -78,6 +76,6 @@ exports.deleteAccount = async (req, res, next) => {
         await existingAdmin.remove();
         res.status(200).json({ success: true, message: "Votre compte a été supprimé avec succès" });
     } catch (err) {
-        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression de l'administrateur." });
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression du compte" });
     }
 }
