@@ -19,8 +19,6 @@ app.use(bearerToken());
 mongoose
 .connect(db, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true})
 mongoose.set('useFindAndModify', false);
-// .then(res => console.log(res, "connecté"))
-// .catch(err => console.log(err))
 
 const corsOptions = {
   origin: ['https://my-wedding-app.netlify.app', 'http://localhost:3000'],
@@ -37,27 +35,7 @@ const corsOptions = {
 //   },
 // }
 
-// create public routes files for auth
-// create private routes files for the rest
-// delete api/guest
 app.use(cors(corsOptions));
 app.use("/api", routes);
-app.use("/api/admin", routes);
-app.use("/api/guest",  routes);
-
-
-app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
-  // res.header("Access-Control-Allow-Headers", "Origin, Authorization, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Headers", "Origin, Authorization, X-Requested-With, Content-Type, Accept");
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  next();
-});
-
-// test
-app.route('/').get(function(req, res) {
-    res.send('hello world');
-});
 
 module.exports = app;
