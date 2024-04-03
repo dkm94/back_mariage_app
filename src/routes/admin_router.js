@@ -2,7 +2,7 @@ const express = require("express");
 
 const { admin,
     admins,
-    updateAdmin,
+    updatePassword,
     deleteAccount } = require("../controllers/admin_controller");
 const { adminAuth } = require("../middlewares");
 
@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get("/", admins);
 router.get("/myAccount/:id", adminAuth, admin);
-router.post("/editAccount/:id", adminAuth, updateAdmin);
+router.post("/editPassword/:id", adminAuth, updatePassword);
 router.delete("/deleteAccount/:id", adminAuth, deleteAccount);
 
 module.exports = router;

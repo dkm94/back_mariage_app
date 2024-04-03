@@ -14,7 +14,6 @@ let guestSchema = new Schema({
     family: {
         type: String,
         enum: ['1','2'],
-        default: "1"
     },
     tableID: {
         type: Schema.Types.ObjectId, 

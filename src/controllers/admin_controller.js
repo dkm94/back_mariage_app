@@ -35,8 +35,12 @@ exports.admin = async (req, res) => {
         res.status(500).json({ success: false, message: "Echec serveur" })
     }
 }
+// separer picture
+// exports.updatePicture = async (req, res) => {
+    
+// }
 
-exports.updateAdmin = async (req, res) => {
+exports.updatePassword = async (req, res) => {
     try {
         const adminId = res.locals.adminId;
         const mariageId = res.locals.mariageID;
@@ -51,18 +55,18 @@ exports.updateAdmin = async (req, res) => {
 
         const result = await Admin.updateOne(
             { _id: adminId },
-            { $set: { password: hash, ...req.body, mariageID: mariageId } }
+            { $set: { password: hash, mariageID: mariageId } }
         );
 
         if (result.nModified === 1) {
             res.status(200).json({ success: true, message: "Modification enregistrée" });
         } else {
-            res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la suppression de votre compte" });
+            res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la modification" });
         }
 
         res.status(200).json({ success: true, message: "Modification enregistrée" });
     } catch (err) {
-        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite lors de la mise à jour de l'administrateur." });
+        res.status(400).json({ success: false, message: "Oups, une erreur s'est produite" });
     }
 }
 

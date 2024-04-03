@@ -143,7 +143,7 @@ exports.deleteGuest = async (req, res) => {
             return;
         }
 
-        // le retirer de la table
+        //TODO: le retirer de la table
     
 
         const result = await Guest.deleteOne({ _id: id, mariageID: mariageId });
