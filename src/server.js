@@ -21,7 +21,7 @@ mongoose
 mongoose.set('useFindAndModify', false);
 
 const corsOptions = {
-  origin: ['https://my-wedding-app.netlify.app', 'http://localhost:3000'],
+  origin: ['https://my-wedding-app.netlify.app', 'http://localhost:3000', 'https://mariage-en-main.com/'],
   credentials: true
 }
 // const whitelist = ['https://my-wedding-app.netlify.app', 'http://localhost:3000']
