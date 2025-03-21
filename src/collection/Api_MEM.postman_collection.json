@@ -1,0 +1,2840 @@
+{
+	"info": {
+		"_postman_id": "45778485-f913-4176-ac79-d103443e33ab",
+		"name": "Api mariage Node",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "MEM - POST Register HIGH QASM-TC-12",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseSchema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"success\": {\r",
+									"            \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"message\": {\r",
+									"            \"type\": \"string\"\r",
+									"        }\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Response's object returns a success status and a message\", () => {\r",
+									"    pm.response.to.have.jsonSchema(responseSchema);\r",
+									"});\r",
+									"pm.test(\"The account creation is confirmed by a 200 or 201 status\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});\r",
+									"pm.test(\"Body matches string when the account is successfully created\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Votre compte a été créé, vous pouvez dès à présent vous connecter\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "thesimpsons11@mail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password123!",
+									"type": "text"
+								},
+								{
+									"key": "firstPerson",
+									"value": "Julie",
+									"type": "text"
+								},
+								{
+									"key": "secondPerson",
+									"value": "Serge",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiURL}}/api/auth/createAccount",
+							"host": [
+								"{{apiURL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"createAccount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseSchema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"success\": {\r",
+									"            \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"token\": {\r",
+									"            \"type\": \"string\"\r",
+									"        },\r",
+									"        \"message\": {\r",
+									"            \"type\": \"string\"\r",
+									"        }\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Response's object returns a success status, a token and a message\", () => {\r",
+									"    pm.response.to.have.jsonSchema(responseSchema);\r",
+									"});\r",
+									"pm.test(\"The access connection is confirmed by a 200 or 201 status\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});\r",
+									"pm.test(\"Body matches string if the credentials are valid\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Vous pouvez à présent accéder à votre compte.\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "test@test.com",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "be@be.com",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "password",
+									"value": "Azerty123!",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "password",
+									"value": "aaaa",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "thesimpsons06@mail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password123!",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiURL}}/api/auth/adminLogin",
+							"host": [
+								"{{apiURL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"adminLogin"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "User account",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/admin/myAccount/630c8171faa4e60023378a17",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"admin",
+								"myAccount",
+								"630c8171faa4e60023378a17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNzEyYzE3N2I2MzM1MzJiYzllNDVhYyIsIm1hcmlhZ2VJRCI6IjYwNzEyYzE3N2I2MzM1MzJiYzllNDVhYiIsInJvbGUiOiJhZG1pbiIsImludml0YXRpb25JRCI6IjYwNzEyYzE3N2I2MzM1MzJiYzllNDVhZSIsImlhdCI6MTYxODkzMTg3N30.n1UQAHF44DJsmtdups19UUrI55LREBWDliR4ZzZxLyY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "password",
+									"value": "MQdzok1256!!",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/admin/editAccount/60712c177b633532bc9e45ac",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"admin",
+								"editAccount",
+								"60712c177b633532bc9e45ac"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete account",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/admin/deleteAccount/618492fb42076b0023b7aaa5",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"admin",
+								"deleteAccount",
+								"618492fb42076b0023b7aaa5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All accounts",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/admin/",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"admin",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGM4MTcxZmFhNGU2MDAyMzM3OGExNyIsIm1hcmlhZ2VJRCI6IjYzMGM4MTcxZmFhNGU2MDAyMzM3OGExNiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyayIsInNlY29uZFBlcnNvbiI6IkxpbGkiLCJpYXQiOjE3MDY2NjA3Mjd9.fL1xbC7RiCg_jsUsThOryfse684YPoxkmNSqoLdfzwo",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Wedding",
+			"item": [
+				{
+					"name": "ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTcwNmNiYzQ5OTFmMDA0ZGQ0ZTQ0ZCIsIm1hcmlhZ2VJRCI6IjY1YTcwNmNhYzQ5OTFmMDA0ZGQ0ZTQ0YiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyam9yaWUiLCJzZWNvbmRQZXJzb24iOiJCaWxseSIsImlhdCI6MTcwNjM3MTMwMn0.XC3jCvcc1Itnj9M7NqTeaQ_Xdh1XM3vn_YsjK8H9sK0",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/wedding/65a706cac4991f004dd4e44b",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"wedding",
+								"65a706cac4991f004dd4e44b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update wedding",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImJ1ZGdldElEIjoiNjE3ODE4NzcwN2M2NmUwMDIzN2RjZDBiIiwiaWF0IjoxNjM1MjkwNTQ1fQ.I4Kzf7N0ZaJuD9RYb00U0JDf84oAvhuvjPO2vlnw8FQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "firstPerson",
+									"value": "Marie",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/wedding/edit/6178187707c66e00237dcd08",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"wedding",
+								"edit",
+								"6178187707c66e00237dcd08"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTcwNmNiYzQ5OTFmMDA0ZGQ0ZTQ0ZCIsIm1hcmlhZ2VJRCI6IjY1YTcwNmNhYzQ5OTFmMDA0ZGQ0ZTQ0YiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyam9yaWUiLCJzZWNvbmRQZXJzb24iOiJCaWxseSIsImlhdCI6MTcwNjM3MTMwMn0.XC3jCvcc1Itnj9M7NqTeaQ_Xdh1XM3vn_YsjK8H9sK0",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Table",
+			"item": [
+				{
+					"name": "New table",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuIiwic2Vjb25kUGVyc29uIjoiQnJpZ2l0dGUiLCJpYXQiOjE3MDU2NzAwMzV9.-1OhlQBdGccoS_5-SaYx9EcQ0rMsqhsw02BwK2PN8vk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Ababap",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/tables/add",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"tables",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update table",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuIiwic2Vjb25kUGVyc29uIjoiQnJpZ2l0dGUiLCJpYXQiOjE3MDU2NzAwMzV9.-1OhlQBdGccoS_5-SaYx9EcQ0rMsqhsw02BwK2PN8vk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Famille HOP",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/tables/edit/618d808082981f0023c0541",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"tables",
+								"edit",
+								"618d808082981f0023c0541"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete table",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuamFtaW4iLCJzZWNvbmRQZXJzb24iOiJCcmlnaXR0ZSIsImlhdCI6MTcwNDQ1NDI5MX0.w7VJ2RoE6DVVuGs_kwToNy7EuQT_UwnOsRhA6EUnQzI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/tables/delete/618d80ca82981f0023c05416",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"tables",
+								"delete",
+								"618d80ca82981f0023c05416"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "See table",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuamFtaW4iLCJzZWNvbmRQZXJzb24iOiJCcmlnaXR0ZSIsImlhdCI6MTcwNDcwMjg5N30.YSSFwUBPrir-TyKj6mhJaq7WGrWjaZInqKM9PUDZDi0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/tables/618d808082981f0023c05415",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"tables",
+								"618d808082981f0023c05415"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All tables",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuamFtaW4iLCJzZWNvbmRQZXJzb24iOiJCcmlnaXR0ZSIsImlhdCI6MTcwNDcwMjg5N30.YSSFwUBPrir-TyKj6mhJaq7WGrWjaZInqKM9PUDZDi0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/tables",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"tables"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add/remove guest from table",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuamFtaW4iLCJzZWNvbmRQZXJzb24iOiJCcmlnaXR0ZSIsImlhdCI6MTcwNDcwMjg5N30.YSSFwUBPrir-TyKj6mhJaq7WGrWjaZInqKM9PUDZDi0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"guestIds\": [\"6188710853ad22002366d0d8\"],\r\n  \"tableID\": \"65981d65cac83f004d989caf\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/guests/addtable/65981d65cac83f004d989caf",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"guests",
+								"addtable",
+								"65981d65cac83f004d989caf"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Groupe",
+			"item": [
+				{
+					"name": "New group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYiIsIm1hcmlhZ2VJRCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYSIsImlhdCI6MTYxMjA3MjQwN30.HvCjyfD0EcAg25h5G6IY8U303cX9oqCVEcbnSTW3I2Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Lyon",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "lyon@lyon.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "lastName",
+									"value": "Beep",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/groups/add",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"groups",
+								"add"
+							],
+							"query": [
+								{
+									"key": "userID",
+									"value": "5e6a475daa38c837804ca108",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All groups",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYiIsIm1hcmlhZ2VJRCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYSIsImlhdCI6MTYxMjA3MjQwN30.HvCjyfD0EcAg25h5G6IY8U303cX9oqCVEcbnSTW3I2Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1ODc0NDc1NTB9.F-q4BOmKeoq8HH24MF8cQsPC5uEifKwHijs5NKEpITc",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/groups/",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"groups",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5efa43d63f21a225dc364dcd",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYiIsIm1hcmlhZ2VJRCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYSIsImlhdCI6MTYxMjA3MjQwN30.HvCjyfD0EcAg25h5G6IY8U303cX9oqCVEcbnSTW3I2Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"guestID\": [],\r\n        \"_id\": \"60164ac446cde82bb060e358\",\r\n        \"name\": \"Paris\",\r\n        \"email\": \"lyon@lyon.com\",\r\n        \"password\": \"fxjNBOSzW8\",\r\n        \"mariageID\": \"601645a7fd895701508c88ca\",\r\n        \"__v\": 0\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/groups/edit/60164ac446cde82bb060e358",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"groups",
+								"edit",
+								"60164ac446cde82bb060e358"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYiIsIm1hcmlhZ2VJRCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYSIsImlhdCI6MTYxMjA3MjQwN30.HvCjyfD0EcAg25h5G6IY8U303cX9oqCVEcbnSTW3I2Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/groups/delete/60164ac446cde82bb060e358",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"groups",
+								"delete",
+								"60164ac446cde82bb060e358"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "See id group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYiIsIm1hcmlhZ2VJRCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYSIsImlhdCI6MTYxMjA3MjQwN30.HvCjyfD0EcAg25h5G6IY8U303cX9oqCVEcbnSTW3I2Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/groups/60164c60dffa712cc8978672",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"groups",
+								"60164c60dffa712cc8978672"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invité",
+			"item": [
+				{
+					"name": "New guest",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "firstName",
+								"value": "Taehyung",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "lastName",
+								"value": "Kim",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "groupID",
+								"value": "5ebbda349314032fac51230f",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Francis",
+									"type": "text"
+								},
+								{
+									"key": "family",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/guests/add",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"guests",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update avatar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "media",
+									"type": "file",
+									"src": "/C:/Users/dalin/Pictures/Drake-1024x750.png"
+								},
+								{
+									"key": "name",
+									"value": "Bernard",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/guests/edit/65b3a614503b2a2ed0f761ec",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"guests",
+								"edit",
+								"65b3a614503b2a2ed0f761ec"
+							],
+							"query": [
+								{
+									"key": "groupID",
+									"value": "5ebe7769e30e9728a09205aa",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete guest",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/guests/delete/65a7e328c4991f004dd4e4c7",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"guests",
+								"delete",
+								"65a7e328c4991f004dd4e4c7"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5efb7e6ffe5f7f3beca6074c",
+									"disabled": true
+								},
+								{
+									"key": "guestID",
+									"value": "5efb7e05fe5f7f3beca60746",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "See id guest",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImJ1ZGdldElEIjoiNjE3ODE4NzcwN2M2NmUwMDIzN2RjZDBiIiwiaWF0IjoxNjM1NjI0MzAzfQ.oN6sp9zILj5wLRrgIhhSGIr37UAs2Y0iPWdHalINqYo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/guests/id/617daabc52b4b8357c01ac9c",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"guests",
+								"id",
+								"617daabc52b4b8357c01ac9c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "See all guests",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/guests/",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"guests",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYTZjMzdiMTZiMzBlMDAyMmI1NjBkZCIsIm1hcmlhZ2VJRCI6IjYwYTZjMzc5MTZiMzBlMDAyMmI1NjBkYyIsInJvbGUiOiJhZG1pbiIsImludml0YXRpb25JRCI6IjYwYTZjMzdiMTZiMzBlMDAyMmI1NjBkZiIsImJ1ZGdldElEIjoiNjBhNmMzN2MxNmIzMGUwMDIyYjU2MGUwIiwiaWF0IjoxNjIzMzY0NTg3fQ.YIkWNuVwDuiPbLBZBImAzNe3WzFwNUaK-Qb2LWUBY2g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/guests/all/name?name=Popo",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"guests",
+								"all",
+								"name"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Popo"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Afficher l'avatar de l'invité",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNzEyYzE3N2I2MzM1MzJiYzllNDVhYyIsIm1hcmlhZ2VJRCI6IjYwNzEyYzE3N2I2MzM1MzJiYzllNDVhYiIsInJvbGUiOiJhZG1pbiIsImludml0YXRpb25JRCI6IjYwNzEyYzE3N2I2MzM1MzJiYzllNDVhZSIsImlhdCI6MTYxODYyMzgxMX0.9aLTIh0QJWFj_anD7Jd_KYRppKGPOIKzUYXrha0RFQ4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/guests/media/eae5c6145d4b3db38caeed7871cc4175.jpeg",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"guests",
+								"media",
+								"eae5c6145d4b3db38caeed7871cc4175.jpeg"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTcwNmNiYzQ5OTFmMDA0ZGQ0ZTQ0ZCIsIm1hcmlhZ2VJRCI6IjY1YTcwNmNhYzQ5OTFmMDA0ZGQ0ZTQ0YiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyam9yaWUiLCJzZWNvbmRQZXJzb24iOiJCaWxseSIsImlhdCI6MTcwNjM3MTMwMn0.XC3jCvcc1Itnj9M7NqTeaQ_Xdh1XM3vn_YsjK8H9sK0",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Carte",
+			"item": [
+				{
+					"name": "Entrée",
+					"item": [
+						{
+							"name": "Ajouter une entrée",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Tapas",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/starters/add",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"starters",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Entrées",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuamFtaW4iLCJzZWNvbmRQZXJzb24iOiJCcmlnaXR0ZSIsImlhdCI6MTcwNDcwMjg5N30.YSSFwUBPrir-TyKj6mhJaq7WGrWjaZInqKM9PUDZDi0",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/starters",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"starters"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modifier une entrée",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Thon à l'huile",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/starters/edit/61831445f5c79c002366d960",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"starters",
+										"edit",
+										"61831445f5c79c002366d960"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Supprimer une entrée",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/starters/delete/6183143bf5c79c002366d95f",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"starters",
+										"delete",
+										"6183143bf5c79c002366d95f"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Plat",
+					"item": [
+						{
+							"name": "Ajouter un plat",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Pâtes carbo",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/maincourses/add",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"maincourses",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modifier un plat",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": " {\r\n        \"_id\": \"601758888b7668280cf179fd\",\r\n        \"name\": \"Plantain\",\r\n        \"mariageID\": \"601645a7fd895701508c88ca\",\r\n        \"__v\": 0\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/maincourses/edit/61831c7df5c79c002366d963",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"maincourses",
+										"edit",
+										"61831c7df5c79c002366d963"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Plats",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuamFtaW4iLCJzZWNvbmRQZXJzb24iOiJCcmlnaXR0ZSIsImlhdCI6MTcwNDcwMjg5N30.YSSFwUBPrir-TyKj6mhJaq7WGrWjaZInqKM9PUDZDi0",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/maincourses",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"maincourses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Supprimer un plat",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/maincourses/delete/61832406f5c79c002366d968",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"maincourses",
+										"delete",
+										"61832406f5c79c002366d968"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Dessert",
+					"item": [
+						{
+							"name": "Ajouter un dessert",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Sorbet aux fruits",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/desserts/add",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"desserts",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dessert",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuamFtaW4iLCJzZWNvbmRQZXJzb24iOiJCcmlnaXR0ZSIsImlhdCI6MTcwNDcwMjg5N30.YSSFwUBPrir-TyKj6mhJaq7WGrWjaZInqKM9PUDZDi0",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/desserts",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"desserts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modifier un dessert",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Pièce montée",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/desserts/edit/630bbe65bf0f3af53475cfac",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"desserts",
+										"edit",
+										"630bbe65bf0f3af53475cfac"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Supprimer un dessert",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/desserts/delete/61832417f5c79c002366d96a",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"desserts",
+										"delete",
+										"61832417f5c79c002366d96a"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Apéritif",
+					"item": [
+						{
+							"name": "Ajouter",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Crevettes",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/apetizers/add",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"apetizers",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Apéritifs",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/apetizers",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"apetizers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Supprimer",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/apetizers/delete/630bb7611724daeee4e198ca",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"apetizers",
+										"delete",
+										"630bb7611724daeee4e198ca"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modifier",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "caviar",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/apetizers/edit/630bb4501cfb64ec9046e2c1",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"apetizers",
+										"edit",
+										"630bb4501cfb64ec9046e2c1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Beverage",
+					"item": [
+						{
+							"name": "Ajouter",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Eau plate",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "40",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/beverages/add",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"beverages",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Boissons",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/beverages",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"beverages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Supprimer",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/beverages/delete/630bb83ce8d417efa6a3b860",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"beverages",
+										"delete",
+										"630bb83ce8d417efa6a3b860"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modifier",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwOCIsIm1hcmlhZ2VJRCI6IjYxNzgxODc3MDdjNjZlMDAyMzdkY2QwNyIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyaWUgSm8iLCJzZWNvbmRQZXJzb24iOiJCZXJ0cmFuZCIsImlhdCI6MTY2MTcxMDgyOH0.UjDgBtc2V9yBfOeKMDfh7_Ni3vVmUFGYYyr0At4zvH4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Vin rouge",
+											"type": "text"
+										},
+										{
+											"key": "",
+											"value": "19",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/menu/beverages/edit/630bb829e8d417efa6a3b85e",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"menu",
+										"beverages",
+										"edit",
+										"630bb829e8d417efa6a3b85e"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Food",
+					"item": [
+						{
+							"name": "Get foods",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/reception/food/",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"reception",
+										"food",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create food",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Gâteau au chocolat",
+											"type": "text"
+										},
+										{
+											"key": "category",
+											"value": "dessert",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/reception/food/add",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"reception",
+										"food",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update food",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Pondu",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3050/api/admin/reception/food/edit/65b210d47aca9829ec0615b5",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"reception",
+										"food",
+										"edit",
+										"65b210d47aca9829ec0615b5"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Pondu",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete food",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/reception/food/delete/65b210d47aca9829ec0615b5",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"reception",
+										"food",
+										"delete",
+										"65b210d47aca9829ec0615b5"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTcwNmNiYzQ5OTFmMDA0ZGQ0ZTQ0ZCIsIm1hcmlhZ2VJRCI6IjY1YTcwNmNhYzQ5OTFmMDA0ZGQ0ZTQ0YiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyam9yaWUiLCJzZWNvbmRQZXJzb24iOiJCaWxseSIsImlhdCI6MTcwNjIxMzYxNX0.JudMjHSeE3xksFlH3mOCQYksKoCneoi0Uaelb1ydN40",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Voir la carte (menu mariage)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYiIsIm1hcmlhZ2VJRCI6IjYwMTY0NWE3ZmQ4OTU3MDE1MDhjODhjYSIsImlhdCI6MTYxMjA3MjQwN30.HvCjyfD0EcAg25h5G6IY8U303cX9oqCVEcbnSTW3I2Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/menu",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"menu"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invitation",
+			"item": [
+				{
+					"name": "Events",
+					"item": [
+						{
+							"name": "Get events",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMmZlMjIzZjIyNjFjMThkNDliNDA1YiIsIm1hcmlhZ2VJRCI6IjYwMmZlMjIzZjIyNjFjMThkNDliNDA1YSIsInJvbGUiOiJhZG1pbiIsImludml0YXRpb24iOiI2MDJmZTIyM2YyMjYxYzE4ZDQ5YjQwNWQiLCJpYXQiOjE2MTQyNTU2NTl9.qkYkx-EGe8DviVbBiPFJpGCawYc-aoVVayEOBvdS6qE",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/invitation/events",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"invitation",
+										"events"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete event",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNGE0MzQzZTZiYWY0MDVlNDY4ODI4MSIsIm1hcmlhZ2VJRCI6IjYwNGE0MzQzZTZiYWY0MDVlNDY4ODI4MCIsInJvbGUiOiJhZG1pbiIsImludml0YXRpb25JRCI6IjYwNGE0MzQ0ZTZiYWY0MDVlNDY4ODI4MyIsImlhdCI6MTYxNTU2MTI5OX0.LyCLafbHjP0eoxmTCJNzduMzjE0gQaqAC4v76oZLrz8",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/invitation/events/delete/604b779ae0209234d0761a5c",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"invitation",
+										"events",
+										"delete",
+										"604b779ae0209234d0761a5c"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Files",
+					"item": [
+						{
+							"name": "Afficher image",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwODIwYjgwMGFiZDU0MmY2NDY3Zjc0YyIsIm1hcmlhZ2VJRCI6IjYwODIwYjgwMGFiZDU0MmY2NDY3Zjc0YiIsInJvbGUiOiJhZG1pbiIsImludml0YXRpb25JRCI6IjYwODIwYjgxMGFiZDU0MmY2NDY3Zjc0ZSIsImlhdCI6MTYxOTEzOTIyMH0.fJ31rZ3qgGXm3NrUuax_6CJK_9fjYXSHL-WJy0htELc",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3050/api/admin/invitation/page/picture/8d6ba558dcaa675eb8614a137774d3f9.jpg",
+									"host": [
+										"localhost"
+									],
+									"port": "3050",
+									"path": [
+										"api",
+										"admin",
+										"invitation",
+										"page",
+										"picture",
+										"8d6ba558dcaa675eb8614a137774d3f9.jpg"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get invitation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMmZlMjIzZjIyNjFjMThkNDliNDA1YiIsIm1hcmlhZ2VJRCI6IjYwMmZlMjIzZjIyNjFjMThkNDliNDA1YSIsInJvbGUiOiJhZG1pbiIsImludml0YXRpb24iOiI2MDJmZTIyM2YyMjYxYzE4ZDQ5YjQwNWQiLCJpYXQiOjE2MTQyNTU2NTl9.qkYkx-EGe8DviVbBiPFJpGCawYc-aoVVayEOBvdS6qE",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/invitation/page/604a4344e6baf405e4688283",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"invitation",
+								"page",
+								"604a4344e6baf405e4688283"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit invitation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNGE0MzQzZTZiYWY0MDVlNDY4ODI4MSIsIm1hcmlhZ2VJRCI6IjYwNGE0MzQzZTZiYWY0MDVlNDY4ODI4MCIsInJvbGUiOiJhZG1pbiIsImludml0YXRpb25JRCI6IjYwNGE0MzQ0ZTZiYWY0MDVlNDY4ODI4MyIsImlhdCI6MTYxNTU2MTI5OX0.LyCLafbHjP0eoxmTCJNzduMzjE0gQaqAC4v76oZLrz8",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "picture",
+									"type": "file",
+									"src": "/C:/Users/Diane M/Documents/Web/SIMPLON/Projet_Mariage/frontend_fil_rouge/src/img/demoiselles.jpg"
+								},
+								{
+									"key": "firstPerson",
+									"value": "Marjorie",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/invitation/edit/606ccf8643af3d1ce0d5febb",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"invitation",
+								"edit",
+								"606ccf8643af3d1ce0d5febb"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Budget",
+			"item": [
+				{
+					"name": "New operation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuIiwic2Vjb25kUGVyc29uIjoiQnJpZ2l0dGUiLCJpYXQiOjE3MDU2NzAwMzV9.-1OhlQBdGccoS_5-SaYx9EcQ0rMsqhsw02BwK2PN8vk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "category",
+									"value": "Animation",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Ballons",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/budget/operations/add",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"budget",
+								"operations",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Voir une opération",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuIiwic2Vjb25kUGVyc29uIjoiQnJpZ2l0dGUiLCJpYXQiOjE3MDU2NzAwMzV9.-1OhlQBdGccoS_5-SaYx9EcQ0rMsqhsw02BwK2PN8vk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/budget/operation/65aa7874a9ca3f0d7869b8fa",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"budget",
+								"operation",
+								"65aa7874a9ca3f0d7869b8fa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modifier une opération",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzgxZTU4YTEzZTI3MjkwNGZkOTBlMyIsIm1hcmlhZ2VJRCI6IjYxNzgxZTU3YTEzZTI3MjkwNGZkOTBlMiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiQmVuIiwic2Vjb25kUGVyc29uIjoiQnJpZ2l0dGUiLCJpYXQiOjE3MDU2NzAwMzV9.-1OhlQBdGccoS_5-SaYx9EcQ0rMsqhsw02BwK2PN8vk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "category",
+									"value": "Animatio",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "1000",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "ppoollll",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/budget/operations/edit/65aa7874a9ca3f0d7869b8fa",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"budget",
+								"operations",
+								"edit",
+								"65aa7874a9ca3f0d7869b8fa"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Blablabla",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Supprimer une opération",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTcwNmNiYzQ5OTFmMDA0ZGQ0ZTQ0ZCIsIm1hcmlhZ2VJRCI6IjY1YTcwNmNhYzQ5OTFmMDA0ZGQ0ZTQ0YiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyam9yaWUiLCJzZWNvbmRQZXJzb24iOiJCaWxseSIsImlhdCI6MTcwNjM3MTMwMn0.XC3jCvcc1Itnj9M7NqTeaQ_Xdh1XM3vn_YsjK8H9sK0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/budget/operations/delete/65b53eb6154100004d6b0daf",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"budget",
+								"operations",
+								"delete",
+								"65b53eb6154100004d6b0daf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Voir toutes les opérations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTcwNmNiYzQ5OTFmMDA0ZGQ0ZTQ0ZCIsIm1hcmlhZ2VJRCI6IjY1YTcwNmNhYzQ5OTFmMDA0ZGQ0ZTQ0YiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyam9yaWUiLCJzZWNvbmRQZXJzb24iOiJCaWxseSIsImlhdCI6MTcwNjM3MTMwMn0.XC3jCvcc1Itnj9M7NqTeaQ_Xdh1XM3vn_YsjK8H9sK0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/budget/operations/",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"budget",
+								"operations",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Todolist",
+			"item": [
+				{
+					"name": "Update todo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYTZjMzdiMTZiMzBlMDAyMmI1NjBkZCIsIm1hcmlhZ2VJRCI6IjYwYTZjMzc5MTZiMzBlMDAyMmI1NjBkYyIsInJvbGUiOiJhZG1pbiIsImludml0YXRpb25JRCI6IjYwYTZjMzdiMTZiMzBlMDAyMmI1NjBkZiIsImJ1ZGdldElEIjoiNjBhNmMzN2MxNmIzMGUwMDIyYjU2MGUwIiwiaWF0IjoxNjIzMzY0NTg3fQ.YIkWNuVwDuiPbLBZBImAzNe3WzFwNUaK-Qb2LWUBY2g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "text",
+									"value": "HAHAHAHAHA",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/todolist/edit/60c78cfd8a882b253091a7a2",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"todolist",
+								"edit",
+								"60c78cfd8a882b253091a7a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New todo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTcwNmNiYzQ5OTFmMDA0ZGQ0ZTQ0ZCIsIm1hcmlhZ2VJRCI6IjY1YTcwNmNhYzQ5OTFmMDA0ZGQ0ZTQ0YiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyam9yaWUiLCJzZWNvbmRQZXJzb24iOiJCaWxseSIsImlhdCI6MTcwNjM3MTMwMn0.XC3jCvcc1Itnj9M7NqTeaQ_Xdh1XM3vn_YsjK8H9sK0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "text",
+									"value": "Kimbop",
+									"type": "text"
+								},
+								{
+									"key": "color",
+									"value": "#bbcec3",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3050/api/admin/todolist/add",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"todolist",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete todo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTcwNmNiYzQ5OTFmMDA0ZGQ0ZTQ0ZCIsIm1hcmlhZ2VJRCI6IjY1YTcwNmNhYzQ5OTFmMDA0ZGQ0ZTQ0YiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyam9yaWUiLCJzZWNvbmRQZXJzb24iOiJCaWxseSIsImlhdCI6MTcwNjM3MTMwMn0.XC3jCvcc1Itnj9M7NqTeaQ_Xdh1XM3vn_YsjK8H9sK0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/todolist/delete/65b52b609ae1ee3a18ffa6e9",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"todolist",
+								"delete",
+								"65b52b609ae1ee3a18ffa6e9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Todos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTcwNmNiYzQ5OTFmMDA0ZGQ0ZTQ0ZCIsIm1hcmlhZ2VJRCI6IjY1YTcwNmNhYzQ5OTFmMDA0ZGQ0ZTQ0YiIsInJvbGUiOiJhZG1pbiIsImZpcnN0UGVyc29uIjoiTWFyam9yaWUiLCJzZWNvbmRQZXJzb24iOiJCaWxseSIsImlhdCI6MTcwNjM3MTMwMn0.XC3jCvcc1Itnj9M7NqTeaQ_Xdh1XM3vn_YsjK8H9sK0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3050/api/admin/todolist/",
+							"host": [
+								"localhost"
+							],
+							"port": "3050",
+							"path": [
+								"api",
+								"admin",
+								"todolist",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "AioAuth MDBkM2UwMGQtZTUzNi0zZTA2LWE1MTQtNTRjMzk1NzMxNGEzLjkxMjYyZDQzLWY0YTMtNDFlZC1iNGM1LTNjZDE3OGYyZGRiNQ==",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMGY1ODljNGQxNDk2MWYwMDgzNTQ0YiIsIm1hcmlhZ2VJRCI6IjYwMGY1ODliNGQxNDk2MWYwMDgzNTQ0YSIsImlhdCI6MTYxMTYxODg3MH0.-gdIJMNOv0i2rxhIhmQio5asWtUiTmAbm_9vCH-Jf18"
+		},
+		{
+			"key": "apiURL",
+			"value": "https://my-wedding-backend.onrender.com"
+		}
+	]
+}

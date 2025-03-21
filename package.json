@@ -32,8 +32,13 @@
     "npm": "6.14.7"
   },
   "scripts": {
-    "start": "nodemon ./src/index.js"
+    "start": "nodemon ./src/index.js",
+    "test:api": "node run-newman.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "newman": "^6.2.1",
+    "newman-reporter-aiotests": "^1.1.0"
+  }
 }
