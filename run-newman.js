@@ -1,3 +1,4 @@
+require('dotenv').config();
 const newman = require('newman');
 
 newman.run({
@@ -10,9 +11,9 @@ newman.run({
             "aioApiToken": process.env.AIO_API_KEY, //AIO Tests API Key
             "createNewCycle": false, // Ne pas créer un nouveau cycle
             "newCycleTitle": '', // Nom du cycle de test dans AIO Tests
-            "cycleKey": '', // Clé du cycle de test dans AIO Tests,
+            "cycleKey": process.env.AIO_CYCLE_KEY, // Clé du cycle de test dans AIO Tests,
             "createNewRun": true, // Ne pas créer un nouveau run
-            "createCase": true, // Créer un nouveau cas de test si aucune clé n'est mappée
+            "createCase": false, // Créer un nouveau cas de test si aucune clé n'est mappée
             "bddForceUpdateCase": true // Update les steps dans un TC AIO avec les changements les données de la requête
         },
     },
